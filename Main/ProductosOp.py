@@ -1,12 +1,21 @@
 from Productos import *
 
+def validarDigitos(digito):
+    if digito.isdigit():
+        return True
+
+
 def registrarProducto():
     codigo = input("Ingrese el codigo del producto: ")
-    while not codigo:
-        codigo = input("Ingrese el codigo del producto: ")
+    if not codigo:
+        print("Favor de ingresar el dato requerido")
+    elif not validarDigitos(codigo):
+        print("El dato debe ser solo numerico")
+        while not codigo and not validarDigitos(codigo):
+            codigo = input("Ingrese el codigo del producto: ")
 
     nombre = input("Ingrese el nombre del producto: ")
-    while not codigo:
+    while not nombre:
         nombre = input("Ingrese el nombre del producto: ")
 
     marca = input("Ingrese la marca del producto: ")
@@ -24,6 +33,7 @@ def registrarProducto():
     tamanio = input("Ingrese el tamaño del producto: ")
     while not tamanio:
         tamanio = input("Ingrese el tamaño del producto: ")
+
 
     precio = input("Ingrese el precio del producto: ")
     while not precio:
