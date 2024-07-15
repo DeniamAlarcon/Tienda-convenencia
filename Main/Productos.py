@@ -74,6 +74,7 @@ class Producto:
                 producto.proveedor = proveedor
                 producto.tamanio = tamanio
                 producto.precio = precio
+
             print("Prodcuto actualizado")
         else:
             print("Producto no encontrado")

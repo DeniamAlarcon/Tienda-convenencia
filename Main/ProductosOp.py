@@ -78,6 +78,7 @@ def menuProductos():
                 Producto.detalles_nombre(nombre)
             elif opc1 == "2":
                 Producto.detalles()
+
         elif opcion == "3":
             actualizarproducto()
         elif opcion == "4":
