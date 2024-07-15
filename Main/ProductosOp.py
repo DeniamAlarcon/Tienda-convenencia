@@ -6,13 +6,15 @@ def validarDigitos(digito):
 
 
 def registrarProducto():
-    codigo = input("Ingrese el codigo del producto: ")
-    if not codigo:
-        print("Favor de ingresar el dato requerido")
-    elif not validarDigitos(codigo):
-        print("El dato debe ser solo numerico")
-        while not codigo and not validarDigitos(codigo):
-            codigo = input("Ingrese el codigo del producto: ")
+    codigo= ""
+    while not codigo and not validarDigitos(codigo):
+        codigo = input("Ingrese el codigo del producto: ")
+        if not codigo:
+            print("Favor de ingresar el dato requerido")
+            codigo = ""
+        elif not validarDigitos(codigo):
+            print("El dato debe ser solo numerico")
+            codigo = ""
 
     nombre = input("Ingrese el nombre del producto: ")
     while not nombre:
@@ -49,19 +51,36 @@ def registrarProducto():
     else:
         print("Producto no registrado")
 
+def actualizarproducto():
+   codigo = input("Ingrese el codigo del producto: ")
+   nombre = input("Ingrese el nombre del producto: ")
+   proveedor = input("Ingrese el proveedor del producto: ")
+   tamanio = input("Ingrese el tamaño del producto")
+   precio = input("Ingrese el precio del producto: ")
+   Producto.actualizar(codigo, nombre, proveedor, tamanio, precio)
 
 def menuProductos():
     while True:
         print("---Menu de productos---")
         print("1. Registrar")
         print("2. Detalles")
-        print("3. Salir")
+        print("3. Actualizar")
+        print("4. Salir")
         opcion = input("Ingrese opcion: ")
         if opcion == "1":
             registrarProducto()
         elif opcion == "2":
-            Producto.detalles()
+            print("1. Busqueda por nombre")
+            print("2. Gestion de productos")
+            opc1 = input("Ingrese opcion: ")
+            if opc1 == "1":
+                nombre = input("Ingrese nombre del producto: ")
+                Producto.detalles_nombre(nombre)
+            elif opc1 == "2":
+                Producto.detalles()
         elif opcion == "3":
+            actualizarproducto()
+        elif opcion == "4":
             break
 
 menuProductos()
