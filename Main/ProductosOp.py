@@ -206,4 +206,4 @@ def menuProductos():
         elif opcion == "4":
             break
 
-menuProductos()
+#menuProductos()

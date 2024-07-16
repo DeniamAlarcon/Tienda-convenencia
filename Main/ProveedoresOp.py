@@ -106,4 +106,4 @@ def menuProveedor():
            break
        else:
            print("Opcion invalida")
-menuProveedor()
+#menuProveedor()

@@ -114,3 +114,14 @@ class Producto:
                     return False
         else:
            return False
+
+    @classmethod
+    def validar_marca(cls, marca):
+        if Producto.lista_productos.__len__() != 0:
+            for product in Producto.lista_productos:
+                if product.marca == marca:
+                    return True
+                else:
+                    return False
+        else:
+            return False

@@ -1,32 +1,37 @@
 from Productos import *
 from Proveedores import *
-listaPedido=[]
-def pedidoProveedor():
+from PedidosProveedor import *
 
+def pedidoProveedor():
     while True:
         print("Registro de pedidos")
         print("1 - Agregar pedido")
         print("2 - Salir...")
         opcion = input("Seleccione una opcion: ")
         if opcion == "1":
-            id = input("Ingrese el nombre del proveedor: ")
-            proveedor = Proveedores.buscar_proveedor(id)
+            Proveedores.mostrar()
+            nombreProveedor = input("Ingrese el nombre del proveedor: ")
+            proveedor = Proveedores.validar_provedor(nombreProveedor)
+            print(proveedor)
             if proveedor:
-                nombreProducto = input("Ingrese el nombre del producto: ")
-                prodcutoN=Producto.buscarProductoNombre(nombreProducto)
+                nombreProducto = input("Ingrese el codigo del producto: ")
+                prodcutoN=Producto.validar_codigo(nombreProducto)
                 if prodcutoN:
                     marcaProducto = input("Ingrese la marca del producto: ")
-                    prodcutoM=Producto.buscarProductoMarca(marcaProducto)
+                    prodcutoM=Producto.validar_marca(marcaProducto)
                     if prodcutoM:
                         cantidadProducto = int(input("Ingrese la cantidad de productos: "))
                         if cantidadProducto>0:
-                            listaPedido.append([nombreProducto,prodcutoN,cantidadProducto])
+                           print(nombreProveedor)
+                           guarda= PedidosProveedor(nombreProveedor,nombreProducto,marcaProducto,cantidadProducto)
+                           guarda.guardar()
+
                     else:
                         print("Marca de producto no registrada")
                 else:
                     print("Nombre de producto no registrado")
             else:
-                print("El proveedor no existe")
+                print("Nombre de producto no registrado")
         elif opcion == "2":
             print("Saliendo...")
             break
@@ -34,9 +39,8 @@ def pedidoProveedor():
             print("Opcion no valida")
 
 
-def mostrarPedidos():
-    for i in listaPedido:
-        print(i)
+
+
 
 def menuComprasProveedor():
     while True:
@@ -62,7 +66,7 @@ def menuComprasProveedor():
                 opcion2 = input("Ingrese una opcion: ")
                 if opcion2 == "1":
                     print("1. Historial de compras")
-                    mostrarPedidos()
+                    PedidosProveedor.mostrar_pedidos()
                 elif opcion == "2":
                     print("2. Historial de compras por proveedor")
                 elif opcion2 == "3":
@@ -75,4 +79,4 @@ def menuComprasProveedor():
             print("Opcion invalida")
 
 
-menuComprasProveedor()
+
