@@ -14,7 +14,7 @@ class Proveedores:
     @classmethod
     def mostrar(cls):
         if not cls.proveedores:
-            print("No hay proveedores")
+            print("No hay proveedores registrados")
         else:
             for proveedor in cls.proveedores:
                print(
@@ -41,35 +41,46 @@ class Proveedores:
     def actualizar(cls,id,nombre,correo,telefono):
         proveedor = cls.buscar_proveedor(id)
         if proveedor:
-            if nombre == "" and correo== "" and telefono== "":
-                proveedor.nombre = proveedor.nombre
-                proveedor.correo = proveedor.correo
-                proveedor.telefono = proveedor.telefono
-            elif nombre == "":
-                proveedor.nombre = proveedor.nombre
-                proveedor.correo = correo
-                proveedor.telefono = telefono
-            elif correo == "":
-                proveedor.correo = proveedor.correo
-                proveedor.nombre = nombre
-                proveedor.telefono = telefono
-            elif telefono == "":
-                proveedor.telefono = proveedor.telefono
-                proveedor.nombre = nombre
-                proveedor.correo = correo
+            if Proveedores.comprobarExistencia(nombre,correo,telefono):
+                print("Ya existe un proveedor con esos datos")
             else:
-                proveedor.nombre = nombre
-                proveedor.correo = correo
-                proveedor.telefono = telefono
-            print("Proveedor actualizado exitosamente.")
+                if nombre == "" and correo == "" and telefono == "":
+                    proveedor.nombre = proveedor.nombre
+                    proveedor.correo = proveedor.correo
+                    proveedor.telefono = proveedor.telefono
+                elif nombre == "":
+                    proveedor.nombre = proveedor.nombre
+                    proveedor.correo = correo
+                    proveedor.telefono = telefono
+                elif correo == "":
+                    proveedor.correo = proveedor.correo
+                    proveedor.nombre = nombre
+                    proveedor.telefono = telefono
+                elif telefono == "":
+                    proveedor.telefono = proveedor.telefono
+                    proveedor.nombre = nombre
+                    proveedor.correo = correo
+                else:
+                    proveedor.nombre = nombre
+                    proveedor.correo = correo
+                    proveedor.telefono = telefono
+                print("Proveedor actualizado exitosamente.")
         else:
             print("Proveedor no encontrado.")
 
     @classmethod
-    def eliminar_proveedor(cls, id):
-        proveedor = cls.buscar_proveedor(id)
-        if proveedor:
-            cls.proveedores.remove(proveedor)
-            print("Proveedor eliminado exitosamente.")
-        else:
-            print("Proveedor no encontrado.")
+    def eliminarProveedor(cls, id):
+        try:
+            proveedor = cls.buscar_proveedor(id)
+            if proveedor:
+                cls.proveedores.remove(proveedor)
+                print("Proveedor eliminado con exito.")
+            else:
+                print("Proveedor no encontrado.")
+        except Exception as e:
+            print("Intentelo nuevamente, no ha sido eliminado")
+    @classmethod
+    def comprobarExistencia(self,nombre,correo,telefono):
+        for proveedor in Proveedores.proveedores:
+            if proveedor.nombre==nombre or proveedor.correo==correo or  proveedor.telefono==telefono:
+                return True

@@ -1,41 +1,51 @@
 from Proveedores import *
 import re
 
-
-
 def validar_telefono(telefono):
     return len(telefono) > 9 and len(telefono) < 16
 def validar_correo(pattern,correo):
     if not re.match(pattern, correo):
         return False
+
+
 def registrarProveedor():
   while True:
       try:
-          nombre = input("Ingrese nombre del proveedor: ")
+          nombre = input("Ingrese el nombre del proveedor: ")
           while not nombre:
-              nombre = input("Ingrese nombre del proveedor: ")
-          correo = input("Ingrese correo del proveedor: ")
+              print("Favor de llenar todos los campos requeridos")
+              nombre = input("Ingrese el nombre del proveedor: ")
+          correo = input("Ingrese correo electronico del proveedor: ")
           pattern = re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?")
           while not correo:
-              correo = input("Ingrese correo del proveedor: ")
+              print("Favor de llenar todos los campos requeridos")
+              correo = input("Ingrese correo electronico del proveedor: ")
           while not re.match(pattern, correo):
+              print("Correo no valido")
               correo = input("Ingrese correo del proveedor: ")
-          telefono = input("Ingrese telefono del proveedor: ")
+          telefono = input("Ingresa el número de telefono: ")
           while not validar_telefono(telefono):
+              print("Numero de telefono no valido")
               telefono = input("El numero debe ser mayor a 10 y menoar a 15: ")
           while not telefono.isdigit():
+              print("Dato incorrecto")
               telefono = input("El numero debe ser numerico: ")
           registro = Proveedores(nombre, correo, telefono)
-          if registro.guardar():
-              print("Proveedor registrado correctamente")
-              break
+
+          if registro.comprobarExistencia(nombre,correo,telefono):
+              print("El proveedor ya existe")
           else:
-              print("Ocurrio un error al registrar proveedor")
+              if registro.guardar():
+                  print("Proveedor registrado")
+                  break
+              else:
+                  print("Ocurrio un error al registrar proveedor")
 
       except ValueError as e:
           print("Ingrese un numero telefonico valido: ")
       except Exception as e:
-          print(f"Ocurrió un error: {e}")
+          print(f"Favor de llenar los campos requeridos {e}")
+
 
 
 
@@ -47,21 +57,22 @@ def actualizarProveedores():
             nCorreo = input("Ingrese el correo electronico del proveedor: ")
             if nCorreo != "":
                 pattern = re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?")
-                while not re.match(pattern, correo):
-                    correo = input("Ingrese correo del proveedor: ")
+                while not re.match(pattern, nCorreo):
+                    nCorreo = input("Ingrese correo del proveedor: ")
             nTelefono = input("Ingrese el telefono del proveedor: ")
             if nTelefono != "":
                 while not validar_telefono(nTelefono):
+                    print("Se debe ingresar un telefono mayor o igual a 10")
                     nTelefono = input("Ingrese el telefono del proveedor: ")
                 while not nTelefono.isdigit():
-                    nTelefono = input("El numero debe ser numerico: ")
+                    print("Solo se aceptan numeros en el campo telefono")
+                    nTelefono = input("El telefono debe ser numerico: ")
             Proveedores.actualizar(id, nNombre, nCorreo, nTelefono)
             break
         except ValueError as e:
             print("Ingrese un numero telefonico valido: ")
         except Exception as e:
             print("Error al actualizar proveedore ", e)
-
 
 
 
@@ -89,7 +100,7 @@ def menuProveedor():
                Proveedores.mostrar()
        elif opcion == "4":
             id=int(input("Ingrese id del proveedor: "))
-            Proveedores.eliminar_proveedor(id)
+            Proveedores.eliminarProveedor(id)
        elif opcion == "5":
            print("Saliendo...")
            break
