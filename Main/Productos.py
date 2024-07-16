@@ -53,6 +53,19 @@ class Producto:
         else:
             print("producto no encontrado")
     @classmethod
+    def buscarProductoNombre(self, nombre):
+        for product in Producto.lista_productos:
+            if product.nombre == nombre:
+                return product
+
+    @classmethod
+    def buscarProductoMarca(self, marca):
+        for product in Producto.lista_productos:
+            if product.marca == marca:
+                return product
+
+
+    @classmethod
     def actualizar(self,id,nombre,proveedor,tamanio,precio):
         producto = self.buscarProducto(id)
         if producto:
