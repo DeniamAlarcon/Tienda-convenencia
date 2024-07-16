@@ -16,6 +16,16 @@ class Producto:
         return True
 
     @classmethod
+    def buscar_nombre(self,nombre):
+        if self.lista_productos.__len__() != 0:
+            for product in self.lista_productos:
+                if product.nombre == nombre:
+                    print("Nombre de producto ya registrado")
+                    return True
+                else:
+                    return False
+
+    @classmethod
     def detalles_nombre(self, nombre):
         if self.lista_productos.__len__() != 0:
             for product in self.lista_productos:
@@ -36,10 +46,12 @@ class Producto:
 
     @classmethod
     def buscarProducto(self,id):
-        for product in Producto.lista_productos:
-            if product.codigo == id:
-                return product
-
+        if Producto.lista_productos.__len__() != 0:
+            for product in Producto.lista_productos:
+                if product.codigo == id:
+                    return product
+        else:
+            print("producto no encontrado")
     @classmethod
     def actualizar(self,id,nombre,proveedor,tamanio,precio):
         producto = self.buscarProducto(id)
@@ -78,3 +90,14 @@ class Producto:
             print("Prodcuto actualizado")
         else:
             print("Producto no encontrado")
+
+    @classmethod
+    def validar_codigo(cls, codigo):
+        if Producto.lista_productos.__len__() != 0:
+            for product in Producto.lista_productos:
+                if product.codigo == codigo:
+                    return True
+                else:
+                    return False
+        else:
+           return False

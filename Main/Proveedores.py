@@ -31,6 +31,7 @@ class Proveedores:
                         f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
                 else:
                     print("Proveedor no encontrado")
+
     @classmethod
     def buscar_proveedor(cls, id):
         for proveedor in cls.proveedores:
@@ -84,3 +85,14 @@ class Proveedores:
         for proveedor in Proveedores.proveedores:
             if proveedor.nombre==nombre or proveedor.correo==correo or  proveedor.telefono==telefono:
                 return True
+
+    @classmethod
+    def validar_provedor(cls,nombre):
+        if Proveedores.proveedores.__len__() != 0:
+            for proveedor in Proveedores.proveedores:
+                if proveedor.nombre == nombre:
+                    return True
+                else:
+                    print("Proveedor no encontrado.")
+        else:
+            print("No hay proveedores registrado.")
