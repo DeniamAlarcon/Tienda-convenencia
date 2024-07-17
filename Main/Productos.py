@@ -9,6 +9,10 @@ class Producto:
         self.tamanio = tamanio
         self.precio = precio
         self.fecha_caducidad = fecha_caducidad
+        self.entradas = cantidad
+        self.salidas = 0
+        self.stock = cantidad
+        self.existenciasAnteriores = cantidad
 
 
     def registrar(self):
@@ -30,7 +34,7 @@ class Producto:
         if self.lista_productos.__len__() != 0:
             for product in self.lista_productos:
                 if product.nombre == nombre:
-                    print(product.codigo, product.nombre, product.marca, product.proveedor, product.cantidad,product.tamanio, product.precio, product.fecha_caducidad)
+                    print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ",product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
                 else:
                     print("producto no encontrado")
         else:
@@ -40,7 +44,7 @@ class Producto:
     def detalles(self):
         if Producto.lista_productos.__len__() != 0:
             for product in Producto.lista_productos:
-                print(product.codigo, product.nombre, product.marca, product.proveedor, product.cantidad, product.tamanio, product.precio, product.fecha_caducidad)
+                print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ",product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
         else:
             print("producto no encontrado")
 

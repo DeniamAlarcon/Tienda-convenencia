@@ -17,7 +17,8 @@ def validar_fecha(fecha):
 def validar_caducidad(fecha):
     fecha_actual = datetime.now()
     fecha_actual_texto = fecha_actual.strftime("%d/%m/%Y")
-    return fecha > fecha_actual_texto
+    fecha_dada = fecha.strftime("%d/%m/%Y")
+    return fecha_dada < fecha_actual_texto
 
 
 def validar_tamanio(tamanio):
@@ -25,9 +26,9 @@ def validar_tamanio(tamanio):
         if int(tamanio) > 0:
             return True
         else:
-            print("Tamaño del producto no puede ser menor o igual a 0")
+            print("Unidad de medida del producto no puede ser menor o igual a 0")
     else:
-        print("No se admite texto en tamaño del producto")
+        print("No se admite texto en la uniddad de medida del producto")
         return False
 
 
@@ -106,7 +107,7 @@ def registrarProducto():
     tamanio = ""
     while not tamanio:
         #validar que sea mayor a 0
-        tamanio = input("Ingrese el tamaño del producto: ")
+        tamanio = input("Ingrese la unidad de medida del producto: ")
         if not tamanio:
             print("Favor de ingresar los datos requeridos")
             tamanio = ""
@@ -162,7 +163,7 @@ def actualizarproducto():
 
 
    while True:
-       tamanio = input("Ingrese el tamaño del producto")
+       tamanio = input("Ingrese la unidad de medida del producto")
        if tamanio:
            if not validar_tamanio(tamanio):
                tamanio =""
