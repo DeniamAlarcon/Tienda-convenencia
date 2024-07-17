@@ -13,6 +13,7 @@ class Producto:
         self.salidas = 0
         self.stock = cantidad
         self.existenciasAnteriores = cantidad
+        self.ajuste =0
 
 
     def registrar(self):
@@ -129,3 +130,20 @@ class Producto:
                     return False
         else:
             return False
+    @classmethod
+    def validar_nombre(cls, nombre):
+        if Producto.lista_productos.__len__() != 0:
+            for product in Producto.lista_productos:
+                if product.nombre == nombre:
+                    return True
+                else:
+                    return False
+        else:
+            return False
+
+    @classmethod
+    def validar_stock(cls,nombre):
+        if Producto.lista_productos.__len__() != 0:
+            for product in Producto.lista_productos:
+                if product.nombre == nombre:
+                    return product.stock
