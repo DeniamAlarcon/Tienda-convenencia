@@ -52,33 +52,39 @@ def seleccionar_cantidad_producto(producto):
                 print(f"Seleccionando {cantidad} unidades...")
                 return cantidad
 def menuVentas():
-    print("----Ventas---")
-    print("1 - Agregar Venta")
-    print("2 - Mostrar Historial Ventas")
-    print("0 - Salir")
-    opcion= int(input("Seleccione una opcion: "))
-    if opcion == 1:
-        while True:
-            print("1.- Agregar producto")
-            print("2.- salir")
-            opcion2= int(input("Seleccione una opcion: "))
-            if opcion2 == 1:
-                producto=input("Ingrese el nombre del producto: ")
-                validaNP = Producto.buscar_nombre(producto)
-                if validaNP:
-                   #print(seleccionar_cantidad_producto(validaNP))
-                   cant= (input("Ingrese la cantidad"))
-                   precio=input("Ingrese el precio del producto: ")
-                   Ventas(producto, cant, precio)
-                   Inventario.actualizarSalidas(producto, cant)
-                  # Ventas.guardar_venta(nueva)
-                else:
-                    print("Producto no encontrado")
-            elif opcion2 == 2:
-                print("Saliendo...")
-                break
-    elif opcion == 2:
-        Ventas.mostrar_ventas()
+    if Proveedores.proveedores:
+        if Producto.lista_productos:
+            print("----Ventas---")
+            print("1 - Agregar Venta")
+            print("2 - Mostrar Historial Ventas")
+            print("0 - Salir")
+            opcion= int(input("Seleccione una opcion: "))
+            if opcion == 1:
+                while True:
+                    print("1.- Agregar producto")
+                    print("2.- salir")
+                    opcion2= int(input("Seleccione una opcion: "))
+                    if opcion2 == 1:
+                        producto=input("Ingrese el nombre del producto: ")
+                        validaNP = Producto.buscar_nombre(producto)
+                        if validaNP:
+                           #print(seleccionar_cantidad_producto(validaNP))
+                           cant= (input("Ingrese la cantidad"))
+                           precio=input("Ingrese el precio del producto: ")
+                           Ventas(producto, cant, precio)
+                           Inventario.actualizarSalidas(producto, cant)
+                          # Ventas.guardar_venta(nueva)
+                        else:
+                            print("Producto no encontrado")
+                    elif opcion2 == 2:
+                        print("Saliendo...")
+                        break
+            elif opcion == 2:
+                Ventas.mostrar_ventas()
+        else:
+            print("no hay productos registrados")
+    else:
+        print("No hay proveedores registrados")
 
 
 
