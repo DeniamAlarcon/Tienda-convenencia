@@ -152,17 +152,20 @@ def registrarProducto():
 def actualizarproducto():
    codigo = input("Ingrese el codigo del producto: ")
 
-   while True:
+   nombre = ""
+   while not nombre:
        nombre = input("Ingrese el nombre del producto: ")
        if nombre:
-           Producto.buscar_nombre(nombre)
+           if Producto.buscar_nombre(nombre):
+               nombre = ""
        else:
            break
 
+
    proveedor = input("Ingrese el proveedor del producto: ")
 
-
-   while True:
+   tamanio = ""
+   while not tamanio:
        tamanio = input("Ingrese la unidad de medida del producto")
        if tamanio:
            if not validar_tamanio(tamanio):
@@ -170,13 +173,12 @@ def actualizarproducto():
        else:
            break
 
-   while True:
+   precio = ""
+   while not precio:
        precio = input("Ingrese el precio del producto: ")
        if precio:
            if not validar_precio(precio):
                precio =""
-           else:
-               break
        else:
            break
 

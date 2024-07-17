@@ -136,12 +136,14 @@ def menuInventario():
         elif opcion == "2":
             inventario.informeStock()
         elif opcion == "3":
+            inventario.ajuste_inventario()
             while True:
-                print("1. Ajustar inventario")
+                print("1. Ingresar otro ajuste")
                 print("2. Salir")
-                if opcion == "1":
+                opcion1 = input("Ingrese una opcion: ")
+                if opcion1 == "1":
                     inventario.ajuste_inventario()
-                elif opcion == "2":
+                elif opcion1 == "2":
                     break
         elif opcion == "4":
             break
