@@ -68,7 +68,7 @@ def menuComprasProveedor():
                 cantidad = int(input("Ingrese la cantidad de productos: "))
                 PedidosProveedor.pedidos_proveedorID(id, cantidad)
             except ValueError as e:
-                print("Ingrese datos correctos")
+                print("Ingrese datos correctos ")
         elif opcion == "3":
             print("DESCUENTA EL VALOR QUE SE INTRODUCE AL INVENTARIO Y LISTO")
             productos = input("Ingrese el producto para la devolucion: ")

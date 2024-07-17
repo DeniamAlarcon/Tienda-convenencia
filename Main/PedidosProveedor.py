@@ -41,7 +41,7 @@ class PedidosProveedor:
             print("No hay pedidos guardados con este proveedor.")
         else:
             for pedido in self.pedidos:
-                if pedido.nombre == i:
+                if pedido.id == i:
                     print(
                         f"ID: {pedido.id}, Proveedor: {pedido.proveedor}, Nombre: {pedido.nombre}, Marca: {pedido.marca}, Cantidad: {pedido.cantidad}")
                     if int(pedido.cantidad) < int(cantidad):
