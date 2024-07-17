@@ -2,6 +2,7 @@ from ProductosOp import *
 from ProveedoresOp import *
 from ComprasProveedores import *
 from Ventas import *
+from VentaP import menuVentas
 
 usuarios = [
     "admin",

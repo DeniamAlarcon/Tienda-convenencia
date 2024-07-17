@@ -72,8 +72,10 @@ def menuVentas():
                 cantidad = seleccionar_cantidad_producto(producto)
                 venta = VentasMain(cantidad,producto)
                 venta.guardar_venta()
+                Inventario.actualizarSalidas(producto, cantidad)
                 venta_actual=venta.venta_actual()
                 productos.append((producto, cantidad))
+
             metodo_pago = seleccionar_metodo_pago()
             cantidad_pagar(venta_actual)
             monto_venta = sum(cantidad for _, cantidad in productos)  # Asume que el precio de cada producto es 1 unidad

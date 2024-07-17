@@ -26,8 +26,9 @@ class Inventario:
             print('No hay productos registrados')
 
 
+    @classmethod
     def mensajes_stock(self,nombre):
-        for product in self.producto:
+        for product in Producto.lista_productos:
             if product.nombre == nombre:
                 if product.stock < 5 and product.stock >0:
                     print("Stock bajo de ",product.nombre)
@@ -39,21 +40,22 @@ class Inventario:
             if product.nombre == nombre:
                 product.entradas = int(product.entradas) + int(cantidad)
                 product.stock = int(product.stock) + int(cantidad)
-                Inventario.mensajes_stock(self, nombre)
+                Inventario.mensajes_stock( nombre)
 
-
+    @classmethod
     def actualizarSalidas(self, nombre, cantidad):
-        for product in self.producto:
+        for product in Producto.lista_productos:
             if product.nombre == nombre:
                 if product.stock > cantidad:
                     product.salidas = int(product.salidas) + int(cantidad)
                     product.stock = int(product.stock) - int(cantidad)
                     print("Devolucion realizada")
-                    Inventario.mensajes_stock(self,nombre)
+                    Inventario.mensajes_stock(nombre)
                 else:
                     print("No hay suficiente stock para realizar la accion")
             else:
                 print("Producto no encontrado")
+
 
     def informeStock(self):
         if self.producto:
@@ -65,7 +67,7 @@ class Inventario:
                     print(f"{product.codigo:<10} {product.nombre:<20} {product.marca:<15} {product.precio:<10} {product.stock:<10}")
                 print("=" * 105)
                 for product in self.producto:
-                    Inventario.mensajes_stock(self,product.nombre)
+                    Inventario.mensajes_stock(product.nombre)
             else:
                 print('No hay proveedores registrados')
         else:
