@@ -15,10 +15,10 @@ def validar_fecha(fecha):
         return False
 
 def validar_caducidad(fecha):
+    formato = "%d/%m/%Y"
     fecha_actual = datetime.now()
-    fecha_actual_texto = fecha_actual.strftime("%d/%m/%Y")
-    fecha_dada = fecha.strftime("%d/%m/%Y")
-    return fecha_dada < fecha_actual_texto
+    fecha_dada = datetime.strptime(fecha, formato)
+    return fecha_dada < fecha_actual
 
 
 def validar_tamanio(tamanio):
