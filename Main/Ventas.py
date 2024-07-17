@@ -34,7 +34,6 @@ def verificar_pago(monto_venta):
 
 def main():
     acceder_apartado_ventas()
-
     n = int(input("¿Cuántos productos desea buscar? "))
     productos = []
     for _ in range(n):

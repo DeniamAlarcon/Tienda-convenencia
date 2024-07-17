@@ -26,7 +26,7 @@ def menu():
         print("1.- Proveedores")
         print("2.- Productos")
         print("3.- Compras")
-        print("4. Usuarios")
+        print("4.- Usuarios")
         print("5.- Salir")
         opcion = input("Ingrese una opcion: ")
 
