@@ -1,127 +1,53 @@
-import csv
-from datetime import datetime
-from Productos import *
-from ProductosOp import *
-
-class Producto:
-    def __init__(self, nombre, precio):
-        self.nombre = nombre
-        self.precio = precio
+def acceder_apartado_ventas():
+    print("Accediendo al apartado de ventas")
 
 
-# Función para cargar productos desde un archivo CSV
-def cargar_productos(archivo):
-    productos = []
-    try:
-        with open(archivo, mode='r', newline='') as file:
-            reader = csv.reader(file)
-            for row in reader:
-                nombre, precio = row
-                productos.append(Producto(nombre, float(precio)))
-    except FileNotFoundError:
-        pass
-    return productos
+def buscar_producto():
+    producto = input("Ingrese el nombre del producto: ")
+    print(f"Buscando el producto '{producto}'...")
+    return producto
 
 
-# Función para cargar ventas desde un archivo CSV
-def cargar_ventas(archivo):
-    ventas = []
-    try:
-        with open(archivo, mode='r', newline='') as file:
-            reader = csv.reader(file)
-            for row in reader:
-                ventas.append(row)
-    except FileNotFoundError:
-        pass
-    return ventas
+def agregar_producto_a_venta(producto):
+    print(f"Agregando '{producto}' a la venta...")
 
 
-# Función para guardar productos en un archivo CSV
-def guardar_productos(archivo, productos):
-    with open(archivo, mode='w', newline='') as file:
-        writer = csv.writer(file)
-        for producto in productos:
-            writer.writerow([producto.nombre, producto.precio])
+def seleccionar_cantidad_producto():
+    cantidad = int(input("Ingrese la cantidad del producto: "))
+    print(f"Seleccionando {cantidad} unidades...")
+    return cantidad
 
 
-# Función para guardar una venta en un archivo CSV
-def guardar_venta(archivo, venta):
-    with open(archivo, mode='a', newline='') as file:
-        writer = csv.writer(file)
-        writer.writerow(venta)
+def seleccionar_metodo_pago():
+    metodo_pago = input("Seleccione el método de pago (tarjeta/efectivo): ")
+    print(f"Método de pago seleccionado: {metodo_pago}")
+    return metodo_pago
 
 
-# Función para agregar un producto nuevo
-def agregar_producto(productos):
-    nombre = input("Ingrese el nombre del producto: ")
-    precio = float(input("Ingrese el precio del producto: "))
-    productos.append(Producto(nombre, precio))
-    print("Producto agregado con éxito.")
+def verificar_pago(monto_venta):
+    pago_cliente = float(input("Ingrese el monto pagado por el cliente: "))
+    if pago_cliente >= monto_venta:
+        print("Accediendo a emisión de tickets...")
+    else:
+        print("Dinero insuficiente")
 
 
-# Función para registrar una venta
-def registrar_venta(productos):
-    ventas = []
-    while True:
-        nombre_producto = input("Ingrese el nombre del producto a vender: ")
-        producto = next((p for p in productos if p.nombre.lower() == nombre_producto.lower()), None)
-
-        if producto:
-            cantidad = int(input(f"Ingrese la cantidad de {producto.nombre} a vender: "))
-            total = cantidad * producto.precio
-            fecha = datetime.now().strftime("%Y-%m-%d %H:%M:%S")
-            venta = [producto.nombre, cantidad, producto.precio, total, fecha]
-            ventas.append(venta)
-            print("Producto agregado a la venta.")
-        else:
-            print("Producto no encontrado.")
-
-        otra_venta = input("¿Desea agregar otro producto a la venta? (s/n): ").lower()
-        if otra_venta != 's':
-            break
-
-    return ventas
-
-
-# Función principal
 def main():
-    archivo_productos = 'productos.csv'
-    archivo_ventas = 'ventas.csv'
-    productos = cargar_productos(archivo_productos)
+    acceder_apartado_ventas()
 
-    while True:
-        print("\n--- Registro de ventas ---")
-        print("1. Agregar Producto")
-        print("2. Registrar Venta")
-        print("3. Listar Productos")
-        print("4. Listar Ventas")
-        print("5.Procesar Pago")
-        print("6. Salir")
-        opcion = input("Seleccione una opción: ")
+    n = int(input("¿Cuántos productos desea buscar? "))
+    productos = []
+    for _ in range(n):
+        producto = buscar_producto()
+        agregar_producto_a_venta(producto)
+        cantidad = seleccionar_cantidad_producto()
+        productos.append((producto, cantidad))
 
-        if opcion == '1':
-            agregar_producto(productos)
-            guardar_productos(archivo_productos, productos)
-        elif opcion == '2':
-            intput = input("Ingrese el nombre del producto: ")
-            Producto.buscar_nombre(intput)
-            ventas = registrar_venta(productos)
-            for venta in ventas:
-                guardar_venta(archivo_ventas, venta)
-        elif opcion == '3':
-            print("\nProductos Registrados:")
-            for producto in productos:
-                print(f"Nombre: {producto.nombre}, Precio: {producto.precio}")
-        elif opcion == '4':
-            ventas = cargar_ventas(archivo_ventas)
-            print("\nVentas Registradas:")
-            for venta in ventas:
-                print(
-                    f"Producto: {venta[0]}, Cantidad: {venta[1]}, Precio Unitario: {venta[2]}, Total: {venta[3]}, Fecha: {venta[4]}")
-        elif opcion == '5':
-            break
-        else:
-            print("Opción inválida. Intente de nuevo.")
+    metodo_pago = seleccionar_metodo_pago()
+
+    monto_venta = sum(cantidad for _, cantidad in productos)  # Asume que el precio de cada producto es 1 unidad
+    print(f"El monto total de la venta es: {monto_venta}")
+    verificar_pago(monto_venta)
 
 
 if __name__ == "__main__":
