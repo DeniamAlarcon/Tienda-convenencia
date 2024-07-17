@@ -1,3 +1,8 @@
+from Proveedores import *
+from Productos import *
+from Inventario import *
+
+
 def acceder_apartado_ventas():
     print("Accediendo al apartado de ventas")
 
@@ -32,22 +37,23 @@ def verificar_pago(monto_venta):
         print("Dinero insuficiente")
 
 
-def main():
-    acceder_apartado_ventas()
-    n = int(input("¿Cuántos productos desea buscar? "))
-    productos = []
-    for _ in range(n):
-        producto = buscar_producto()
-        agregar_producto_a_venta(producto)
-        cantidad = seleccionar_cantidad_producto()
-        productos.append((producto, cantidad))
+def menuVentas():
+    if Proveedores.proveedores:
+        if Producto.lista_productos:
+            acceder_apartado_ventas()
+            n = int(input("¿Cuántos productos desea buscar? "))
+            productos = []
+            for i in range(n):
+                producto = buscar_producto()
+                agregar_producto_a_venta(producto)
+                cantidad = seleccionar_cantidad_producto()
+                productos.append((producto, cantidad))
+            metodo_pago = seleccionar_metodo_pago()
 
-    metodo_pago = seleccionar_metodo_pago()
-
-    monto_venta = sum(cantidad for _, cantidad in productos)  # Asume que el precio de cada producto es 1 unidad
-    print(f"El monto total de la venta es: {monto_venta}")
-    verificar_pago(monto_venta)
-
-
-if __name__ == "__main__":
-    main()
+            monto_venta = sum(cantidad for _, cantidad in productos)  # Asume que el precio de cada producto es 1 unidad
+            print(f"El monto total de la venta es: {monto_venta}")
+            verificar_pago(monto_venta)
+        else:
+            print("No hay productos registrados")
+    else:
+        print("No hay proveedores registrados")
