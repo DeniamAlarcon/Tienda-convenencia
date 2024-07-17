@@ -66,10 +66,10 @@ def menuVentas():
                 producto=input("Ingrese el nombre del producto: ")
                 validaNP = Producto.buscar_nombre(producto)
                 if validaNP:
-                   print(seleccionar_cantidad_producto(validaNP))
+                   #print(seleccionar_cantidad_producto(validaNP))
                    cant= (input("Ingrese la cantidad"))
                    precio=input("Ingrese el precio del producto: ")
-                   Ventas(validaNP, cant, precio)
+                   Ventas(producto, cant, precio)
                    Inventario.actualizarSalidas(producto, cant)
                   # Ventas.guardar_venta(nueva)
                 else:

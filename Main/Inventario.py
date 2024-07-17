@@ -15,7 +15,7 @@ class Inventario:
                 print("=" * 105)
                 for product in self.producto:
                     # Imprimir cada producto con su información formateada en columnas
-                    print(f"{product.codigo:<10} {product.nombre:<20} {product.marca:<15} {product.precio:<10} {product.proveedor:<20} {product.entradas:<10} {product.salidas:<10} {product.stock:<10} {product.ajuste}:<10")
+                    print(f"{product.codigo:<10} {product.nombre:<20} {product.marca:<15} {product.precio:<10} {product.proveedor:<20} {product.entradas:<10} {product.salidas:<10} {product.stock:<10} {product.ajuste:<10}")
                     product.entradas=0
                     product.salidas=0
                     product.ajuste=0
