@@ -15,9 +15,10 @@ def validar_fecha(fecha):
         return False
 
 def validar_caducidad(fecha):
+    formato = "%d/%m/%Y"
     fecha_actual = datetime.now()
-    fecha_actual_texto = fecha_actual.strftime("%d/%m/%Y")
-    return fecha > fecha_actual_texto
+    fecha_dada = datetime.strptime(fecha, formato)
+    return fecha_dada < fecha_actual
 
 
 def validar_tamanio(tamanio):
@@ -25,9 +26,9 @@ def validar_tamanio(tamanio):
         if int(tamanio) > 0:
             return True
         else:
-            print("Tamaño del producto no puede ser menor o igual a 0")
+            print("Unidad de medida del producto no puede ser menor o igual a 0")
     else:
-        print("No se admite texto en tamaño del producto")
+        print("No se admite texto en la uniddad de medida del producto")
         return False
 
 
@@ -106,7 +107,7 @@ def registrarProducto():
     tamanio = ""
     while not tamanio:
         #validar que sea mayor a 0
-        tamanio = input("Ingrese el tamaño del producto: ")
+        tamanio = input("Ingrese la unidad de medida del producto: ")
         if not tamanio:
             print("Favor de ingresar los datos requeridos")
             tamanio = ""
@@ -151,31 +152,33 @@ def registrarProducto():
 def actualizarproducto():
    codigo = input("Ingrese el codigo del producto: ")
 
-   while True:
+   nombre = ""
+   while not nombre:
        nombre = input("Ingrese el nombre del producto: ")
        if nombre:
-           Producto.buscar_nombre(nombre)
+           if Producto.buscar_nombre(nombre):
+               nombre = ""
        else:
            break
 
+
    proveedor = input("Ingrese el proveedor del producto: ")
 
-
-   while True:
-       tamanio = input("Ingrese el tamaño del producto")
+   tamanio = ""
+   while not tamanio:
+       tamanio = input("Ingrese la unidad de medida del producto")
        if tamanio:
            if not validar_tamanio(tamanio):
                tamanio =""
        else:
            break
 
-   while True:
+   precio = ""
+   while not precio:
        precio = input("Ingrese el precio del producto: ")
        if precio:
            if not validar_precio(precio):
                precio =""
-           else:
-               break
        else:
            break
 

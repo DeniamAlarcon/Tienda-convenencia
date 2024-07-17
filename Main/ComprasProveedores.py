@@ -1,6 +1,7 @@
 from Productos import *
 from Proveedores import *
 from PedidosProveedor import *
+from Inventario import *
 
 def pedidoProveedor():
     while True:
@@ -31,6 +32,8 @@ def pedidoProveedor():
                             if int(cantidadProducto) > 0:
                                 guarda = PedidosProveedor(nombreProveedor, nombreProducto, marcaProducto,cantidadProducto)
                                 guarda.guardar()
+                                inventario = Inventario()
+                                inventario.actualizarEntradas(nombreProducto, cantidadProducto)
                             else:
                                 print("No se pueden pedir menos de 0  cosas")
                         else:
@@ -73,6 +76,8 @@ def menuComprasProveedor():
             print("DESCUENTA EL VALOR QUE SE INTRODUCE AL INVENTARIO Y LISTO")
             productos = input("Ingrese el producto para la devolucion: ")
             cantidad = int(input("Ingrese la cantidad de productos: "))
+            inventario = Inventario()
+            inventario.actualizarSalidas(productos, cantidad)
 
         elif opcion == "4":
             while True:

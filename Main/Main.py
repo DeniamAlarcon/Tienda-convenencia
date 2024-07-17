@@ -1,6 +1,7 @@
 from  ProductosOp import *
 from ProveedoresOp import *
 from ComprasProveedores import *
+from Inventario import *
 
 
 def menu():
@@ -9,7 +10,8 @@ def menu():
         print("1.- Proveedores")
         print("2.- Productos")
         print("3.- Compras")
-        print("4.- Salir")
+        print("4.- Inventario")
+        print("5.- Salir")
         opcion = input("Ingrese una opcion: ")
         if opcion == "1":
             menuProveedor()
@@ -18,6 +20,8 @@ def menu():
         elif opcion == "3":
             menuComprasProveedor()
         elif opcion == "4":
+            menuInventario()
+        elif opcion == "5":
             print("Saliendo...")
             break
         else:

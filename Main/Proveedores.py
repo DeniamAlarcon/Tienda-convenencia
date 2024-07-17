@@ -96,3 +96,10 @@ class Proveedores:
                     print("Proveedor no encontrado.")
         else:
             print("No hay proveedores registrado.")
+
+    @classmethod
+    def mandar_proveedores(cls):
+        if Proveedores.proveedores.__len__() != 0:
+            return Proveedores.proveedores
+        else:
+            return None
