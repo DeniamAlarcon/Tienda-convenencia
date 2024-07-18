@@ -46,15 +46,17 @@ class Inventario:
     def actualizarSalidas(self, nombre, cantidad):
         for product in Producto.lista_productos:
             if product.nombre == nombre:
-                if product.stock > cantidad:
+                if int(product.stock) > int(cantidad):
                     product.salidas = int(product.salidas) + int(cantidad)
                     product.stock = int(product.stock) - int(cantidad)
-                    print("Devolucion realizada")
                     Inventario.mensajes_stock(nombre)
+                    return True
                 else:
                     print("No hay suficiente stock para realizar la accion")
+                    return False
             else:
                 print("Producto no encontrado")
+                return False
 
 
     def informeStock(self):

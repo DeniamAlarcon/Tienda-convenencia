@@ -77,7 +77,9 @@ def menuComprasProveedor():
             productos = input("Ingrese el producto para la devolucion: ")
             cantidad = int(input("Ingrese la cantidad de productos: "))
             inventario = Inventario()
-            inventario.actualizarSalidas(productos, cantidad)
+            if inventario.actualizarSalidas(productos, cantidad):
+                print("Devolucion realizada")
+
 
         elif opcion == "4":
             while True:
