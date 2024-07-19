@@ -88,9 +88,9 @@ def registrarProducto():
         if not proveedor:
             print("Favor de ingresar los datos requeridos")
             proveedor = ""
-#        else:
-#            if not Proveedores.validar_provedor(proveedor):
-#                menuProductos()
+        else:
+            if not Proveedores.validar_provedor(proveedor):
+                menuProductos()
 
 
     cantidad = ""

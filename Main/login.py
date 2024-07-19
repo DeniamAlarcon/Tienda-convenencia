@@ -39,7 +39,10 @@ def menu():
         elif opcion == "2":
             menuProductos()
         elif opcion == "3":
-            menuComprasProveedor()
+            if Proveedores.mostrar():
+                menuComprasProveedor()
+            else:
+                print("registre un proveedor")
 #        elif opcion == "4":
 #            solicitar_credenciales()
 #            print("Accediendo a Usuarios")
