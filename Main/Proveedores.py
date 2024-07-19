@@ -11,14 +11,16 @@ class Proveedores:
 
 
     @classmethod
-    def leer_archivo(self):
-        with open('D:\\Tienda-convenencia\\Archivos\\proveedores.csv',
-                  encoding='utf8') as archivo_proveedores:
-            reader = csv.DictReader(archivo_proveedores)
-            filas = list(reader)
-            if not filas or all(not any(row.values()) for row in filas):
-                print('No hay datos que leer')
-                return
+    def leer_archivo(cls):
+        archivo_proveedores = 'D:\\Tienda-convenencia\\Archivos\\proveedores.csv'
+        try:
+            with open(archivo_proveedores, encoding='utf8') as archivo:
+                reader = csv.DictReader(archivo)
+                filas = list(reader)
+
+                if not filas or all(not any(row.values()) for row in filas):
+                    print('No hay datos que leer.')
+                    return
 
             # Encontrar el ID máximo en el archivo
             max_id = 0
@@ -48,7 +50,6 @@ class Proveedores:
             for proveedor in cls.proveedores:
                print(
                 f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
-            return cls.proveedores
 
     @classmethod
     def mostrar_nombre(cls,nombre):
@@ -61,7 +62,6 @@ class Proveedores:
                         f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
                 else:
                     print("Proveedor no encontrado")
-            return cls.proveedores
 
     @classmethod
     def buscar_proveedor(cls, id):
@@ -107,10 +107,8 @@ class Proveedores:
             if proveedor:
                 cls.proveedores.remove(proveedor)
                 print("Proveedor eliminado con exito.")
-                return True
             else:
                 print("Proveedor no encontrado.")
-                return False
         except Exception as e:
             print("Intentelo nuevamente, no ha sido eliminado")
     @classmethod
@@ -129,3 +127,10 @@ class Proveedores:
                     print("Proveedor no encontrado.")
         else:
             print("No hay proveedores registrado.")
+
+    @classmethod
+    def mandar_proveedores(cls):
+        if Proveedores.proveedores.__len__() != 0:
+            return Proveedores.proveedores
+        else:
+            return None

@@ -25,8 +25,8 @@ def solicitar_credenciales():
             print("Usuario o contraseña no válidos.")
 
 def menu():
-    Producto.leer_archivo()
     Proveedores.leer_archivo()
+    Producto.leer_archivo()
     while True:
         print("\n--- Menu principal ---")
         print("Ingrese una opcion")

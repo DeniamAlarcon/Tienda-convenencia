@@ -19,13 +19,15 @@ class Producto:
 
     @classmethod
     def leer_archivo(cls):
-        with open('D:\\Tienda-convenencia\\Archivos\\productos.csv',
-                  encoding='utf8') as archivo_productos:
-            reader = csv.DictReader(archivo_productos)
-            filas = list(reader)
-            if not filas or all(not any(row.values()) for row in filas):
-                print('No hay datos que leer')
-                return
+        archivo_productos = 'D:\\Tienda-convenencia\\Archivos\\productos.csv'
+        try:
+            with open(archivo_productos, encoding='utf8') as archivo:
+                reader = csv.DictReader(archivo)
+                filas = list(reader)
+
+                if not filas or all(not any(row.values()) for row in filas):
+                    print('No hay datos que leer.')
+                    return
 
             for row in filas:
                 producto = Producto(

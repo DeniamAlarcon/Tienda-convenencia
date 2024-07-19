@@ -1,0 +1,26 @@
+[
+    {
+        "codigo": "1",
+        "nombre": "papas",
+        "marca": "sabritas",
+        "precio": "20",
+        "proveedor": "coca-cola",
+        "entradas": "20",
+        "salidas": "0",
+        "stock": "20",
+        "existencias_anteriores": "0",
+        "ajuste": "0"
+    },
+    {
+        "codigo": "2",
+        "nombre": "refresco",
+        "marca": "coca",
+        "precio": "10",
+        "proveedor": "coca-cola",
+        "entradas": "10",
+        "salidas": "0",
+        "stock": "10",
+        "existencias_anteriores": "0",
+        "ajuste": "0"
+    }
+]

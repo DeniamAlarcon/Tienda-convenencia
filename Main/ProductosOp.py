@@ -191,7 +191,8 @@ def menuProductos():
             print("1. Registrar")
             print("2. Detalles")
             print("3. Actualizar")
-            print("4. Salir")
+            print("4. Crear archivo")
+            print("5. Salir")
             opcion = input("Ingrese opcion: ")
             if opcion == "1":
                 registrarProducto()
@@ -208,7 +209,25 @@ def menuProductos():
             elif opcion == "3":
                 actualizarproducto()
             elif opcion == "4":
+                while True:
+                    print("---Menu de archivos---")
+                    print("1. Crear archivo csv")
+                    print("2. Crear archivo json")
+                    print("3. Crear archivo pdf")
+                    print("4. Crear archivo xlsx")
+                    print("5. Salir")
+                    opc2 = input("Ingrese opcion: ")
+                    if opc2 == "1":
+                        Producto.crear_archivo_csv()
+                    elif opc2 == "2":
+                        Producto.crear_archivo_json()
+                    elif opc2 == "3":
+                        Producto.crear_archivo_pdf()
+                    elif opc2 == "4":
+                        Producto.crear_archivo_xlsx()
+                    elif opc2 == "5":
+                        break
+            elif opcion == "5":
                 break
     else:
         print("No se encuentra ningun proveedore registrado")
-#menuProductos()
