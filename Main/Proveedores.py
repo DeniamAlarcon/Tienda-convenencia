@@ -19,6 +19,7 @@ class Proveedores:
             for proveedor in cls.proveedores:
                print(
                 f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
+            return cls.proveedores
 
     @classmethod
     def mostrar_nombre(cls,nombre):
@@ -31,6 +32,7 @@ class Proveedores:
                         f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
                 else:
                     print("Proveedor no encontrado")
+            return cls.proveedores
 
     @classmethod
     def buscar_proveedor(cls, id):
@@ -76,8 +78,10 @@ class Proveedores:
             if proveedor:
                 cls.proveedores.remove(proveedor)
                 print("Proveedor eliminado con exito.")
+                return True
             else:
                 print("Proveedor no encontrado.")
+                return False
         except Exception as e:
             print("Intentelo nuevamente, no ha sido eliminado")
     @classmethod

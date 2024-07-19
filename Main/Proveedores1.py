@@ -1,176 +1,211 @@
 import tkinter as tk
 from tkinter import messagebox
+from Proveedores import *
+import re
 
-class Proveedores:
-    idAuto = 0
-    proveedores = []
 
-    def __init__(self, nombre, correo, telefono):
-        Proveedores.idAuto += 1
-        self.id = Proveedores.idAuto
-        self.nombre = nombre
-        self.correo = correo
-        self.telefono = telefono
+class ProveedorApp:
+    def __init__(self, root):
+        self.root = root
+        self.root.title("Gestión de Proveedores")
+        self.root.geometry("500x500")
+        self.root.resizable(False, False)
 
-    def guardar(self):
-        Proveedores.proveedores.append(self)
-        return True
+        self.create_widgets()
 
-    @classmethod
-    def mostrar(cls):
-        if not cls.proveedores:
-            print("No hay proveedores registrados")
+    def create_widgets(self):
+        self.clear_frame()
+        tk.Label(self.root, text="--- Menu de Proveedor ---", font=("Arial", 16)).pack(pady=10)
+
+        tk.Button(self.root, text="Registrar Proveedor", width=30, command=self.registrar_proveedor).pack(pady=5)
+        tk.Button(self.root, text="Actualizar Proveedor", width=30, command=self.actualizar_proveedores).pack(pady=5)
+        tk.Button(self.root, text="Mostrar Proveedor", width=30, command=self.mostrar_proveedor).pack(pady=5)
+        tk.Button(self.root, text="Eliminar Proveedor", width=30, command=self.eliminar_proveedor).pack(pady=5)
+        tk.Button(self.root, text="Salir", width=30, command=self.salir).pack(pady=20)
+
+    def registrar_proveedor(self):
+        self.clear_frame()
+        tk.Label(self.root, text="Registrar Proveedor", font=("Arial", 16)).pack(pady=10)
+
+        tk.Label(self.root, text="Nombre").pack()
+        self.nombre_entry = tk.Entry(self.root)
+        self.nombre_entry.pack()
+
+        tk.Label(self.root, text="Correo Electrónico").pack()
+        self.correo_entry = tk.Entry(self.root)
+        self.correo_entry.pack()
+
+        tk.Label(self.root, text="Teléfono").pack()
+        self.telefono_entry = tk.Entry(self.root)
+        self.telefono_entry.pack()
+
+        tk.Button(self.root, text="Registrar", command=self.procesar_registro).pack(pady=10)
+        tk.Button(self.root, text="Volver", command=self.create_widgets).pack(pady=10)
+
+    def procesar_registro(self):
+        nombre = self.nombre_entry.get()
+        correo = self.correo_entry.get()
+        telefono = self.telefono_entry.get()
+
+        if not nombre or not correo or not telefono:
+            messagebox.showerror("Error", "Favor de llenar todos los campos requeridos")
+            return
+
+        pattern = re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?")
+        if not re.match(pattern, correo):
+            messagebox.showerror("Error", "Correo no válido")
+            return
+
+        if not self.validar_telefono(telefono):
+            messagebox.showerror("Error", "Número de teléfono no válido")
+            return
+
+        registro = Proveedores(nombre, correo, telefono)
+
+        if registro.comprobarExistencia(nombre, correo, telefono):
+            messagebox.showinfo("Información", "El proveedor ya existe")
         else:
-            for proveedor in cls.proveedores:
-                print(f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
-
-    @classmethod
-    def mostrar_nombre(cls, nombre):
-        if not cls.proveedores:
-            print("No hay proveedores")
-        else:
-            for proveedor in cls.proveedores:
-                if nombre.upper() == proveedor.nombre.upper():
-                    print(f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
-                else:
-                    print("Proveedor no encontrado")
-
-    @classmethod
-    def buscar_proveedor(cls, id):
-        for proveedor in cls.proveedores:
-            if proveedor.id == id:
-                return proveedor
-        return None
-
-    @classmethod
-    def actualizar(cls, id, nombre, correo, telefono):
-        proveedor = cls.buscar_proveedor(id)
-        if proveedor:
-            if Proveedores.comprobarExistencia(nombre, correo, telefono):
-                print("Ya existe un proveedor con esos datos")
+            if registro.guardar():
+                messagebox.showinfo("Éxito", "Proveedor registrado")
+                self.create_widgets()
             else:
-                if nombre == "" and correo == "" and telefono == "":
-                    proveedor.nombre = proveedor.nombre
-                    proveedor.correo = proveedor.correo
-                    proveedor.telefono = proveedor.telefono
-                elif nombre == "":
-                    proveedor.nombre = proveedor.nombre
-                    proveedor.correo = correo
-                    proveedor.telefono = telefono
-                elif correo == "":
-                    proveedor.correo = proveedor.correo
-                    proveedor.nombre = nombre
-                    proveedor.telefono = telefono
-                elif telefono == "":
-                    proveedor.telefono = proveedor.telefono
-                    proveedor.nombre = nombre
-                    proveedor.correo = correo
-                else:
-                    proveedor.nombre = nombre
-                    proveedor.correo = correo
-                    proveedor.telefono = telefono
-                print("Proveedor actualizado exitosamente.")
-        else:
-            print("Proveedor no encontrado.")
+                messagebox.showerror("Error", "Ocurrió un error al registrar proveedor")
 
-    @classmethod
-    def eliminarProveedor(cls, id):
+    def actualizar_proveedores(self):
+        self.clear_frame()
+        tk.Label(self.root, text="Actualizar Proveedor", font=("Arial", 16)).pack(pady=10)
+
+        tk.Label(self.root, text="ID del Proveedor").pack()
+        self.id_entry = tk.Entry(self.root)
+        self.id_entry.pack()
+
+        tk.Label(self.root, text="Nuevo Nombre").pack()
+        self.n_nombre_entry = tk.Entry(self.root)
+        self.n_nombre_entry.pack()
+
+        tk.Label(self.root, text="Nuevo Correo Electrónico").pack()
+        self.n_correo_entry = tk.Entry(self.root)
+        self.n_correo_entry.pack()
+
+        tk.Label(self.root, text="Nuevo Teléfono").pack()
+        self.n_telefono_entry = tk.Entry(self.root)
+        self.n_telefono_entry.pack()
+
+        tk.Button(self.root, text="Actualizar", command=self.procesar_actualizacion).pack(pady=10)
+        tk.Button(self.root, text="Volver", command=self.create_widgets).pack(pady=10)
+
+    def procesar_actualizacion(self):
         try:
-            proveedor = cls.buscar_proveedor(id)
-            if proveedor:
-                cls.proveedores.remove(proveedor)
-                print("Proveedor eliminado con exito.")
-            else:
-                print("Proveedor no encontrado.")
+            id = int(self.id_entry.get())
+            n_nombre = self.n_nombre_entry.get()
+            n_correo = self.n_correo_entry.get()
+            n_telefono = self.n_telefono_entry.get()
+
+            if n_correo and not re.match(re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?"), n_correo):
+                messagebox.showerror("Error", "Correo no válido")
+                return
+
+            if n_telefono and not self.validar_telefono(n_telefono):
+                messagebox.showerror("Error", "Número de teléfono no válido")
+                return
+
+            Proveedores.actualizar(id, n_nombre, n_correo, n_telefono)
+            messagebox.showinfo("Éxito", "Proveedor actualizado")
+            self.create_widgets()
+        except ValueError:
+            messagebox.showerror("Error", "Ingrese un ID de proveedor válido")
         except Exception as e:
-            print("Intentelo nuevamente, no ha sido eliminado")
+            messagebox.showerror("Error", f"Error al actualizar proveedor: {e}")
 
-    @classmethod
-    def comprobarExistencia(self, nombre, correo, telefono):
-        for proveedor in Proveedores.proveedores:
-            if proveedor.nombre == nombre or proveedor.correo == correo or proveedor.telefono == telefono:
-                return True
+    def mostrar_proveedor(self):
+        self.clear_frame()
+        tk.Label(self.root, text="Mostrar Proveedor", font=("Arial", 16)).pack(pady=10)
 
-    @classmethod
-    def validar_provedor(cls, nombre):
-        if Proveedores.proveedores.__len__() != 0:
-            for proveedor in Proveedores.proveedores:
-                if proveedor.nombre == nombre:
-                    return True
-                else:
-                    print("Proveedor no encontrado.")
+        tk.Button(self.root, text="Busqueda por nombre", width=30, command=self.buscar_por_nombre).pack(pady=5)
+        tk.Button(self.root, text="Gestion de proveedores", width=30, command=self.gestion_proveedores).pack(pady=5)
+        tk.Button(self.root, text="Volver", command=self.create_widgets).pack(pady=20)
+
+    def buscar_por_nombre(self):
+        self.clear_frame()
+        tk.Label(self.root, text="Buscar Proveedor por Nombre", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self.root, text="Nombre del Proveedor").pack()
+        self.nombre_busqueda_entry = tk.Entry(self.root)
+        self.nombre_busqueda_entry.pack()
+        tk.Button(self.root, text="Buscar", command=self.procesar_busqueda_nombre).pack(pady=10)
+        tk.Button(self.root, text="Volver", command=self.mostrar_proveedor).pack(pady=10)
+        self.resultado_text = tk.Text(self.root, height=10, width=50, state=tk.DISABLED)
+        self.resultado_text.pack(pady=10)
+
+    def procesar_busqueda_nombre(self):
+        nombre = self.nombre_busqueda_entry.get()
+        resultados = Proveedores.mostrar_nombre(nombre)
+        self.resultado_text.config(state=tk.NORMAL)  # Habilitar edición temporalmente
+        self.resultado_text.delete(1.0, tk.END)  # Limpiar el cuadro de texto
+
+        if resultados:
+            for proveedor in resultados:
+                self.resultado_text.insert(tk.END, f"{'ID': <5}{'NOMBRE': <10}{'CORREO': <15}{'TELEFONO': <10}\n"
+                                                   f"{proveedor.id: <5}{proveedor.nombre: <10}{proveedor.correo: <15}{proveedor.telefono: <10}\n")
         else:
-            print("No hay proveedores registrado.")
+            self.resultado_text.insert(tk.END, "No se encontraron proveedores con ese nombre")
 
-# Funciones para la interfaz gráfica
-def agregar_proveedor():
-    def guardar_proveedor():
-        nombre = entry_nombre.get()
-        correo = entry_correo.get()
-        telefono = entry_telefono.get()
+        self.resultado_text.config(state=tk.DISABLED)  # Deshabilitar edición nuevamente
 
-        if nombre and correo and telefono:
-            proveedor = Proveedores(nombre, correo, telefono)
-            proveedor.guardar()
-            messagebox.showinfo("Éxito", "Proveedor agregado exitosamente")
-            ventana_agregar.destroy()
+    def gestion_proveedores(self):
+        self.clear_frame()
+        tk.Label(self.root, text="Gestion de Proveedores", font=("Arial", 16)).pack(pady=10)
+        self.resultado_text = tk.Text(self.root, height=20, width=60, state=tk.DISABLED)
+        self.resultado_text.pack(pady=10)
+        proveedores = Proveedores.mostrar()
+        self.resultado_text.config(state=tk.NORMAL)  # Habilitar edición temporalmente
+        if proveedores:
+            self.resultado_text.insert(tk.END,f"{'ID': <10}{'NOMBRE': <15}{'CORREO': <20}{'TELEFONO': <10}\n")
+            for proveedor in proveedores:
+                self.resultado_text.insert(tk.END,f"{proveedor.id: <10}{proveedor.nombre: <15}{proveedor.correo: <20}{proveedor.telefono: <10}\n")
         else:
-            messagebox.showwarning("Advertencia", "Todos los campos son obligatorios")
+            self.resultado_text.insert(tk.END, "No hay proveedores registrados")
+        self.resultado_text.config(state=tk.DISABLED)  # Deshabilitar edición nuevamente
 
-    ventana_agregar = tk.Toplevel()
-    ventana_agregar.title("Agregar Proveedor")
+        tk.Button(self.root, text="Volver", command=self.mostrar_proveedor).pack(pady=10)
 
-    tk.Label(ventana_agregar, text="Nombre:").grid(row=0, column=0, padx=10, pady=10)
-    entry_nombre = tk.Entry(ventana_agregar)
-    entry_nombre.grid(row=0, column=1, padx=10, pady=10)
+    def eliminar_proveedor(self):
+        self.clear_frame()
+        tk.Label(self.root, text="Eliminar Proveedor", font=("Arial", 16)).pack(pady=10)
 
-    tk.Label(ventana_agregar, text="Correo:").grid(row=1, column=0, padx=10, pady=10)
-    entry_correo = tk.Entry(ventana_agregar)
-    entry_correo.grid(row=1, column=1, padx=10, pady=10)
+        tk.Label(self.root, text="ID del Proveedor").pack()
+        self.id_eliminar_entry = tk.Entry(self.root)
+        self.id_eliminar_entry.pack()
+        tk.Button(self.root, text="Eliminar", command=self.procesar_eliminacion).pack(pady=10)
 
-    tk.Label(ventana_agregar, text="Teléfono:").grid(row=2, column=0, padx=10, pady=10)
-    entry_telefono = tk.Entry(ventana_agregar)
-    entry_telefono.grid(row=2, column=1, padx=10, pady=10)
+        tk.Button(self.root, text="Volver", command=self.create_widgets).pack(pady=10)
 
-    tk.Button(ventana_agregar, text="Guardar", command=guardar_proveedor).grid(row=3, column=0, columnspan=2, pady=10)
+    def procesar_eliminacion(self):
+        try:
+            id = int(self.id_eliminar_entry.get())
+            if Proveedores.eliminarProveedor(id):
+                messagebox.showinfo("Éxito", "Proveedor eliminado")
+                self.create_widgets()
+                self.id_eliminar_entry.delete(0, tk.END)
+            else:
+                messagebox.showerror("Error", "Proveedor no encontrado")
+                self.id_eliminar_entry.delete(0, tk.END)
+        except ValueError:
+            messagebox.showerror("Error", "Ingrese un ID de proveedor válido")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al eliminar proveedor: {e}")
 
-def mostrar_proveedores():
-    ventana_mostrar = tk.Toplevel()
-    ventana_mostrar.title("Mostrar Proveedores")
+    def validar_telefono(self, telefono):
+        return len(telefono) > 9 and len(telefono) < 16 and telefono.isdigit()
 
-    if not Proveedores.proveedores:
-        tk.Label(ventana_mostrar, text="No hay proveedores registrados").pack(pady=10)
-    else:
-        for proveedor in Proveedores.proveedores:
-            tk.Label(ventana_mostrar, text=f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}").pack(pady=5)
+    def salir(self):
+        self.root.quit()
 
-def eliminar_proveedor():
-    def eliminar():
-        id = int(entry_id.get())
-        Proveedores.eliminarProveedor(id)
-        messagebox.showinfo("Éxito", "Proveedor eliminado")
-        ventana_eliminar.destroy()
+    def clear_frame(self):
+        for widget in self.root.winfo_children():
+            widget.destroy()
 
-    ventana_eliminar = tk.Toplevel()
-    ventana_eliminar.title("Eliminar Proveedor")
-
-    tk.Label(ventana_eliminar, text="ID:").grid(row=0, column=0, padx=10, pady=10)
-    entry_id = tk.Entry(ventana_eliminar)
-    entry_id.grid(row=0, column=1, padx=10, pady=10)
-
-    tk.Button(ventana_eliminar, text="Eliminar", command=eliminar).grid(row=1, column=0, columnspan=2, pady=10)
-
-# Menú principal
-def menu_principal():
-    root = tk.Tk()
-    root.title("Gestión de Proveedores")
-
-    tk.Button(root, text="Agregar Proveedor", command=agregar_proveedor).pack(pady=10)
-    tk.Button(root, text="Mostrar Proveedores", command=mostrar_proveedores).pack(pady=10)
-    tk.Button(root, text="Eliminar Proveedor", command=eliminar_proveedor).pack(pady=10)
-    tk.Button(root, text="Salir", command=root.destroy).pack(pady=10)
-
-    root.mainloop()
 
 if __name__ == "__main__":
-    menu_principal()
+    root = tk.Tk()
+    app = ProveedorApp(root)
+    root.mainloop()
