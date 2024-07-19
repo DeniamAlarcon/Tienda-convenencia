@@ -32,8 +32,6 @@ def pedidoProveedor():
                             if int(cantidadProducto) > 0:
                                 guarda = PedidosProveedor(nombreProveedor, nombreProducto, marcaProducto,cantidadProducto)
                                 guarda.guardar()
-                                inventario = Inventario()
-                                inventario.actualizarEntradas(nombreProducto, cantidadProducto)
                             else:
                                 print("No se pueden pedir menos de 0  cosas")
                         else:

@@ -35,7 +35,7 @@ class Inventario:
                 elif product.stock == 0:
                     print("No hay stock de ",product.nombre)
 
-    def actualizarEntradas(self, nombre, cantidad):
+    def actualizarEntradas(self,nombre, cantidad):
         for product in self.producto:
             if product.nombre == nombre:
                 product.entradas = int(product.entradas) + int(cantidad)
@@ -126,6 +126,19 @@ class Inventario:
         else:
             print('No hay proveedores registrados')
 
+    def fechas_caducidad(self):
+        formato = "%d/%m/%Y"
+        for product in self.producto:
+            fecha_caducidad = datetime.strptime(product.fecha_caducidad,formato)
+            fecha_actual = datetime.now().date()
+            diferencia_dias = (fecha_caducidad - fecha_actual).days
+            if diferencia_dias <= 10:
+                if diferencia_dias <= 2:
+                    print("Realizar cambio de: ", product.nombre)
+                else:
+                    print(product.nombre, " Proximo a caducar")
+
+
 
 def menuInventario():
     inventario = Inventario()
@@ -133,7 +146,8 @@ def menuInventario():
         print("1. Generacion de informe de inventario")
         print("2. Generacion de stock")
         print("3. Ajuste de inventario(robos,perdidas,daños)")
-        print("4. Salir")
+        print("4  Revision fechas caducidad")
+        print("5. Salir")
         opcion = input("Ingrese una opcion: ")
         if opcion == "1":
             inventario.obtenerInventario()
@@ -150,5 +164,7 @@ def menuInventario():
                 elif opcion1 == "2":
                     break
         elif opcion == "4":
+            inventario.fechas_caducidad()
+        elif opcion == "5":
             break
 

@@ -2,6 +2,8 @@ from ProductosOp import *
 from ProveedoresOp import *
 from ComprasProveedores import *
 from VentaP import menuVentas
+from Proveedores import *
+from Productos import *
 
 usuarios = [
     "admin",
@@ -23,6 +25,8 @@ def solicitar_credenciales():
             print("Usuario o contraseña no válidos.")
 
 def menu():
+    Producto.leer_archivo()
+    Proveedores.leer_archivo()
     while True:
         print("\n--- Menu principal ---")
         print("Ingrese una opcion")
@@ -54,12 +58,10 @@ def menu():
             print("Ingrese una opcion valida")
 
 
-def main():
-    if solicitar_credenciales():
-        menu()
 
-if __name__ == "__main__":
-    main()
+if solicitar_credenciales():
+    menu()
+
 
 
 

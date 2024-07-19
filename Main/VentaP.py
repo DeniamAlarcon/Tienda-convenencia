@@ -84,7 +84,6 @@ def corte_caja():
         return cantidad
 
 def venta():
-    global venta
     while True:
         print("1.- Agregar producto")
         print("2.- Finalizar venta")
@@ -110,7 +109,6 @@ def venta():
                     cant = input("Ingrese la cantidad")
                 ticket = Ticket(producto, cant)
                 ticket.guardar_producto()
-
             else:
                 print("Producto no encontrado")
         elif opcion2 == "2":
@@ -119,6 +117,7 @@ def venta():
                 venta = Ventas(i.nombre, i.cantidad, i.total)
                 venta.guardar_venta()
                 Inventario.actualizarSalidas(i.nombre, i.cantidad)
+                Ticket.limpiar_ticket()
             break
         elif opcion2 == "3":
             Ticket.limpiar_ticket()
