@@ -12,7 +12,7 @@ class Proveedores:
 
     @classmethod
     def leer_archivo(self):
-        with open('C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\proveedores.csv',
+        with open('D:\\Tienda-convenencia\\Archivos\\proveedores.csv',
                   encoding='utf8') as archivo_proveedores:
             reader = csv.DictReader(archivo_proveedores)
             filas = list(reader)

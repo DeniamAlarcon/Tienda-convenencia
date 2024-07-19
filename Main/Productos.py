@@ -19,7 +19,7 @@ class Producto:
 
     @classmethod
     def leer_archivo(cls):
-        with open('C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\productos.csv',
+        with open('D:\\Tienda-convenencia\\Archivos\\productos.csv',
                   encoding='utf8') as archivo_productos:
             reader = csv.DictReader(archivo_productos)
             filas = list(reader)

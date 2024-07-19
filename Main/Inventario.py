@@ -30,7 +30,7 @@ class Inventario:
     def mensajes_stock(self,nombre):
         for product in Producto.lista_productos:
             if product.nombre == nombre:
-                if product.stock < 5 and product.stock >0:
+                if int(product.stock) < 5 and int(product.stock) >0:
                     print("Stock bajo de ",product.nombre)
                 elif product.stock == 0:
                     print("No hay stock de ",product.nombre)
@@ -112,15 +112,18 @@ class Inventario:
 
                 precio = ""
                 while not precio:
-                    precio = input("Ingrese el precio del producto: ")
-                    if precio:
-                        if int(precio) < 0:
-                            print("Ingrese una precio mayor a 0")
-                            precio = ""
-                    else:
-                        print("Favor de ingresar el dato requerido")
-
-                Inventario.calculoAjuste(self,cantidad,nombre,precio)
+                    try:
+                        precio = input("Ingrese el precio del producto: ")
+                        if precio:
+                            if int(precio) < 0:
+                                print("Ingrese una precio mayor a 0")
+                                precio = ""
+                            else:
+                                Inventario.calculoAjuste(self, cantidad, nombre, precio)
+                        else:
+                            print("Favor de ingresar el dato requerido")
+                    except ValueError:
+                        print("Precio no valido")
             else:
                 print('No hay productos registrados')
         else:

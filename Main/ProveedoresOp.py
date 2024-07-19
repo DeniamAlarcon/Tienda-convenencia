@@ -99,8 +99,11 @@ def menuProveedor():
            elif opc1 == "2":
                Proveedores.mostrar()
        elif opcion == "4":
-            id=int(input("Ingrese id del proveedor: "))
-            Proveedores.eliminarProveedor(id)
+            try:
+                id = int(input("Ingrese id del proveedor: "))
+                Proveedores.eliminarProveedor(id)
+            except ValueError as e:
+                print("Intentelo nuevamente, no ha sido eliminado: ")
        elif opcion == "5":
            print("Saliendo...")
            break
