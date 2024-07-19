@@ -1,4 +1,4 @@
-
+from Inventario import *
 class PedidosProveedor:
     idAuto=0
     pedidos = []
@@ -49,6 +49,8 @@ class PedidosProveedor:
                     elif int(pedido.cantidad) > int(cantidad):
                         print("Entrega Incompleta")
                     else:
+                        inventario = Inventario()
+                        inventario.actualizarEntradas(pedido.nombre, pedido.cantidad)
                         print("Entrega correcta")
                 else:
                     print("Pedido no encontrado")

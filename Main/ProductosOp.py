@@ -185,28 +185,30 @@ def actualizarproducto():
    Producto.actualizar(codigo, nombre, proveedor, tamanio, precio)
 
 def menuProductos():
-    while True:
-        print("---Menu de productos---")
-        print("1. Registrar")
-        print("2. Detalles")
-        print("3. Actualizar")
-        print("4. Salir")
-        opcion = input("Ingrese opcion: ")
-        if opcion == "1":
-            registrarProducto()
-        elif opcion == "2":
-            print("1. Busqueda por nombre")
-            print("2. Gestion de productos")
-            opc1 = input("Ingrese opcion: ")
-            if opc1 == "1":
-                nombre = input("Ingrese nombre del producto: ")
-                Producto.detalles_nombre(nombre)
-            elif opc1 == "2":
-                Producto.detalles()
+    if Proveedores.proveedores:
+        while True:
+            print("---Menu de productos---")
+            print("1. Registrar")
+            print("2. Detalles")
+            print("3. Actualizar")
+            print("4. Salir")
+            opcion = input("Ingrese opcion: ")
+            if opcion == "1":
+                registrarProducto()
+            elif opcion == "2":
+                print("1. Busqueda por nombre")
+                print("2. Gestion de productos")
+                opc1 = input("Ingrese opcion: ")
+                if opc1 == "1":
+                    nombre = input("Ingrese nombre del producto: ")
+                    Producto.detalles_nombre(nombre)
+                elif opc1 == "2":
+                    Producto.detalles()
 
-        elif opcion == "3":
-            actualizarproducto()
-        elif opcion == "4":
-            break
-
+            elif opcion == "3":
+                actualizarproducto()
+            elif opcion == "4":
+                break
+    else:
+        print("No se encuentra ningun proveedore registrado")
 #menuProductos()

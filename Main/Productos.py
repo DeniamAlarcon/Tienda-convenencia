@@ -1,3 +1,4 @@
+import csv
 class Producto:
     lista_productos = []
     def __init__(self ,codigo, nombre, marca, proveedor, cantidad, tamanio, precio, fecha_caducidad):
@@ -14,6 +15,37 @@ class Producto:
         self.stock = cantidad
         self.existenciasAnteriores = cantidad
         self.ajuste =0
+
+
+    @classmethod
+    def leer_archivo(cls):
+        with open('C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\productos.csv',
+                  encoding='utf8') as archivo_productos:
+            reader = csv.DictReader(archivo_productos)
+            filas = list(reader)
+            if not filas or all(not any(row.values()) for row in filas):
+                print('No hay datos que leer')
+                return
+
+            for row in filas:
+                producto = Producto(
+                    row["codigo"],
+                    row["nombre"],
+                    row["marca"],
+                    row["proveedor"],
+                    row["cantidad"],
+                    row["unidad_medida"],
+                    row["precio"],
+                    row["fecha_caducidad"]
+                )
+                producto.entradas = row["entradas"]
+                producto.salidas = row["salidas"]
+                producto.stock = row["stock"]
+                producto.existenciasAnteriores = row["existencias_anteriores"]
+                producto.ajuste = row["ajuste"]
+                Producto.lista_productos.append(producto)
+
+
 
 
     def registrar(self):
@@ -47,7 +79,7 @@ class Producto:
             for product in Producto.lista_productos:
                 print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ",product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
         else:
-            print("producto no encontrado")
+            print("No hay registro de productos")
 
     @classmethod
     def buscarProducto(self,id):

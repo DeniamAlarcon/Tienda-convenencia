@@ -1,3 +1,4 @@
+import csv
 class Proveedores:
     idAuto=0
     proveedores = []
@@ -7,6 +8,34 @@ class Proveedores:
         self.nombre=nombre
         self.correo=correo
         self.telefono=telefono
+
+
+    @classmethod
+    def leer_archivo(self):
+        with open('C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\proveedores.csv',
+                  encoding='utf8') as archivo_proveedores:
+            reader = csv.DictReader(archivo_proveedores)
+            filas = list(reader)
+            if not filas or all(not any(row.values()) for row in filas):
+                print('No hay datos que leer')
+                return
+
+            # Encontrar el ID máximo en el archivo
+            max_id = 0
+            for row in filas:
+                if row["id"].isdigit():
+                    max_id = max(max_id, int(row["id"]))
+
+            # Configurar idAuto para continuar desde el ID máximo encontrado
+            Proveedores.idAuto = max_id + 1
+
+            for row in filas:
+                proveedor = Proveedores(row["nombre"], row["correo"], row["telefono"])
+                proveedor.id = int(row["id"])  # Asignar el ID del archivo
+                Proveedores.proveedores.append(proveedor)
+            return
+
+
     def guardar(self):
         Proveedores.proveedores.append(self)
         return True
