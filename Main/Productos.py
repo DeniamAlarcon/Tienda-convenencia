@@ -1,11 +1,4 @@
 import csv
-import json
-from reportlab.lib.pagesizes import letter
-from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
-from reportlab.lib.units import inch
-from openpyxl import Workbook
-
 class Producto:
     lista_productos = []
     def __init__(self ,codigo, nombre, marca, proveedor, cantidad, tamanio, precio, fecha_caducidad):
@@ -26,171 +19,33 @@ class Producto:
 
     @classmethod
     def leer_archivo(cls):
-        archivo_productos = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\productos.csv'
-        try:
-            with open(archivo_productos, encoding='utf8') as archivo:
-                reader = csv.DictReader(archivo)
-                filas = list(reader)
+        with open('C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\productos.csv',
+                  encoding='utf8') as archivo_productos:
+            reader = csv.DictReader(archivo_productos)
+            filas = list(reader)
+            if not filas or all(not any(row.values()) for row in filas):
+                print('No hay datos que leer')
+                return
 
-                if not filas or all(not any(row.values()) for row in filas):
-                    print('No hay datos que leer.')
-                    return
+            for row in filas:
+                producto = Producto(
+                    row["codigo"],
+                    row["nombre"],
+                    row["marca"],
+                    row["proveedor"],
+                    row["cantidad"],
+                    row["unidad_medida"],
+                    row["precio"],
+                    row["fecha_caducidad"]
+                )
+                producto.entradas = row["entradas"]
+                producto.salidas = row["salidas"]
+                producto.stock = row["stock"]
+                producto.existenciasAnteriores = row["existencias_anteriores"]
+                producto.ajuste = row["ajuste"]
+                Producto.lista_productos.append(producto)
 
-                for row in filas:
-                    producto = cls(
-                        row["codigo"],
-                        row["nombre"],
-                        row["marca"],
-                        row["proveedor"],
-                        row["cantidad"],
-                        row["unidad_medida"],
-                        row["precio"],
-                        row["fecha_caducidad"]
-                    )
-                    producto.entradas = int(row.get("entradas", 0))
-                    producto.salidas = int(row.get("salidas", 0))
-                    producto.stock = int(row.get("stock", 0))
-                    producto.existenciasAnteriores = int(row.get("existencias_anteriores", 0))
-                    producto.ajuste = int(row.get("ajuste", 0))
-                    cls.lista_productos.append(producto)
-        except csv.Error as e:
-            print(f'Error al leer el archivo CSV')
 
-    @classmethod
-    def crear_archivo_csv(cls):
-        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_productos_csv.csv'
-        try:
-            with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
-                fieldnames = ["codigo", "nombre", "marca", "precio", "proveedor","cantidad", "tamanio", "fecha_caducidad"]
-                writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
-                writer.writeheader()
-
-                for producto in Producto.lista_productos:
-                    writer.writerow({
-                        "codigo": producto.codigo,
-                        "nombre": producto.nombre,
-                        "marca": producto.marca,
-                        "precio": producto.precio,
-                        "proveedor": producto.proveedor,
-                        "cantidad": producto.cantidad,
-                        "tamanio": producto.tamanio,
-                        "fecha_caducidad": producto.fecha_caducidad
-                    })
-        except PermissionError:
-            print(f"Error al crear o escribir el archivo CSV")
-
-    @classmethod
-    def crear_archivo_json(cls):
-        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_productos_json.json'
-
-        try:
-            lista_productos_json = [
-                {
-                    "codigo": producto.codigo,
-                    "nombre": producto.nombre,
-                    "marca": producto.marca,
-                    "precio": producto.precio,
-                    "proveedor": producto.proveedor,
-                    "cantidad": producto.cantidad,
-                    "tamanio": producto.tamanio,
-                    "fecha_caducidad": producto.fecha_caducidad
-                }
-                for producto in Producto.lista_productos
-            ]
-            json_object = json.dumps(lista_productos_json, indent=4)
-
-            with open(ruta_json, "w", encoding='utf8') as json_file:
-                json_file.write(json_object)
-
-        except Exception as e:
-            print(f"Error al crear o escribir el archivo JSON: ")
-
-    @classmethod
-    def crear_archivo_pdf(cls):
-        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_productos_pdf.pdf'
-
-        try:
-            doc = SimpleDocTemplate(
-                archivo_pdf,
-                pagesize=letter,
-                rightMargin=inch,
-                leftMargin=inch,
-                topMargin=inch,
-                bottomMargin=inch
-            )
-            elementos = []
-
-            # Crear la tabla
-            fieldnames = ["Código", "Nombre", "Marca", "Precio", "Proveedor", "Cantidad", "Tamanio", "FechaCaducidad"]
-            data = [fieldnames]
-
-            for product in Producto.lista_productos:
-                data.append([
-                    product.codigo,
-                    product.nombre,
-                    product.marca,
-                    product.precio,
-                    product.proveedor,
-                    product.cantidad,
-                    product.tamanio,
-                    product.fecha_caducidad
-                ])
-
-            tabla = Table(data)
-
-            # Estilos para la tabla
-            estilo = TableStyle([
-                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
-                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
-                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
-                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 12),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
-                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
-                ('GRID', (0, 0), (-1, -1), 1, colors.black),
-                ('LEFTPADDING', (0, 0), (-1, -1), 12),  # Añadir relleno izquierdo
-                ('RIGHTPADDING', (0, 0), (-1, -1), 12)  # Añadir relleno derecho
-            ])
-            tabla.setStyle(estilo)
-
-            # Agregar espacio antes y después de la tabla
-            elementos.append(Spacer(1, 12))
-            elementos.append(tabla)
-            elementos.append(Spacer(1, 12))
-
-            doc.build(elementos)
-        except Exception as e:
-            print(f"Error al crear o escribir el archivo PDF")
-
-    @classmethod
-    def crear_archivo_xlsx(cls):
-        archivo_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_producto_xlsx.xlsx'
-
-        try:
-            workbook = Workbook()
-            sheet = workbook.active
-            sheet.title = "Inventario"
-
-            # Escribir encabezados
-            encabezados = ["Código", "Nombre", "Marca", "Precio", "Proveedor", "Cantidad", "Tamanio", "FechaCaducidad"]
-            sheet.append(encabezados)
-
-            # Escribir datos
-            for producto in Producto.productos:
-                sheet.append([
-                    producto.codigo,
-                    producto.nombre,
-                    producto.marca,
-                    producto.precio,
-                    producto.proveedor,
-                    producto.cantidad,
-                    producto.tamanio,
-                    producto.fecha_caducidad
-                ])
-
-            workbook.save(archivo_xlsx)
-        except Exception as e:
-            print(f"Error al crear o escribor el archivo XLSX")
 
 
     def registrar(self):

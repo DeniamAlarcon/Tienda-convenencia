@@ -73,10 +73,14 @@ def menuComprasProveedor():
         elif opcion == "3":
             print("DESCUENTA EL VALOR QUE SE INTRODUCE AL INVENTARIO Y LISTO")
             productos = input("Ingrese el producto para la devolucion: ")
-            cantidad = int(input("Ingrese la cantidad de productos: "))
-            inventario = Inventario()
-            if inventario.actualizarSalidas(productos, cantidad):
-                print("Devolucion realizada")
+            try:
+                cantidad = int(input("Ingrese la cantidad de productos: "))
+                inventario = Inventario()
+                if inventario.actualizarSalidas(productos, cantidad):
+                    print("Devolucion realizada")
+            except ValueError as e:
+                print("Ingrese cantidad numerica ")
+
 
 
         elif opcion == "4":
