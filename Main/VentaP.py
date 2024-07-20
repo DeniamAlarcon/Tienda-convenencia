@@ -197,7 +197,7 @@ def seleccionar_cantidad_producto(producto, cantidad):
                 print("La cantidad debe ser mayor a 0")
                 return False
             else:
-                print(f"Seleccionando {cantidad} unidades...")
+                print("Se a seleccionado correctamente cantidad de producto para venta")
                 return True
 
 def metodo_pago(total_pagar):
@@ -221,6 +221,8 @@ def metodo_pago(total_pagar):
             print("tarjeta")
             print("Cambio: 0")
             break
+        else:
+            print(f"No se ha seleccionado Metodo de pago")
 
 def corte_caja():
     cantidad = 0
@@ -241,20 +243,21 @@ def venta():
             producto = input("Ingrese el nombre del producto: ")
             validaNP = Producto.validar_nombre(producto)
             if validaNP:
+                print("Se ha seleccionado producto correctamente")
                 cant = ""
                 while not cant:
                     cant = input("Ingrese la cantidad")
                     if cant.isdigit():
                         if int(cant) > 0:
+                            if not seleccionar_cantidad_producto(producto, cant):
+                                cant = ""
                             break
                         else:
-                            print("Cantidad debe ser mayor a 0")
+                            print("No se ha registrado cantidad de productos a vender")
                             cant = ""
                     else:
-                        print("No se admite texto en la cantidad")
+                        print("No se a registrado cantidad de productos a vender")
                         cant = ""
-                while not seleccionar_cantidad_producto(producto,cant):
-                    cant = input("Ingrese la cantidad")
                 ticket = Ticket(producto, cant)
                 ticket.guardar_producto()
             else:

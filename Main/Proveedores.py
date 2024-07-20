@@ -37,14 +37,14 @@ class Proveedores:
             # Configurar idAuto para continuar desde el ID máximo encontrado
             Proveedores.idAuto = max_id + 1
 
-                # Leer datos y crear objetos Proveedores
-                for row in filas:
-                    proveedor = cls(row["nombre"], row["correo"], row["telefono"])
-                    proveedor.id = int(row["id"])  # Asignar el ID del archivo
-                    cls.proveedores.append(proveedor)
-                print('Datos cargados exitosamente.')
+            # Leer datos y crear objetos Proveedores
+            for row in filas:
+                proveedor = cls(row["nombre"], row["correo"], row["telefono"])
+                proveedor.id = int(row["id"])  # Asignar el ID del archivo
+                cls.proveedores.append(proveedor)
+            print('Datos cargados exitosamente.')
         except csv.Error as e:
-            print(f'Error al leer el archivo CSV')
+            print(f'Error al leer el archivo CSV: {e}')
 
     @classmethod
     def escribir_archivo_csv(cls):

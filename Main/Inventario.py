@@ -14,7 +14,7 @@ class Inventario:
         self.proveedor = Proveedores.proveedores
 
     def escribir_archivo_csv(self):
-        ruta_csv = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.csv'
+        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.csv'
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["codigo", "nombre", "marca", "precio", "proveedor", "entradas", "salidas", "stock",
@@ -39,7 +39,7 @@ class Inventario:
             print(f"Error al crear o escribir el archivo CSV")
 
     def escribir_archivo_json(self):
-        ruta_json = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.json'
+        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.json'
 
         try:
             lista_productos_json = [
@@ -66,7 +66,7 @@ class Inventario:
             print(f"Error al crear o escribir el archivo JSON: ")
 
     def escribir_archivo_pdf(self):
-        archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.pdf'
+        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.pdf'
 
         try:
             doc = SimpleDocTemplate(
