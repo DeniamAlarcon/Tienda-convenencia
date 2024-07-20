@@ -1,4 +1,5 @@
 from PedidosProveedor import *
+from VentasMain import *
 
 
 def pedidoProveedor():
@@ -27,7 +28,8 @@ def pedidoProveedor():
                         cantidadProducto = (input("Ingrese la cantidad de productos: "))
                         if cantidadProducto.isdigit():
                             if int(cantidadProducto) > 0:
-                                guarda = PedidosProveedor(nombreProveedor, nombreProducto, marcaProducto,cantidadProducto)
+                                precio= VentasMain.total_venta_actual(nombreProducto,int(cantidadProducto))
+                                guarda = PedidosProveedor(nombreProveedor, nombreProducto, marcaProducto,cantidadProducto,precio)
                                 guarda.guardar()
                             else:
                                 print("No se pueden pedir menos de 0  cosas")
