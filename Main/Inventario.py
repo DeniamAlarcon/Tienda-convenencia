@@ -1,7 +1,12 @@
-from datetime import datetime
+import json
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
+from reportlab.lib.units import inch
+from openpyxl import Workbook
 from Productos import *
 from Proveedores import *
-
+from datetime import datetime
 
 class Inventario:
     def __init__(self):
@@ -9,7 +14,7 @@ class Inventario:
         self.proveedor = Proveedores.proveedores
 
     def escribir_archivo_csv(self):
-        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.csv'
+        ruta_csv = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.csv'
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["codigo", "nombre", "marca", "precio", "proveedor", "entradas", "salidas", "stock",
@@ -34,7 +39,7 @@ class Inventario:
             print(f"Error al crear o escribir el archivo CSV")
 
     def escribir_archivo_json(self):
-        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.json'
+        ruta_json = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.json'
 
         try:
             lista_productos_json = [
@@ -61,7 +66,7 @@ class Inventario:
             print(f"Error al crear o escribir el archivo JSON: ")
 
     def escribir_archivo_pdf(self):
-        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.pdf'
+        archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.pdf'
 
         try:
             doc = SimpleDocTemplate(
@@ -151,7 +156,6 @@ class Inventario:
         except Exception as e:
             print(f"Error al crear o escribor el archivo XLSX")
 
-
     def menu_archivos(self):
         while True:
             print("1. Crear archivo CSV")
@@ -206,7 +210,7 @@ class Inventario:
             if product.nombre == nombre:
                 if int(product.stock) < 5 and int(product.stock) >0:
                     print("Stock bajo de ",product.nombre)
-                elif product.stock == 0:
+                elif int(product.stock) == 0:
                     print("No hay stock de ",product.nombre)
 
     def actualizarEntradas(self,nombre, cantidad):
@@ -214,7 +218,9 @@ class Inventario:
             if product.nombre == nombre:
                 product.entradas = int(product.entradas) + int(cantidad)
                 product.stock = int(product.stock) + int(cantidad)
-                Inventario.mensajes_stock( nombre)
+                Inventario.mensajes_stock(nombre)
+
+
 
     @classmethod
     def actualizarSalidas(self, nombre, cantidad):
@@ -232,7 +238,7 @@ class Inventario:
                 return False
 
     def escribir_archivo_stock_csv(self):
-        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.csv'
+        ruta_csv = 'D:\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.csv'
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["codigo", "nombre", "marca", "precio", "stock"]
@@ -386,12 +392,18 @@ class Inventario:
                 while not cantidad:
                     cantidad = input("Ingrese la cantidad de producto dañado: ")
                     if cantidad:
-                        if cantidad < Producto.validar_stock(nombre):
-                            if int(cantidad) < 0:
-                                print("Ingrese una cantidad mayor a 0")
+                        if cantidad.isdigit():
+                            if int(cantidad) < Producto.validar_stock(nombre):
+                                if int(cantidad) < 0:
+                                    print("Ingrese una cantidad mayor a 0")
+                                    cantidad = ""
+                                else:
+                                    cantidad = int(cantidad)
+                            else:
+                                print("La cantidad ingresada excede el stock")
                                 cantidad = ""
                         else:
-                            print("La cantidad ingresada excede el stock")
+                            print("Favor de ingresar el dato numerico")
                             cantidad = ""
                     else:
                         print("Favor de ingresar el dato requerido")
@@ -406,6 +418,7 @@ class Inventario:
                                 precio = ""
                             else:
                                 Inventario.calculoAjuste(self, cantidad, nombre, precio)
+                                Inventario.actualizarSalidas(nombre, cantidad)
                         else:
                             print("Favor de ingresar el dato requerido")
                     except ValueError:

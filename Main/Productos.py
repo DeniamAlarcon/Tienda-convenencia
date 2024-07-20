@@ -9,8 +9,7 @@ from openpyxl import Workbook
 
 class Producto:
     lista_productos = []
-
-    def __init__(self, codigo, nombre, marca, proveedor, cantidad, tamanio, precio, fecha_caducidad):
+    def __init__(self ,codigo, nombre, marca, proveedor, cantidad, tamanio, precio, fecha_caducidad):
         self.codigo = codigo
         self.nombre = nombre
         self.marca = marca
@@ -192,6 +191,7 @@ class Producto:
         except Exception as e:
             print(f"Error al crear o escribor el archivo XLSX")
 
+
     def registrar(self):
         Producto.lista_productos.append(self)
         return True
@@ -211,9 +211,7 @@ class Producto:
         if self.lista_productos.__len__() != 0:
             for product in self.lista_productos:
                 if product.nombre == nombre:
-                    print("Codigo: ", product.codigo, "Nombre: ", product.nombre, "Marca: ", product.marca,
-                          "Proveedor: ", product.proveedor, "Cantidad: ", product.cantidad, "Unidad de medida: ",
-                          product.tamanio, "Precio: ", product.precio, "Fecha de caducidad:", product.fecha_caducidad)
+                    print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ",product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
                 else:
                     print("producto no encontrado")
         else:
@@ -223,9 +221,7 @@ class Producto:
     def detalles(self):
         if Producto.lista_productos.__len__() != 0:
             for product in Producto.lista_productos:
-                print("Codigo: ", product.codigo, "Nombre: ", product.nombre, "Marca: ", product.marca, "Proveedor: ",
-                      product.proveedor, "Cantidad: ", product.cantidad, "Unidad de medida: ", product.tamanio,
-                      "Precio: ", product.precio, "Fecha de caducidad:", product.fecha_caducidad)
+                print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ",product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
         else:
             print("No hay registro de productos")
 
@@ -249,6 +245,7 @@ class Producto:
         for product in Producto.lista_productos:
             if product.marca == marca:
                 return product
+
 
     @classmethod
     def actualizar(self, id, nombre, proveedor, tamanio, precio):
@@ -298,7 +295,7 @@ class Producto:
                 else:
                     return False
         else:
-            return False
+           return False
 
     @classmethod
     def validar_marca(cls, marca):
@@ -310,7 +307,6 @@ class Producto:
                     return False
         else:
             return False
-
     @classmethod
     def validar_nombre(cls, nombre):
         if Producto.lista_productos.__len__() != 0:
@@ -327,4 +323,5 @@ class Producto:
         if Producto.lista_productos.__len__() != 0:
             for product in Producto.lista_productos:
                 if product.nombre == nombre:
-                    return product.stock
+                    print(product.stock)
+                    return int(product.stock)

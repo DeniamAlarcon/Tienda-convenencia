@@ -16,7 +16,6 @@ class Proveedores:
         self.correo=correo
         self.telefono=telefono
 
-
     @classmethod
     def leer_archivo(cls):
         archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
@@ -29,14 +28,14 @@ class Proveedores:
                     print('No hay datos que leer.')
                     return
 
-                # Encontrar el ID máximo en el archivo
-                max_id = 0
-                for row in filas:
-                    if row.get("id") and row["id"].isdigit():
-                        max_id = max(max_id, int(row["id"]))
+            # Encontrar el ID máximo en el archivo
+            max_id = 0
+            for row in filas:
+                if row["id"].isdigit():
+                    max_id = max(max_id, int(row["id"]))
 
-                # Configurar idAuto para continuar desde el ID máximo encontrado
-                cls.idAuto = max_id + 1
+            # Configurar idAuto para continuar desde el ID máximo encontrado
+            Proveedores.idAuto = max_id + 1
 
                 # Leer datos y crear objetos Proveedores
                 for row in filas:
@@ -166,7 +165,6 @@ class Proveedores:
         except Exception as e:
             print(f"Error al crear o escribor el archivo XLSX")
 
-
     def guardar(self):
         Proveedores.proveedores.append(self)
         return True
@@ -179,6 +177,7 @@ class Proveedores:
             for proveedor in cls.proveedores:
                print(
                 f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
+            return cls.proveedores
 
     @classmethod
     def mostrar_nombre(cls,nombre):
