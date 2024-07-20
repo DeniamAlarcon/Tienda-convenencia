@@ -95,7 +95,7 @@ class Ventas:
 
             plt.tight_layout()
 
-            grafico_path = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\grafico_ventas.png'
+            grafico_path = 'C:\\Tienda-convenencia\\Archivos\\Archivos_ventas\\grafico_ventas.png'
             plt.savefig(grafico_path)
             plt.close()
 

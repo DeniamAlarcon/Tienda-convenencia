@@ -28,7 +28,7 @@ class Ticket:
     @classmethod
     def crear_archivo_pdf_ticket(cls):
         try:
-            archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_tickets\\ticket.pdf'
+            archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_tickets\\ticket.pdf'
             # Crear el documento PDF
             doc = SimpleDocTemplate(
                 archivo_pdf,

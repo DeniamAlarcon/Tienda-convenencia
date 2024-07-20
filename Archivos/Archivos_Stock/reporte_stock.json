@@ -4,7 +4,7 @@
         "nombre": "papas",
         "marca": "sabritas",
         "precio": "20",
-        "stock": "20"
+        "stock": 80
     },
     {
         "codigo": "2",

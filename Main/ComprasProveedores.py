@@ -14,9 +14,9 @@ def pedidoProveedor():
                 nombreProveedor = input("Ingrese el nombre del proveedor: ")
             proveedor = Proveedores.validar_provedor(nombreProveedor)
             if proveedor:
-                nombreProducto = input("Ingrese el codigo del producto: ")
+                nombreProducto = input("Ingrese el nombre del producto: ")
                 while not nombreProducto:
-                    nombreProducto = input("Ingrese el codigo del producto registrado: ")
+                    nombreProducto = input("Ingrese el nombre del producto registrado: ")
                 prodcutoN=Producto.validar_nombre(nombreProducto)
                 if prodcutoN:
                     marcaProducto = input("Ingrese la marca del producto: ")

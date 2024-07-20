@@ -18,7 +18,7 @@ class Proveedores:
 
     @classmethod
     def leer_archivo(cls):
-        archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
+        archivo_proveedores = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
         try:
             with open(archivo_proveedores, encoding='utf8') as archivo:
                 reader = csv.DictReader(archivo)
@@ -141,7 +141,7 @@ class Proveedores:
 
     @classmethod
     def escribir_archivo_xlsx(cls):
-        archivo_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_xlsx.xlsx'
+        archivo_xlsx = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_xlsx.xlsx'
 
         try:
             workbook = Workbook()
