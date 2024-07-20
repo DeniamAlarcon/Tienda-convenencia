@@ -36,22 +36,24 @@ class PedidosProveedor:
                     print("Pedido no encontrado")
 
     @classmethod
-    def pedidos_proveedorID(self, i,cantidad):
+    def pedidos_proveedorID(self, idp,cantidad):
         if not self.pedidos:
             print("No hay pedidos guardados con este proveedor.")
         else:
             for pedido in self.pedidos:
-                if pedido.id == i:
+                if pedido.proveedor == idp:
                     print(
                         f"ID: {pedido.id}, Proveedor: {pedido.proveedor}, Nombre: {pedido.nombre}, Marca: {pedido.marca}, Cantidad: {pedido.cantidad}")
+
                     if int(pedido.cantidad) < int(cantidad):
                         print("Se exedio la cantidad de producto")
                     elif int(pedido.cantidad) > int(cantidad):
                         print("Entrega Incompleta")
                     else:
                         inventario = Inventario()
-                        inventario.actualizarEntradas(pedido.nombre, pedido.cantidad)
+                        inventario.actualizarEntradas(pedido.nombre,cantidad)
                         print("Entrega correcta")
+                    return True
                 else:
                     print("Pedido no encontrado")
 

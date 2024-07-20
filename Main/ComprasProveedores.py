@@ -15,12 +15,11 @@ def pedidoProveedor():
             while not nombreProveedor:
                 nombreProveedor = input("Ingrese el nombre del proveedor: ")
             proveedor = Proveedores.validar_provedor(nombreProveedor)
-            print(proveedor)
             if proveedor:
                 nombreProducto = input("Ingrese el codigo del producto: ")
                 while not nombreProducto:
                     nombreProducto = input("Ingrese el codigo del producto registrado: ")
-                prodcutoN=Producto.validar_codigo(nombreProducto)
+                prodcutoN=Producto.validar_nombre(nombreProducto)
                 if prodcutoN:
                     marcaProducto = input("Ingrese la marca del producto: ")
                     while not marcaProducto:
@@ -68,6 +67,7 @@ def menuComprasProveedor():
                 id = input("Ingrese el id del pedido: ")
                 cantidad = int(input("Ingrese la cantidad de productos: "))
                 PedidosProveedor.pedidos_proveedorID(id, cantidad)
+
             except ValueError as e:
                 print("Ingrese datos correctos ")
         elif opcion == "3":

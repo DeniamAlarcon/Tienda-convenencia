@@ -46,6 +46,9 @@ class Producto:
                 producto.existenciasAnteriores = row["existencias_anteriores"]
                 producto.ajuste = row["ajuste"]
                 Producto.lista_productos.append(producto)
+        except PermissionError:
+            print('No hay datos que leer.')
+
 
 
 
@@ -180,4 +183,5 @@ class Producto:
         if Producto.lista_productos.__len__() != 0:
             for product in Producto.lista_productos:
                 if product.nombre == nombre:
-                    return product.stock
+                    print(product.stock)
+                    return int(product.stock)

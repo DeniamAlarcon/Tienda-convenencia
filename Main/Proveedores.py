@@ -36,6 +36,8 @@ class Proveedores:
                 proveedor.id = int(row["id"])  # Asignar el ID del archivo
                 Proveedores.proveedores.append(proveedor)
             return
+        except PermissionError:
+            print('No hay datos que leer.')
 
 
     def guardar(self):
@@ -50,6 +52,7 @@ class Proveedores:
             for proveedor in cls.proveedores:
                print(
                 f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
+            return cls.proveedores
 
     @classmethod
     def mostrar_nombre(cls,nombre):
