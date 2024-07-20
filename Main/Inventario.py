@@ -1,12 +1,7 @@
-import json
-from reportlab.lib.pagesizes import letter
-from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
-from reportlab.lib.units import inch
-from openpyxl import Workbook
+from datetime import datetime
 from Productos import *
 from Proveedores import *
-from datetime import datetime
+
 
 class Inventario:
     def __init__(self):
@@ -14,7 +9,7 @@ class Inventario:
         self.proveedor = Proveedores.proveedores
 
     def escribir_archivo_csv(self):
-        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_inventario.csv'
+        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.csv'
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["codigo", "nombre", "marca", "precio", "proveedor", "entradas", "salidas", "stock",
@@ -39,7 +34,7 @@ class Inventario:
             print(f"Error al crear o escribir el archivo CSV")
 
     def escribir_archivo_json(self):
-        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_inventario.json'
+        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.json'
 
         try:
             lista_productos_json = [
@@ -55,7 +50,7 @@ class Inventario:
                     "existencias_anteriores": producto.existenciasAnteriores,
                     "ajuste": producto.ajuste
                 }
-                for producto in self.productos
+                for producto in self.producto
             ]
             json_object = json.dumps(lista_productos_json, indent=4)
 
@@ -66,7 +61,7 @@ class Inventario:
             print(f"Error al crear o escribir el archivo JSON: ")
 
     def escribir_archivo_pdf(self):
-        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_inventario.pdf'
+        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.pdf'
 
         try:
             doc = SimpleDocTemplate(
@@ -84,7 +79,7 @@ class Inventario:
                           "Existencias Anteriores", "Ajuste"]
             data = [fieldnames]
 
-            for product in self.productos:
+            for product in self.producto:
                 data.append([
                     product.codigo,
                     product.nombre,
@@ -125,7 +120,7 @@ class Inventario:
             print(f"Error al crear o escribir el archivo PDF")
 
     def escribir_archivo_xlsx(self):
-        archivo_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_inventario.xlsx'
+        archivo_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.xlsx'
 
         try:
             workbook = Workbook()
@@ -156,13 +151,39 @@ class Inventario:
         except Exception as e:
             print(f"Error al crear o escribor el archivo XLSX")
 
+
+    def menu_archivos(self):
+        while True:
+            print("1. Crear archivo CSV")
+            print("2. Crear archivo JSON")
+            print("3. Crear archivo PDF")
+            print("4. Crear archivo XLSX")
+            print("5 Salir")
+            opcion = input("Seleccione una opcion")
+            if opcion == "1":
+                Inventario.escribir_archivo_csv(self)
+            elif opcion == "2":
+                Inventario.escribir_archivo_json(self)
+            elif opcion == "3":
+                Inventario.escribir_archivo_pdf(self)
+            elif opcion == "4":
+                Inventario.escribir_archivo_xlsx(self)
+            elif opcion == "5":
+                break
+
     def obtenerInventario(self):
         if self.proveedor:
             if self.producto:
-                Inventario.escribir_archivo_csv(self)
-                Inventario.escribir_archivo_json(self)
-                Inventario.escribir_archivo_pdf(self)
-                Inventario.escribir_archivo_xlsx(self)
+                while True:
+                    print("Desea crear un archivo del informe de inventario?")
+                    print("1. Si")
+                    print("2. No")
+                    opcion = input("Seleccione una opcion")
+                    if opcion == "1":
+                        Inventario.menu_archivos(self)
+                        break
+                    elif opcion == "2":
+                        break
                 print("INFORME DE INVENTARIO CREADO EL: ", datetime.now())
                 print(f"{'Código':<10} {'Nombre':<20} {'Marca':<15} {'Precio':<10} {'Proveedor':<20} {'Entradas':<10} {'Salidas':<10} {'Stock':<10} {'Existencias_anteriores'} {'Ajustes':<10}")
                 print("=" * 105)
@@ -199,20 +220,19 @@ class Inventario:
     def actualizarSalidas(self, nombre, cantidad):
         for product in Producto.lista_productos:
             if product.nombre == nombre:
-                if int(product.stock) > int(cantidad):
+                if int(product.stock) >= int(cantidad):
                     product.salidas = int(product.salidas) + int(cantidad)
                     product.stock = int(product.stock) - int(cantidad)
                     Inventario.mensajes_stock(nombre)
                     return True
                 else:
-                    print("No hay suficiente stock para realizar la accion")
                     return False
             else:
                 print("Producto no encontrado")
                 return False
 
     def escribir_archivo_stock_csv(self):
-        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_stock.csv'
+        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.csv'
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["codigo", "nombre", "marca", "precio", "stock"]
@@ -230,7 +250,7 @@ class Inventario:
             print(f"Error al crear o escribir el archivo CSV")
 
     def escribir_archivo_stock_pdf(self):
-        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_stock.pdf'
+        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.pdf'
 
         try:
             # Ajustar márgenes
@@ -248,7 +268,7 @@ class Inventario:
             fieldnames = ["Código", "Nombre", "Marca", "Precio", "Stock"]
             data = [fieldnames]
 
-            for producto in self.productos:
+            for producto in self.producto:
                 data.append([
                     producto.codigo,
                     producto.nombre,
@@ -278,7 +298,7 @@ class Inventario:
             print(f"Error al crear o escribir el archivo PDF")
 
     def escribir_archivo_stock_json(cls):
-        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_stock.json'
+        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.json'
         lista_productos_json = [
             {
                 "codigo": producto.codigo,
@@ -297,7 +317,7 @@ class Inventario:
             print(f"Error al crear o escribir el archivo JSON")
 
     def escribir_archivo_stock_xlsx(cls):
-        ruta_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\reporte_stock.xlsx'
+        ruta_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.xlsx'
         workbook = Workbook()
         sheet = workbook.active
         sheet.title = "Stock"

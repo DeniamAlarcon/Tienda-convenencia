@@ -1,7 +1,5 @@
-from Productos import *
-from Proveedores import *
 from PedidosProveedor import *
-from Inventario import *
+
 
 def pedidoProveedor():
     while True:

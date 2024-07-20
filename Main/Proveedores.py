@@ -1,4 +1,11 @@
 import csv
+import json
+
+from reportlab.lib.pagesizes import letter
+from reportlab.lib import colors
+from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
+from reportlab.lib.units import inch
+from openpyxl import Workbook
 class Proveedores:
     idAuto=0
     proveedores = []
@@ -11,29 +18,153 @@ class Proveedores:
 
 
     @classmethod
-    def leer_archivo(self):
-        with open('C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\proveedores.csv',
-                  encoding='utf8') as archivo_proveedores:
-            reader = csv.DictReader(archivo_proveedores)
-            filas = list(reader)
-            if not filas or all(not any(row.values()) for row in filas):
-                print('No hay datos que leer')
-                return
+    def leer_archivo(cls):
+        archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
+        try:
+            with open(archivo_proveedores, encoding='utf8') as archivo:
+                reader = csv.DictReader(archivo)
+                filas = list(reader)
 
-            # Encontrar el ID máximo en el archivo
-            max_id = 0
-            for row in filas:
-                if row["id"].isdigit():
-                    max_id = max(max_id, int(row["id"]))
+                if not filas or all(not any(row.values()) for row in filas):
+                    print('No hay datos que leer.')
+                    return
 
-            # Configurar idAuto para continuar desde el ID máximo encontrado
-            Proveedores.idAuto = max_id + 1
+                # Encontrar el ID máximo en el archivo
+                max_id = 0
+                for row in filas:
+                    if row.get("id") and row["id"].isdigit():
+                        max_id = max(max_id, int(row["id"]))
 
-            for row in filas:
-                proveedor = Proveedores(row["nombre"], row["correo"], row["telefono"])
-                proveedor.id = int(row["id"])  # Asignar el ID del archivo
-                Proveedores.proveedores.append(proveedor)
-            return
+                # Configurar idAuto para continuar desde el ID máximo encontrado
+                cls.idAuto = max_id + 1
+
+                # Leer datos y crear objetos Proveedores
+                for row in filas:
+                    proveedor = cls(row["nombre"], row["correo"], row["telefono"])
+                    proveedor.id = int(row["id"])  # Asignar el ID del archivo
+                    cls.proveedores.append(proveedor)
+                print('Datos cargados exitosamente.')
+        except csv.Error as e:
+            print(f'Error al leer el archivo CSV')
+
+    @classmethod
+    def escribir_archivo_csv(cls):
+        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_csv.csv'
+        try:
+            with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
+                fieldnames = ["id", "nombre", "correo", "telefono"]
+                writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
+                writer.writeheader()
+
+                for proveedor in Proveedores.proveedores:
+                    writer.writerow({
+                        "id": proveedor.id,
+                        "nombre": proveedor.nombre,
+                        "correo": proveedor.correo,
+                        "telefono": proveedor.telefono
+                    })
+        except PermissionError:
+            print(f"Error al crear o escribir el archivo CSV")
+
+    @classmethod
+    def escribir_archivo_json(cls):
+        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_json.json'
+
+        try:
+            lista_proveedores_json = [
+                {
+                    "id": proveedor.id,
+                    "nombre": proveedor.nombre,
+                    "correo": proveedor.correo,
+                    "telefono": proveedor.telefono
+                }
+                for proveedor in Proveedores.proveedores
+            ]
+            json_object = json.dumps(lista_proveedores_json, indent=4)
+
+            with open(ruta_json, "w", encoding='utf8') as json_file:
+                json_file.write(json_object)
+
+        except Exception as e:
+            print(f"Error al crear o escribir el archivo JSON: ")
+
+    @classmethod
+    def escribir_archivo_pdf(cls):
+        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_pdf.pdf'
+        try:
+            doc = SimpleDocTemplate(
+                archivo_pdf,
+                pagesize=letter,
+                rightMargin=inch,
+                leftMargin=inch,
+                topMargin=inch,
+                bottomMargin=inch
+            )
+            elementos = []
+
+            # Crear la tabla
+            fieldnames = ["Id", "Nombre", "Correo", "Telefono"]
+            data = [fieldnames]
+
+            for proveedor in Proveedores.proveedores:
+                data.append([
+                    proveedor.id,
+                    proveedor.nombre,
+                    proveedor.correo,
+                    proveedor.telefono
+                ])
+
+            tabla = Table(data)
+
+            # Estilos para la tabla
+            estilo = TableStyle([
+                ('BACKGROUND', (0, 0), (-1, 0), colors.grey),
+                ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
+                ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
+                ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
+                ('FONTSIZE', (0, 0), (-1, 0), 12),
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
+                ('GRID', (0, 0), (-1, -1), 1, colors.black),
+                ('LEFTPADDING', (0, 0), (-1, -1), 12),  # Añadir relleno izquierdo
+                ('RIGHTPADDING', (0, 0), (-1, -1), 12)  # Añadir relleno derecho
+            ])
+            tabla.setStyle(estilo)
+
+            # Agregar espacio antes y después de la tabla
+            elementos.append(Spacer(1, 12))
+            elementos.append(tabla)
+            elementos.append(Spacer(1, 12))
+
+            doc.build(elementos)
+        except Exception as e:
+            print(f"Error al crear o escribir el archivo PDF")
+
+    @classmethod
+    def escribir_archivo_xlsx(cls):
+        archivo_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_xlsx.xlsx'
+
+        try:
+            workbook = Workbook()
+            sheet = workbook.active
+            sheet.title = "Proveedores"
+
+            # Escribir encabezados
+            encabezados = ["Id", "Nombre", "Correo", "Telefono"]
+            sheet.append(encabezados)
+
+            # Escribir datos
+            for proveedor in Proveedores.proveedores:
+                sheet.append([
+                    proveedor.id,
+                    proveedor.nombre,
+                    proveedor.correo,
+                    proveedor.telefono
+                ])
+
+            workbook.save(archivo_xlsx)
+        except Exception as e:
+            print(f"Error al crear o escribor el archivo XLSX")
 
 
     def guardar(self):
