@@ -45,12 +45,12 @@ class Producto:
                         row["precio"],
                         row["fecha_caducidad"]
                     )
+                    Producto.lista_productos.append(producto)
                     producto.entradas = row["entradas"]
                     producto.salidas = row["salidas"]
                     producto.stock = row["stock"]
                     producto.existenciasAnteriores = row["existencias_anteriores"]
                     producto.ajuste = row["ajuste"]
-                    Producto.lista_productos.append(producto)
         except csv.Error as e:
             print(f'Error al leer el archivo CSV')
 
@@ -198,26 +198,29 @@ class Producto:
 
     @classmethod
     def buscar_nombre(self, nombre):
-        if self.lista_productos.__len__() != 0:
-            for product in self.lista_productos:
+        if Producto.lista_productos.__len__() != 0:
+            for product in Producto.lista_productos:
                 if product.nombre == nombre:
                     print("Nombre de producto ya registrado")
                     return True
-                else:
-                    return False
+            return False
 
     @classmethod
     def detalles_nombre(cls, nombre):
-        if cls.lista_productos.__len__() == 0:
-            print("producto no encontrado con ese nombre")
+        if Producto.lista_productos.__len__() == 0:
+            print("no hay productos existentes")
+        elif not nombre:
+            for product in Producto.lista_productos:
+                print("Codigo: ", product.codigo, "Nombre: ", product.nombre, "Marca: ", product.marca, "Proveedor: ",
+                      product.proveedor, "Cantidad: ", product.cantidad, "Unidad de medida: ", product.tamanio,
+                      "Precio: ", product.precio, "Fecha de caducidad:", product.fecha_caducidad)
+                return True
         else:
-            for product in cls.lista_productos:
+            for product in Producto.lista_productos:
                 if product.nombre == nombre:
-                    print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ",product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
-                    break
-                else:
-                    print("producto no encontrado")
-                    break
+                    print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ", product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
+                    return True
+            print("producto no encontrado")
 
 
 
@@ -296,8 +299,7 @@ class Producto:
             for product in Producto.lista_productos:
                 if product.codigo == codigo:
                     return True
-                else:
-                    return False
+            return False
         else:
            return False
 
@@ -307,8 +309,7 @@ class Producto:
             for product in Producto.lista_productos:
                 if product.marca == marca:
                     return True
-                else:
-                    return False
+            return False
         else:
             return False
     @classmethod
@@ -317,8 +318,7 @@ class Producto:
             for product in Producto.lista_productos:
                 if product.nombre == nombre:
                     return True
-                else:
-                    return False
+            return False
         else:
             return False
 
@@ -327,5 +327,5 @@ class Producto:
         if Producto.lista_productos.__len__() != 0:
             for product in Producto.lista_productos:
                 if product.nombre == nombre:
-                    print(product.stock)
+                    #print(product.stock)
                     return int(product.stock)

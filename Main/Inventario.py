@@ -9,11 +9,10 @@ from Proveedores import *
 from datetime import datetime
 
 class Inventario:
-    listaStock=[]
+    #listaStock=[]
     def __init__(self):
         self.producto = Producto.lista_productos
         self.proveedor = Proveedores.proveedores
-        Inventario.listaStock=self.producto
 
     def escribir_archivo_csv(self):
         ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.csv'
@@ -140,7 +139,7 @@ class Inventario:
             sheet.append(encabezados)
 
             # Escribir datos
-            for producto in self.productos:
+            for producto in self.producto:
                 sheet.append([
                     producto.codigo,
                     producto.nombre,
@@ -235,9 +234,8 @@ class Inventario:
                     return True
                 else:
                     return False
-            else:
-                print("Producto no encontrado")
-                return False
+        print("Producto no encontrado")
+        return False
 
     def escribir_archivo_stock_csv(self):
         ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.csv'
@@ -371,19 +369,15 @@ class Inventario:
 
     @classmethod
     def informeStockC(cls):
-        if cls.listaStock:
-            if cls.listaStock:
-                Inventario.escribir_archivo_stock_csv(cls)
-                Inventario.escribir_archivo_stock_json(cls)
-                Inventario.escribir_archivo_stock_pdf(cls)
-                Inventario.escribir_archivo_stock_xlsx(cls)
+        if Producto.lista_productos:
+            if Proveedores.proveedores:
                 print("INFORME DE STOCK DISPONIBLE")
                 print(f"{'Código':<10} {'Nombre':<20} {'Marca':<15} {'Precio':<10} {'Stock':<10}")
                 print("=" * 105)
-                for product in cls.listaStock:
+                for product in Producto.lista_productos:
                     print(f"{product.codigo:<10} {product.nombre:<20} {product.marca:<15} {product.precio:<10} {product.stock:<10}")
                 print("=" * 105)
-                for product in cls.listaStock:
+                for product in Producto.lista_productos:
                     Inventario.mensajes_stock(product.nombre)
             else:
                 print('No hay proveedores registrados')
@@ -423,6 +417,7 @@ class Inventario:
                                     cantidad = ""
                                 else:
                                     cantidad = int(cantidad)
+                                    break
                             else:
                                 print("La cantidad ingresada excede el stock")
                                 cantidad = ""

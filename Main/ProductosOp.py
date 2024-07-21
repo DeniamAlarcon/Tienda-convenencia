@@ -93,7 +93,7 @@ def registrarProducto():
             proveedor = ""
         else:
             if not Proveedores.validar_provedor(proveedor):
-                menuProductos()
+                proveedor = ""
 
 
     cantidad = ""
@@ -164,10 +164,14 @@ def actualizarproducto():
            break
 
 
-   proveedor = input("Ingrese el proveedor del producto: ")
-   if not Proveedores.validar_provedor(proveedor):
-       print("Proveedor no encontrado")
-       proveedor=""
+   proveedor = ""
+   while not proveedor:
+       proveedor=input("Ingrese el proveedor del producto: ")
+       if not Proveedores.validar_provedor(proveedor):
+           print("Proveedor no encontrado")
+           proveedor=""
+       else:
+           break
 
    tamanio = ""
    while not tamanio:

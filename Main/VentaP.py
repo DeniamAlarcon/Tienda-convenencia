@@ -182,14 +182,19 @@ def buscar_producto(producto):
                 print("Producto no encontrado")
                 producto = ""
 
-def seleccionar_cantidad_producto(producto, cantidad):
+def validar_stock(producto):
     for i in Producto.lista_productos:
         if i.nombre == producto:
             if i.stock == 0:
                 print("No hay stock de ", producto)
-                venta()
                 return False
-            elif int(cantidad) > int(i.stock):
+            else:
+                return True
+
+def seleccionar_cantidad_producto(producto, cantidad):
+    for i in Producto.lista_productos:
+        if i.nombre == producto:
+            if int(cantidad) > int(i.stock):
                 print("La cantidad excede el stock")
                 return False
             elif int(cantidad) == 0:
@@ -246,24 +251,24 @@ def venta():
             validaNP = Producto.validar_nombre(producto)
             if validaNP:
                 print("Se ha seleccionado producto correctamente")
-                cant = ""
-                while not cant:
-                    cant = input("Ingrese la cantidad")
-                    if cant.isdigit():
-                        if int(cant) > 0:
-                            if not seleccionar_cantidad_producto(producto, cant):
-                                cant = ""
+                if validar_stock(producto):
+                    cant = ""
+                    while not cant:
+                        cant = input("Ingrese la cantidad")
+                        if cant.isdigit():
+                            if int(cant) > 0:
+                                if not seleccionar_cantidad_producto(producto, cant):
+                                    cant = ""
+                                else:
+                                    ticket = Ticket(producto, cant)
+                                    ticket.guardar_producto()
+                                    break
                             else:
-                                ticket = Ticket(producto, cant)
-                                ticket.guardar_producto()
-                                break
+                                print("No se ha registrado cantidad de productos a vender")
+                                cant = ""
                         else:
-                            print("No se ha registrado cantidad de productos a vender")
+                            print("No se a registrado cantidad de productos a vender")
                             cant = ""
-                    else:
-                        print("No se a registrado cantidad de productos a vender")
-                        cant = ""
-
             else:
                 print("Producto no encontrado")
         elif opcion2 == "2":
@@ -272,7 +277,7 @@ def venta():
             for i in Ticket.lista_ticket:
                 venta = Ventas(i.nombre, i.cantidad, i.total)
                 venta.guardar_venta()
-                Ticket.limpiar_ticket()
+            Ticket.limpiar_ticket()
             break
         elif opcion2 == "3":
             Producto.lista_productos.clear()

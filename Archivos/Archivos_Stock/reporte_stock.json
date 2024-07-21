@@ -4,13 +4,13 @@
         "nombre": "papas",
         "marca": "sabritas",
         "precio": "20",
-        "stock": 12
+        "stock": 14
     },
     {
         "codigo": "2",
-        "nombre": "refresco",
+        "nombre": "coca",
         "marca": "coca",
         "precio": "10",
-        "stock": "10"
+        "stock": "0"
     }
 ]
