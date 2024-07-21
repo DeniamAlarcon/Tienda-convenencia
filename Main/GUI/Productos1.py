@@ -3,8 +3,10 @@ from tkinter import messagebox
 from datetime import datetime
 import re
 
+from login1 import *
 from Main.Productos import Producto
 from Main.Proveedores import Proveedores
+from login1 import *
 
 def validar_tamanio(tamanio):
     unidades_validas = ["kg", "g", "L", "ml", "pcs", "m", "cm", "in"]
@@ -53,7 +55,7 @@ class ProductosApp(tk.Tk):
         tk.Button(self, text="Detalles de Producto", width=30, command=self.detalles_producto).pack(pady=5)
         tk.Button(self, text="Actualizar Producto", width=30, command=self.actualizar_producto).pack(pady=5)
         tk.Button(self, text="Crear Archivos", width=30, command=self.menu_archivos).pack(pady=5)
-        tk.Button(self, text="Salir", width=30, command=self.destroy).pack(pady=20)
+       # tk.Button(self, text="Salir", width=30, command=self.destroy()).pack(pady=20)
 
     def registrar_producto(self):
         self.clear_frame()
@@ -157,13 +159,14 @@ class ProductosApp(tk.Tk):
 
     def buscar_por_nombre(self):
         self.clear_frame()
+        self.geometry("650x500")
         tk.Label(self, text="Buscar Producto por Nombre", font=("Arial", 16)).pack(pady=10)
         tk.Label(self, text="Nombre del Producto").pack()
         self.nombre_busqueda_entry = tk.Entry(self)
         self.nombre_busqueda_entry.pack()
         tk.Button(self, text="Buscar", command=self.procesar_busqueda_nombre).pack(pady=10)
         tk.Button(self, text="Volver", command=self.detalles_producto).pack(pady=10)
-        self.resultado_text = tk.Text(self, height=10, width=50, state=tk.DISABLED)
+        self.resultado_text = tk.Text(self, height=10, width=75, state=tk.DISABLED)
         self.resultado_text.pack(pady=10)
 
     def procesar_busqueda_nombre(self):
@@ -172,11 +175,20 @@ class ProductosApp(tk.Tk):
         self.resultado_text.config(state=tk.NORMAL)
         self.resultado_text.delete(1.0, tk.END)
 
-        if resultados:
-            for producto in resultados:
-                self.resultado_text.insert(tk.END, f"ID: {producto.id}, Nombre: {producto.nombre}, Marca: {producto.marca}, Proveedor: {producto.proveedor}, Cantidad: {producto.cantidad}, Tamaño: {producto.tamanio}, Precio: {producto.precio}, Fecha de Vencimiento: {producto.fecha_vencimiento}\n")
+        if nombre != "":
+            if resultados:
+                for producto in resultados:
+                    if producto.nombre == nombre:
+                        self.resultado_text.insert(tk.END,
+                                                   f"{'Codigo': <8}{'Nombre': <8}{'Marca': <10}{'Proveedor': <10}{'Cantidad': <10}{'Tamaño': <8}{'Precio': <8}{'Vencimiento': <4}\n")
+                        self.resultado_text.insert(tk.END,
+
+                                                   f"{producto.codigo:<8}{producto.nombre:<8}{producto.marca:<10}{producto.proveedor:<10}{producto.cantidad:<10}{producto.tamanio:<8}{producto.precio:<8}{producto.fecha_caducidad:<}\n")
+
+            else:
+                self.resultado_text.insert(tk.END, "No se encontraron productos con ese nombre")
         else:
-            self.resultado_text.insert(tk.END, "No se encontraron productos con ese nombre")
+            messagebox.showerror("Error", "No se ingreso ningun dato")
 
         self.resultado_text.config(state=tk.DISABLED)
 
@@ -188,8 +200,9 @@ class ProductosApp(tk.Tk):
         productos = Producto.detalles()
         self.resultado_text.config(state=tk.NORMAL)
         if productos:
+            self.resultado_text.insert(tk.END, f"{'Codigo': <8}{'Nombre': <8}{'Marca': <10}{'Proveedor': <10}{'Cantidad': <10}{'Tamaño': <8}{'Precio': <8}{'Vencimiento': <4}\n")
             for producto in productos:
-                self.resultado_text.insert(tk.END, f"ID: {producto.id}, Nombre: {producto.nombre}, Marca: {producto.marca}, Proveedor: {producto.proveedor}, Cantidad: {producto.cantidad}, Tamaño: {producto.tamanio}, Precio: {producto.precio}, Fecha de Vencimiento: {producto.fecha_vencimiento}\n")
+                self.resultado_text.insert(tk.END, f"{producto.codigo:<8}{producto.nombre:<8}{producto.marca:<10}{producto.proveedor:<10}{producto.cantidad:<10}{producto.tamanio:<8}{producto.precio:<8}{producto.fecha_caducidad:<}\n")
         else:
             self.resultado_text.insert(tk.END, "No hay productos registrados")
         self.resultado_text.config(state=tk.DISABLED)
@@ -263,6 +276,7 @@ class ProductosApp(tk.Tk):
     def clear_frame(self):
         for widget in self.winfo_children():
             widget.destroy()
+
 
 if __name__ == "__main__":
     app = ProductosApp()

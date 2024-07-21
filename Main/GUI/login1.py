@@ -1,10 +1,11 @@
 import tkinter as tk
 from tkinter import messagebox
 from Productos1 import *
+from InventarioGUI import *
 from ProveedoresOp1 import *
 from Main.ComprasProveedores import *
-from Main.VentaP import menuVentas
-#from Main.Proveedores import *
+from Ventas1 import *
+from ComprasProveedores1 import *
 from Main.Productos import *
 import re
 
@@ -56,8 +57,8 @@ class App(tk.Tk):
         tk.Button(self, text="Proveedores", command=self.menuProveedores).pack()
         tk.Button(self, text="Productos", command=self.menuProductos).pack()
         tk.Button(self, text="Compras", command=self.menu_compras).pack()
-        tk.Button(self, text="Inventarios", command=menuInventario).pack()
-        tk.Button(self, text="Ventas", command=menuVentas).pack()
+        tk.Button(self, text="Inventarios", command=self.menuInventarios).pack()
+        tk.Button(self, text="Ventas", command=self.menuVentas).pack()
         tk.Button(self, text="Salir", command=self.quit).pack()
 
     def menuProveedores(self):
@@ -67,13 +68,28 @@ class App(tk.Tk):
         menuProv.mainloop()
     def menuProductos(self):
         self.withdraw()  # Hide the main window
-        menuProv = ProductosApp()
+        menuPro = ProductosApp()
+        menuPro.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
+        menuPro.mainloop()
+
+    def menuVentas(self):
+        self.withdraw()  # Hide the main window
+        menuV = VentasApp()
+        menuV.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
+        menuV.mainloop()
+
+    def menuInventarios(self):
+        self.withdraw()  # Hide the main window
+        menuProv = InventarioApp()
         menuProv.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
         menuProv.mainloop()
 
     def menu_compras(self):
         if Proveedores.mostrar():
-            menuComprasProveedor()
+            self.withdraw()  # Hide the main window
+            menuC = ComprasProveedorApp()
+            menuC.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
+            menuC.mainloop()
         else:
             messagebox.showwarning("Advertencia", "Registre un proveedor.")
 

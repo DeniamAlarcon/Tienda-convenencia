@@ -1,4 +1,4 @@
-from Main.Proveedores import *
+from Proveedores import *
 import re
 
 def validar_telefono(telefono):
