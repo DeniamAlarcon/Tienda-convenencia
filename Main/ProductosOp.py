@@ -2,6 +2,20 @@ from Productos import *
 from Proveedores import *
 from datetime import datetime
 
+import re
+
+def validar_tamanio(tamanio):
+    # Lista de unidades de medida válidas
+    unidades_validas = ["kg", "g", "L", "ml", "pcs", "m", "cm", "in"]
+    # Crear una expresión regular para verificar el formato
+    pattern = re.compile(r'^(\d+(\.\d+)?)(kg|g|L|ml|pcs|m|cm|in)$')
+    match = pattern.match(tamanio)
+    if match:
+        # Extraer la unidad de medida del tamaño validado
+        unidad = match.group(3)
+        # Verificar si la unidad de medida extraída es válida
+        return unidad in unidades_validas
+    return False
 def validarDigitos(digito):
     if digito.isdigit():
         return True
@@ -19,17 +33,6 @@ def validar_caducidad(fecha):
     fecha_actual = datetime.now()
     fecha_dada = datetime.strptime(fecha, formato)
     return fecha_dada < fecha_actual
-
-
-def validar_tamanio(tamanio):
-    if tamanio.isdigit():
-        if int(tamanio) > 0:
-            return True
-        else:
-            print("Unidad de medida del producto no puede ser menor o igual a 0")
-    else:
-        print("No se admite texto en la uniddad de medida del producto")
-        return False
 
 
 def validar_cantidad(cantidad):
@@ -106,14 +109,13 @@ def registrarProducto():
 
     tamanio = ""
     while not tamanio:
-        #validar que sea mayor a 0
-        tamanio = input("Ingrese la unidad de medida del producto: ")
+        tamanio = input("Ingrese el tamaño del producto (ej. 10kg, 250ml, 30pcs): ")
         if not tamanio:
             print("Favor de ingresar los datos requeridos")
+        elif not validar_tamanio(tamanio):
+            print(
+                "Tamaño inválido. Debe ser un número seguido de una unidad de medida válida (kg, g, L, ml, pcs, m, cm, in).")
             tamanio = ""
-        else:
-            if not validar_tamanio(tamanio):
-                tamanio = ""
 
 
     precio = ""
@@ -163,6 +165,9 @@ def actualizarproducto():
 
 
    proveedor = input("Ingrese el proveedor del producto: ")
+   if not Proveedores.validar_provedor(proveedor):
+       print("Proveedor no encontrado")
+       proveedor=""
 
    tamanio = ""
    while not tamanio:

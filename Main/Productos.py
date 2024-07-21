@@ -207,15 +207,19 @@ class Producto:
                     return False
 
     @classmethod
-    def detalles_nombre(self, nombre):
-        if self.lista_productos.__len__() != 0:
-            for product in self.lista_productos:
+    def detalles_nombre(cls, nombre):
+        if cls.lista_productos.__len__() == 0:
+            print("producto no encontrado con ese nombre")
+        else:
+            for product in cls.lista_productos:
                 if product.nombre == nombre:
                     print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ",product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
+                    break
                 else:
                     print("producto no encontrado")
-        else:
-            print("producto no encontrado")
+                    break
+
+
 
     @classmethod
     def detalles(self):

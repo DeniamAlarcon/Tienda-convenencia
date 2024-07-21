@@ -71,8 +71,10 @@ def menuComprasProveedor():
             except ValueError as e:
                 print("Ingrese datos correctos ")
         elif opcion == "3":
-            print("DESCUENTA EL VALOR QUE SE INTRODUCE AL INVENTARIO Y LISTO")
+            Inventario.informeStockC()
             productos = input("Ingrese el producto para la devolucion: ")
+            while not productos:
+                productos = input("Ingrese el producto para la devolucion: ")
             try:
                 cantidad = int(input("Ingrese la cantidad de productos: "))
                 inventario = Inventario()

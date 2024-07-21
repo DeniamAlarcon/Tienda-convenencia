@@ -9,9 +9,11 @@ from Proveedores import *
 from datetime import datetime
 
 class Inventario:
+    listaStock=[]
     def __init__(self):
         self.producto = Producto.lista_productos
         self.proveedor = Proveedores.proveedores
+        Inventario.listaStock=self.producto
 
     def escribir_archivo_csv(self):
         ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.csv'
@@ -367,6 +369,28 @@ class Inventario:
         else:
             print('No hay productos registrados')
 
+    @classmethod
+    def informeStockC(cls):
+        if cls.listaStock:
+            if cls.listaStock:
+                Inventario.escribir_archivo_stock_csv(cls)
+                Inventario.escribir_archivo_stock_json(cls)
+                Inventario.escribir_archivo_stock_pdf(cls)
+                Inventario.escribir_archivo_stock_xlsx(cls)
+                print("INFORME DE STOCK DISPONIBLE")
+                print(f"{'Código':<10} {'Nombre':<20} {'Marca':<15} {'Precio':<10} {'Stock':<10}")
+                print("=" * 105)
+                for product in cls.listaStock:
+                    print(f"{product.codigo:<10} {product.nombre:<20} {product.marca:<15} {product.precio:<10} {product.stock:<10}")
+                print("=" * 105)
+                for product in cls.listaStock:
+                    Inventario.mensajes_stock(product.nombre)
+            else:
+                print('No hay proveedores registrados')
+        else:
+            print('No hay productos registrados')
+
+
     def calculoAjuste(self,cantidad,nombre,precio):
         for product in self.producto:
             if product.nombre == nombre:
@@ -432,13 +456,16 @@ class Inventario:
         formato = "%d/%m/%Y"
         for product in self.producto:
             fecha_caducidad = datetime.strptime(product.fecha_caducidad,formato)
-            fecha_actual = datetime.now().date()
+            fecha_actual = datetime.now()
             diferencia_dias = (fecha_caducidad - fecha_actual).days
             if diferencia_dias <= 10:
                 if diferencia_dias <= 2:
                     print("Realizar cambio de: ", product.nombre)
                 else:
                     print(product.nombre, " Proximo a caducar")
+            else:
+                print("Sin productos proximos a caducar")
+                break
 
 
 
