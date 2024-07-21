@@ -48,7 +48,7 @@ class Proveedores:
 
     @classmethod
     def escribir_archivo_csv(cls):
-        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_csv.csv'
+        ruta_csv = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_csv.csv'
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["id", "nombre", "correo", "telefono"]
@@ -67,7 +67,7 @@ class Proveedores:
 
     @classmethod
     def escribir_archivo_json(cls):
-        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_json.json'
+        ruta_json = 'D:\\Tienda-convenencia\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_json.json'
 
         try:
             lista_proveedores_json = [
@@ -89,7 +89,7 @@ class Proveedores:
 
     @classmethod
     def escribir_archivo_pdf(cls):
-        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_pdf.pdf'
+        archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_pdf.pdf'
         try:
             doc = SimpleDocTemplate(
                 archivo_pdf,
@@ -180,16 +180,18 @@ class Proveedores:
             return cls.proveedores
 
     @classmethod
-    def mostrar_nombre(cls,nombre):
+    def mostrar_nombre(cls,nomb):
         if not cls.proveedores:
             print("No hay proveedores")
         else:
             for proveedor in cls.proveedores:
-                if nombre.upper() == proveedor.nombre.upper():
+                if nomb == proveedor.nombre:
                     print(
                         f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
+
                 else:
                     print("Proveedor no encontrado")
+
 
     @classmethod
     def buscar_proveedor(cls, id):
