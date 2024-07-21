@@ -110,6 +110,3 @@ def menuComprasProveedor():
             break
         else:
             print("Opcion invalida")
-
-
-

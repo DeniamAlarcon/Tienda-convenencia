@@ -185,20 +185,22 @@ def buscar_producto(producto):
 def seleccionar_cantidad_producto(producto, cantidad):
     for i in Producto.lista_productos:
         if i.nombre == producto:
-            if int(cantidad) > int(i.stock):
+            if i.stock == 0:
+                print("No hay stock de ", producto)
+                venta()
+                return False
+            elif int(cantidad) > int(i.stock):
                 print("La cantidad excede el stock")
                 return False
-            elif i.stock == 0:
-                print("No hay stock de ", producto)
-                print("Cancelando compra...")
-                Ticket.limpiar_ticket()
-                menuVentas()
             elif int(cantidad) == 0:
                 print("La cantidad debe ser mayor a 0")
                 return False
             else:
+                Inventario.actualizarSalidas(producto, cantidad)
                 print("Se a seleccionado correctamente cantidad de producto para venta")
                 return True
+
+
 
 def metodo_pago(total_pagar):
     while True:
@@ -251,15 +253,17 @@ def venta():
                         if int(cant) > 0:
                             if not seleccionar_cantidad_producto(producto, cant):
                                 cant = ""
-                            break
+                            else:
+                                ticket = Ticket(producto, cant)
+                                ticket.guardar_producto()
+                                break
                         else:
                             print("No se ha registrado cantidad de productos a vender")
                             cant = ""
                     else:
                         print("No se a registrado cantidad de productos a vender")
                         cant = ""
-                ticket = Ticket(producto, cant)
-                ticket.guardar_producto()
+
             else:
                 print("Producto no encontrado")
         elif opcion2 == "2":
@@ -268,10 +272,11 @@ def venta():
             for i in Ticket.lista_ticket:
                 venta = Ventas(i.nombre, i.cantidad, i.total)
                 venta.guardar_venta()
-                Inventario.actualizarSalidas(i.nombre, i.cantidad)
                 Ticket.limpiar_ticket()
             break
         elif opcion2 == "3":
+            Producto.lista_productos.clear()
+            Producto.leer_archivo()
             Ticket.limpiar_ticket()
             print("Saliendo...")
             break

@@ -26,7 +26,7 @@ class Producto:
 
     @classmethod
     def leer_archivo(cls):
-        archivo_proveedores = 'D:\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
+        archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
         try:
             with open(archivo_proveedores, encoding='utf8') as archivo_productos:
                 reader = csv.DictReader(archivo_productos)
@@ -56,7 +56,7 @@ class Producto:
 
     @classmethod
     def crear_archivo_csv(cls):
-        ruta_csv = 'D:\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_csv.csv'
+        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_csv.csv'
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["codigo", "nombre", "marca", "precio", "proveedor", "cantidad", "tamanio",
@@ -80,7 +80,7 @@ class Producto:
 
     @classmethod
     def crear_archivo_json(cls):
-        ruta_json = 'D:\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_json.json'
+        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_json.json'
 
         try:
             lista_productos_json = [
@@ -106,7 +106,7 @@ class Producto:
 
     @classmethod
     def crear_archivo_pdf(cls):
-        archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_pdf.pdf'
+        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_pdf.pdf'
 
         try:
             doc = SimpleDocTemplate(
@@ -163,7 +163,7 @@ class Producto:
 
     @classmethod
     def crear_archivo_xlsx(cls):
-        archivo_xlsx = 'D:\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_producto_xlsx.xlsx'
+        archivo_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_producto_xlsx.xlsx'
 
         try:
             workbook = Workbook()
