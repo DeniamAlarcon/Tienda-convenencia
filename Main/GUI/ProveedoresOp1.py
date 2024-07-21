@@ -55,7 +55,7 @@ class ProveedorApp(tk.Tk):
             return
 
         if not self.validar_telefono(telefono):
-            messagebox.showerror("Error", "Número de teléfono no válido")
+            messagebox.showerror("Error", "El numero debe ser mayor a 10 y menoar a 15")
             return
 
         registro = Proveedores(nombre, correo, telefono)
@@ -73,9 +73,10 @@ class ProveedorApp(tk.Tk):
         self.clear_frame()
         tk.Label(self, text="Actualizar Proveedor", font=("Arial", 16)).pack(pady=10)
 
-        tk.Label(self, text="ID del Proveedor").pack()
+        tk.Label(self, text="Nombre del Proveedor").pack()
         self.id_entry = tk.Entry(self)
         self.id_entry.pack()
+        tk.Button(self, text="Buscar", command=self.mostrar_proveedoresAct).pack(pady=10)
 
         tk.Label(self, text="Nuevo Nombre").pack()
         self.n_nombre_entry = tk.Entry(self)
@@ -92,28 +93,47 @@ class ProveedorApp(tk.Tk):
         tk.Button(self, text="Actualizar", command=self.procesar_actualizacion).pack(pady=10)
         tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
 
+    def mostrar_proveedoresAct(self):
+        resultados=Proveedores.mostrar_nombre(self.id_entry.get())
+        if resultados:
+            for i in resultados:
+                if i.nombre==self.id_entry.get():
+                    self.n_nombre_entry.insert(tk.END, i.nombre)
+                    self.n_correo_entry.insert(tk.END, i.correo)
+                    self.n_telefono_entry.insert(tk.END, i.telefono)
+                messagebox.showerror("Si se encotro el ID", i.id)
+        else:
+            messagebox.showerror("Error", "No se encontro al proveedor")
+
+
     def procesar_actualizacion(self):
-        try:
-            id = int(self.id_entry.get())
-            n_nombre = self.n_nombre_entry.get()
-            n_correo = self.n_correo_entry.get()
-            n_telefono = self.n_telefono_entry.get()
+        #try:
+            id = self.id_entry.get()
+            if Proveedores.mostrar_nombre(id):
+                n_nombre = self.n_nombre_entry.get()
+                n_correo = self.n_correo_entry.get()
+                n_telefono = self.n_telefono_entry.get()
 
-            if n_correo and not re.match(re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?"), n_correo):
-                messagebox.showerror("Error", "Correo no válido")
-                return
+                if n_correo and not re.match(re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?"), n_correo):
+                    messagebox.showerror("Error", "Correo no válido")
+                    return
 
-            if n_telefono and not self.validar_telefono(n_telefono):
-                messagebox.showerror("Error", "Número de teléfono no válido")
-                return
+                if n_telefono and not self.validar_telefono(n_telefono):
+                    messagebox.showerror("Error", "El numero debe ser mayor a 10 y menoar a 15")
+                    return
 
-            Proveedores.actualizar(id, n_nombre, n_correo, n_telefono)
-            messagebox.showinfo("Éxito", "Proveedor actualizado")
-            self.create_widgets()
-        except ValueError:
-            messagebox.showerror("Error", "Ingrese un ID de proveedor válido")
-        except Exception as e:
-            messagebox.showerror("Error", f"Error al actualizar proveedor: {e}")
+                if n_nombre != "" and n_correo != "" and n_telefono != "":
+                    Proveedores.actualizarGUI(id, n_nombre, n_correo, n_telefono)
+                    messagebox.showinfo("Éxito", "Proveedor actualizado")
+                    self.create_widgets()
+                else:
+                    messagebox.showerror("Error", "Favor de ingresar todos los campos requeridos")
+            else:
+                messagebox.showerror("Error","Proveedor no encontrado")
+       # except ValueError:
+        #    messagebox.showerror("Error", "Ingrese un ID de proveedor válido")
+        #except Exception as e:
+        #    messagebox.showerror("Error", f"Error al actualizar proveedor: {e}")
 
     def mostrar_proveedor(self):
         self.clear_frame()
@@ -184,7 +204,7 @@ class ProveedorApp(tk.Tk):
             if Proveedores.eliminarProveedor(id):
                 messagebox.showinfo("Éxito", "Proveedor eliminado")
                 self.create_widgets()
-                self.id_eliminar_entry.delete(0, tk.END)
+                #self.id_eliminar_entry.delete(0, tk.END)
             else:
                 messagebox.showerror("Error", "Proveedor no encontrado")
                 self.id_eliminar_entry.delete(0, tk.END)

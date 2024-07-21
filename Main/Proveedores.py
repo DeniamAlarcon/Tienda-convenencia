@@ -142,7 +142,7 @@ class Proveedores:
 
     @classmethod
     def escribir_archivo_xlsx(cls):
-        archivo_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_xlsx.xlsx'
+        archivo_xlsx = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_xlsx.xlsx'
 
         try:
             workbook = Workbook()
@@ -194,9 +194,9 @@ class Proveedores:
 
 
     @classmethod
-    def buscar_proveedor(cls, id):
+    def buscar_proveedor(cls, id2):
         for proveedor in cls.proveedores:
-            if proveedor.id == id:
+            if proveedor.id == id2:
                 return proveedor
         return None
     @classmethod
@@ -231,12 +231,39 @@ class Proveedores:
             print("Proveedor no encontrado.")
 
     @classmethod
+    def actualizarGUI(cls, id, nom, correo, telefono):
+        #proveedor = cls.mostrar_nombre(id)
+        for proveedor in cls.proveedores:
+            if proveedor.nombre == id:
+                if nom == "" and correo == "" and telefono == "":
+                    proveedor.nombre = proveedor.nombre
+                    proveedor.correo = proveedor.correo
+                    proveedor.telefono = proveedor.telefono
+                elif nom == "":
+                    proveedor.nombre = proveedor.nombre
+                    proveedor.correo = correo
+                    proveedor.telefono = telefono
+                elif correo == "":
+                    proveedor.correo = proveedor.correo
+                    proveedor.nombre = nom
+                    proveedor.telefono = telefono
+                elif telefono == "":
+                    proveedor.telefono = proveedor.telefono
+                    proveedor.nombre = nom
+                    proveedor.correo = correo
+                else:
+                    proveedor.nombre = nom
+                    proveedor.correo = correo
+                    proveedor.telefono = telefono
+
+    @classmethod
     def eliminarProveedor(cls, id):
         try:
             proveedor = cls.buscar_proveedor(id)
             if proveedor:
                 cls.proveedores.remove(proveedor)
                 print("Proveedor eliminado con exito.")
+                return True
             else:
                 print("Proveedor no encontrado.")
         except Exception as e:
