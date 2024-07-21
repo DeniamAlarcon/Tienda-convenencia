@@ -1,5 +1,5 @@
-from Productos import *
-from Proveedores import *
+from Main.Productos import *
+from Main.Proveedores import *
 from datetime import datetime
 
 import re

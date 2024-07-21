@@ -1,46 +1,44 @@
 import tkinter as tk
 from tkinter import messagebox
-from Proveedores import *
+from Main.Proveedores import *
 import re
 
-
-class ProveedorApp:
-    def __init__(self, root):
-        self.root = root
-        self.root.title("Gestión de Proveedores")
-        self.root.geometry("500x500")
-        self.root.resizable(False, False)
-
+class ProveedorApp(tk.Tk):
+    def __init__(self):
+        super().__init__()
+        self.title("Gestión de Proveedores")
+        self.geometry("500x500")
+        self.resizable(False, False)
         self.create_widgets()
 
     def create_widgets(self):
         self.clear_frame()
-        tk.Label(self.root, text="--- Menu de Proveedor ---", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self, text="--- Menu de Proveedor ---", font=("Arial", 16)).pack(pady=10)
 
-        tk.Button(self.root, text="Registrar Proveedor", width=30, command=self.registrar_proveedor).pack(pady=5)
-        tk.Button(self.root, text="Actualizar Proveedor", width=30, command=self.actualizar_proveedores).pack(pady=5)
-        tk.Button(self.root, text="Mostrar Proveedor", width=30, command=self.mostrar_proveedor).pack(pady=5)
-        tk.Button(self.root, text="Eliminar Proveedor", width=30, command=self.eliminar_proveedor).pack(pady=5)
-        tk.Button(self.root, text="Salir", width=30, command=self.salir).pack(pady=20)
+        tk.Button(self, text="Registrar Proveedor", width=30, command=self.registrar_proveedor).pack(pady=5)
+        tk.Button(self, text="Actualizar Proveedor", width=30, command=self.actualizar_proveedores).pack(pady=5)
+        tk.Button(self, text="Mostrar Proveedor", width=30, command=self.mostrar_proveedor).pack(pady=5)
+        tk.Button(self, text="Eliminar Proveedor", width=30, command=self.eliminar_proveedor).pack(pady=5)
+        tk.Button(self, text="Salir", width=30, command=self.destroy).pack(pady=20)
 
     def registrar_proveedor(self):
         self.clear_frame()
-        tk.Label(self.root, text="Registrar Proveedor", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self, text="Registrar Proveedor", font=("Arial", 16)).pack(pady=10)
 
-        tk.Label(self.root, text="Nombre").pack()
-        self.nombre_entry = tk.Entry(self.root)
+        tk.Label(self, text="Nombre").pack()
+        self.nombre_entry = tk.Entry(self)
         self.nombre_entry.pack()
 
-        tk.Label(self.root, text="Correo Electrónico").pack()
-        self.correo_entry = tk.Entry(self.root)
+        tk.Label(self, text="Correo Electrónico").pack()
+        self.correo_entry = tk.Entry(self)
         self.correo_entry.pack()
 
-        tk.Label(self.root, text="Teléfono").pack()
-        self.telefono_entry = tk.Entry(self.root)
+        tk.Label(self, text="Teléfono").pack()
+        self.telefono_entry = tk.Entry(self)
         self.telefono_entry.pack()
 
-        tk.Button(self.root, text="Registrar", command=self.procesar_registro).pack(pady=10)
-        tk.Button(self.root, text="Volver", command=self.create_widgets).pack(pady=10)
+        tk.Button(self, text="Registrar", command=self.procesar_registro).pack(pady=10)
+        tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
 
     def procesar_registro(self):
         nombre = self.nombre_entry.get()
@@ -73,26 +71,26 @@ class ProveedorApp:
 
     def actualizar_proveedores(self):
         self.clear_frame()
-        tk.Label(self.root, text="Actualizar Proveedor", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self, text="Actualizar Proveedor", font=("Arial", 16)).pack(pady=10)
 
-        tk.Label(self.root, text="ID del Proveedor").pack()
-        self.id_entry = tk.Entry(self.root)
+        tk.Label(self, text="ID del Proveedor").pack()
+        self.id_entry = tk.Entry(self)
         self.id_entry.pack()
 
-        tk.Label(self.root, text="Nuevo Nombre").pack()
-        self.n_nombre_entry = tk.Entry(self.root)
+        tk.Label(self, text="Nuevo Nombre").pack()
+        self.n_nombre_entry = tk.Entry(self)
         self.n_nombre_entry.pack()
 
-        tk.Label(self.root, text="Nuevo Correo Electrónico").pack()
-        self.n_correo_entry = tk.Entry(self.root)
+        tk.Label(self, text="Nuevo Correo Electrónico").pack()
+        self.n_correo_entry = tk.Entry(self)
         self.n_correo_entry.pack()
 
-        tk.Label(self.root, text="Nuevo Teléfono").pack()
-        self.n_telefono_entry = tk.Entry(self.root)
+        tk.Label(self, text="Nuevo Teléfono").pack()
+        self.n_telefono_entry = tk.Entry(self)
         self.n_telefono_entry.pack()
 
-        tk.Button(self.root, text="Actualizar", command=self.procesar_actualizacion).pack(pady=10)
-        tk.Button(self.root, text="Volver", command=self.create_widgets).pack(pady=10)
+        tk.Button(self, text="Actualizar", command=self.procesar_actualizacion).pack(pady=10)
+        tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
 
     def procesar_actualizacion(self):
         try:
@@ -119,21 +117,21 @@ class ProveedorApp:
 
     def mostrar_proveedor(self):
         self.clear_frame()
-        tk.Label(self.root, text="Mostrar Proveedor", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self, text="Mostrar Proveedor", font=("Arial", 16)).pack(pady=10)
 
-        tk.Button(self.root, text="Busqueda por nombre", width=30, command=self.buscar_por_nombre).pack(pady=5)
-        tk.Button(self.root, text="Gestion de proveedores", width=30, command=self.gestion_proveedores).pack(pady=5)
-        tk.Button(self.root, text="Volver", command=self.create_widgets).pack(pady=20)
+        tk.Button(self, text="Busqueda por nombre", width=30, command=self.buscar_por_nombre).pack(pady=5)
+        tk.Button(self, text="Gestion de proveedores", width=30, command=self.gestion_proveedores).pack(pady=5)
+        tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=20)
 
     def buscar_por_nombre(self):
         self.clear_frame()
-        tk.Label(self.root, text="Buscar Proveedor por Nombre", font=("Arial", 16)).pack(pady=10)
-        tk.Label(self.root, text="Nombre del Proveedor").pack()
-        self.nombre_busqueda_entry = tk.Entry(self.root)
+        tk.Label(self, text="Buscar Proveedor por Nombre", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self, text="Nombre del Proveedor").pack()
+        self.nombre_busqueda_entry = tk.Entry(self)
         self.nombre_busqueda_entry.pack()
-        tk.Button(self.root, text="Buscar", command=self.procesar_busqueda_nombre).pack(pady=10)
-        tk.Button(self.root, text="Volver", command=self.mostrar_proveedor).pack(pady=10)
-        self.resultado_text = tk.Text(self.root, height=10, width=50, state=tk.DISABLED)
+        tk.Button(self, text="Buscar", command=self.procesar_busqueda_nombre).pack(pady=10)
+        tk.Button(self, text="Volver", command=self.mostrar_proveedor).pack(pady=10)
+        self.resultado_text = tk.Text(self, height=10, width=50, state=tk.DISABLED)
         self.resultado_text.pack(pady=10)
 
     def procesar_busqueda_nombre(self):
@@ -144,8 +142,9 @@ class ProveedorApp:
 
         if resultados:
             for proveedor in resultados:
-                self.resultado_text.insert(tk.END, f"{'ID': <5}{'NOMBRE': <10}{'CORREO': <15}{'TELEFONO': <10}\n"
-                                                   f"{proveedor.id: <5}{proveedor.nombre: <10}{proveedor.correo: <15}{proveedor.telefono: <10}\n")
+                if proveedor.nombre==nombre:
+                    self.resultado_text.insert(tk.END, f"{'ID': <5}{'NOMBRE': <10}{'CORREO': <15}{'TELEFONO': <10}\n"
+                                                       f"{proveedor.id: <5}{proveedor.nombre: <10}{proveedor.correo: <15}{proveedor.telefono: <10}\n")
         else:
             self.resultado_text.insert(tk.END, "No se encontraron proveedores con ese nombre")
 
@@ -153,8 +152,8 @@ class ProveedorApp:
 
     def gestion_proveedores(self):
         self.clear_frame()
-        tk.Label(self.root, text="Gestion de Proveedores", font=("Arial", 16)).pack(pady=10)
-        self.resultado_text = tk.Text(self.root, height=20, width=60, state=tk.DISABLED)
+        tk.Label(self, text="Gestion de Proveedores", font=("Arial", 16)).pack(pady=10)
+        self.resultado_text = tk.Text(self, height=20, width=60, state=tk.DISABLED)
         self.resultado_text.pack(pady=10)
         proveedores = Proveedores.mostrar()
         self.resultado_text.config(state=tk.NORMAL)  # Habilitar edición temporalmente
@@ -166,18 +165,18 @@ class ProveedorApp:
             self.resultado_text.insert(tk.END, "No hay proveedores registrados")
         self.resultado_text.config(state=tk.DISABLED)  # Deshabilitar edición nuevamente
 
-        tk.Button(self.root, text="Volver", command=self.mostrar_proveedor).pack(pady=10)
+        tk.Button(self, text="Volver", command=self.mostrar_proveedor).pack(pady=10)
 
     def eliminar_proveedor(self):
         self.clear_frame()
-        tk.Label(self.root, text="Eliminar Proveedor", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self, text="Eliminar Proveedor", font=("Arial", 16)).pack(pady=10)
 
-        tk.Label(self.root, text="ID del Proveedor").pack()
-        self.id_eliminar_entry = tk.Entry(self.root)
+        tk.Label(self, text="ID del Proveedor").pack()
+        self.id_eliminar_entry = tk.Entry(self)
         self.id_eliminar_entry.pack()
-        tk.Button(self.root, text="Eliminar", command=self.procesar_eliminacion).pack(pady=10)
+        tk.Button(self, text="Eliminar", command=self.procesar_eliminacion).pack(pady=10)
 
-        tk.Button(self.root, text="Volver", command=self.create_widgets).pack(pady=10)
+        tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
 
     def procesar_eliminacion(self):
         try:
@@ -198,14 +197,12 @@ class ProveedorApp:
         return len(telefono) > 9 and len(telefono) < 16 and telefono.isdigit()
 
     def salir(self):
-        self.root.quit()
+        self.destroy()
 
     def clear_frame(self):
-        for widget in self.root.winfo_children():
+        for widget in self.winfo_children():
             widget.destroy()
 
-
 if __name__ == "__main__":
-    root = tk.Tk()
-    app = ProveedorApp(root)
-    root.mainloop()
+    app = ProveedorApp()
+    app.mainloop()

@@ -1,4 +1,4 @@
-from Productos import *
+from Main.Productos import *
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.lib.units import inch

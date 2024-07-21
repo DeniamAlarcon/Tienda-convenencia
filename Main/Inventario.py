@@ -4,8 +4,8 @@ from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
 from reportlab.lib.units import inch
 from openpyxl import Workbook
-from Productos import *
-from Proveedores import *
+from Main.Productos import *
+from Main.Proveedores import *
 from datetime import datetime
 
 class Inventario:

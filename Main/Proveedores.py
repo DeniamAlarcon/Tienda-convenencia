@@ -18,7 +18,7 @@ class Proveedores:
 
     @classmethod
     def leer_archivo(cls):
-        archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
+        archivo_proveedores = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
         try:
 
             with open(archivo_proveedores, encoding='utf8') as archivo:
@@ -189,9 +189,8 @@ class Proveedores:
                 if nomb == proveedor.nombre:
                     print(
                         f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
+                    return Proveedores.proveedores
 
-                else:
-                    print("Proveedor no encontrado")
 
 
     @classmethod

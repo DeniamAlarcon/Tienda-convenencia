@@ -26,7 +26,7 @@ class Producto:
 
     @classmethod
     def leer_archivo(cls):
-        archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
+        archivo_proveedores = 'D:\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
         try:
             with open(archivo_proveedores, encoding='utf8') as archivo_productos:
                 reader = csv.DictReader(archivo_productos)
@@ -214,12 +214,12 @@ class Producto:
                 print("Codigo: ", product.codigo, "Nombre: ", product.nombre, "Marca: ", product.marca, "Proveedor: ",
                       product.proveedor, "Cantidad: ", product.cantidad, "Unidad de medida: ", product.tamanio,
                       "Precio: ", product.precio, "Fecha de caducidad:", product.fecha_caducidad)
-                return True
+                return Producto.lista_productos
         else:
             for product in Producto.lista_productos:
                 if product.nombre == nombre:
                     print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ", product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
-                    return True
+                    return Producto.lista_productos
             print("producto no encontrado")
 
 
@@ -229,6 +229,7 @@ class Producto:
         if Producto.lista_productos.__len__() != 0:
             for product in Producto.lista_productos:
                 print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ",product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
+            return Producto.lista_productos
         else:
             print("No hay registro de productos")
 

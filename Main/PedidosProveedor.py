@@ -1,4 +1,4 @@
-from Inventario import *
+from Main.Inventario import *
 from datetime import datetime
 
 class PedidosProveedor:

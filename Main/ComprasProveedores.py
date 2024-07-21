@@ -1,5 +1,5 @@
-from PedidosProveedor import *
-from VentasMain import *
+from Main.PedidosProveedor import *
+from Main.VentasMain import *
 
 
 def pedidoProveedor():

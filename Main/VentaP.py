@@ -3,8 +3,8 @@ import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter, MonthLocator
 from reportlab.platypus import Image
 
-from VentasMain import *
-from tickets import *
+from Main.VentasMain import *
+from Main.tickets import *
 
 
 class Ventas:
