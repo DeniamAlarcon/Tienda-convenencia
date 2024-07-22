@@ -77,7 +77,11 @@ class ComprasProveedorApp(tk.Tk):
         if not cantidad_producto.isdigit() or int(cantidad_producto) <= 0:
             messagebox.showerror("Error", "Cantidad de productos inválida")
             return
+        validarPrP=Producto.buscar_Producto_Nombre_Proveedor(nombre_producto,nombre_proveedor,marca_producto)
 
+        if not validarPrP:
+            messagebox.showerror("Error", "Producto o marca no registrada con este proveedor")
+            return
         precio = VentasMain.total_venta_actual(nombre_producto, int(cantidad_producto))
         pedido = PedidosProveedor(nombre_proveedor, nombre_producto, marca_producto, cantidad_producto, precio)
         pedido.guardar()

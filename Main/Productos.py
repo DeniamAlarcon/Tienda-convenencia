@@ -253,6 +253,12 @@ class Producto:
                 return product
 
     @classmethod
+    def buscar_Producto_Nombre_Proveedor(self, nombre,proveedor,marca):
+        for product in Producto.lista_productos:
+            if product.nombre == nombre and product.proveedor == proveedor and product.marca == marca:
+                return product
+
+    @classmethod
     def buscarProductoMarca(self, marca):
         for product in Producto.lista_productos:
             if product.marca == marca:
