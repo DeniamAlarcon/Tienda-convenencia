@@ -209,6 +209,7 @@ class ComprasProveedorApp(tk.Tk):
                     self.resultado_text.insert(tk.END,
                                                f"{pedido.id:<5}{pedido.proveedor:<12}{pedido.nombre:<12}{pedido.marca:<12}{pedido.cantidad:<12}{pedido.precio:<12}{pedido.estatus:<12}\n")
         else:
+            self.resultado_text.insert(tk.END,f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
             messagebox.showerror("Error", "No hay pedidos guardados con este proveedor")
 
         tk.Button(self, text="Volver", command=self.generar_historiales_compra).pack(pady=10)
