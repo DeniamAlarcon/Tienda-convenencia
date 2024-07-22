@@ -232,29 +232,45 @@ class Proveedores:
 
     @classmethod
     def actualizarGUI(cls, id, nom, correo, telefono):
-        #proveedor = cls.mostrar_nombre(id)
-        for proveedor in cls.proveedores:
-            if proveedor.nombre == id:
-                if nom == "" and correo == "" and telefono == "":
-                    proveedor.nombre = proveedor.nombre
-                    proveedor.correo = proveedor.correo
-                    proveedor.telefono = proveedor.telefono
-                elif nom == "":
-                    proveedor.nombre = proveedor.nombre
-                    proveedor.correo = correo
-                    proveedor.telefono = telefono
-                elif correo == "":
-                    proveedor.correo = proveedor.correo
-                    proveedor.nombre = nom
-                    proveedor.telefono = telefono
-                elif telefono == "":
-                    proveedor.telefono = proveedor.telefono
-                    proveedor.nombre = nom
-                    proveedor.correo = correo
-                else:
-                    proveedor.nombre = nom
-                    proveedor.correo = correo
-                    proveedor.telefono = telefono
+        buscar=cls.actualizarGUIV(id,nom,correo,telefono)
+        print(buscar)
+        if buscar:
+            for proveedor in cls.proveedores:
+                if proveedor.nombre == id:
+                    if nom == proveedor.nombre and correo == proveedor.correo and telefono == proveedor.telefono:
+                        proveedor.nombre = proveedor.nombre
+                        proveedor.correo = proveedor.correo
+                        proveedor.telefono = proveedor.telefono
+                    elif nom == proveedor.nombre:
+                        proveedor.nombre = proveedor.nombre
+                        proveedor.correo = correo
+                        proveedor.telefono = telefono
+                    elif correo == proveedor.correo:
+                        proveedor.correo = proveedor.correo
+                        proveedor.nombre = nom
+                        proveedor.telefono = telefono
+                    elif telefono == proveedor.telefono:
+                        proveedor.telefono = proveedor.telefono
+                        proveedor.nombre = nom
+                        proveedor.correo = correo
+                    else:
+                        proveedor.nombre = nom
+                        proveedor.correo = correo
+                        proveedor.telefono = telefono
+        else:
+            print("Proveedor ya registrado con esos datos.")
+
+
+
+    @classmethod
+    def actualizarGUIV(cls, id, nom, correo, telefono):
+        for prov in cls.proveedores:
+            if (prov.nombre) != (nom) and prov.telefono != telefono and prov.correo != correo:
+                return True
+            else:
+                return False
+
+
 
     @classmethod
     def eliminarProveedor(cls, id):
