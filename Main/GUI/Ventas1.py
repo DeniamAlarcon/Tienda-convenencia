@@ -23,7 +23,7 @@ class Ventas:
 
     @classmethod
     def leer_ventas_historial_csv(cls):
-        archivo_ventas_historial = 'D:\\Tienda-convenencia\\Archivos\\Archivos_ventas\\ventas_historial.csv'
+        archivo_ventas_historial = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\ventas_historial.csv'
         try:
             with open(archivo_ventas_historial, encoding='utf8') as archivo:
                 reader = csv.DictReader(archivo)
@@ -41,7 +41,7 @@ class Ventas:
 
     @classmethod
     def escribir_ventas_historial_csv(cls):
-        ruta_csv = 'D:\\Tienda-convenencia\\Archivos\\Archivos_ventas\\ventas_historial.csv'
+        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\ventas_historial.csv'
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["fecha", "cantidad"]
@@ -96,7 +96,7 @@ class Ventas:
 
             plt.tight_layout()
 
-            grafico_path = 'D:\\Tienda-convenencia\\Archivos\\Archivos_ventas\\grafico_ventas.png'
+            grafico_path = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\grafico_ventas.png'
             plt.savefig(grafico_path)
             plt.close()
 
@@ -108,7 +108,7 @@ class Ventas:
     @classmethod
     def crear_archivo_pdf_con_grafico(cls):
         try:
-            archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_ventas\\reporte_ventas.pdf'
+            archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\reporte_ventas.pdf'
             doc = SimpleDocTemplate(
                 archivo_pdf,
                 pagesize=letter,
@@ -206,36 +206,16 @@ def seleccionar_cantidad_producto(producto, cantidad):
                 Inventario.actualizarSalidas(producto, cantidad)
                 return True
 
-def metodo_pago(total_pagar):
-    def procesar_pago():
-        opcion = metodo_pago_var.get()
-        if opcion == "1":
-            total_dado = int(efectivo_entry.get())
-            if total_dado < total_pagar:
-                messagebox.showerror("Error", "Efectivo incompleto")
-            else:
-                cambio = total_dado - total_pagar
-                messagebox.showinfo("Pago realizado", f"Cambio: {cambio}")
-                metodo_pago_window.destroy()
-        elif opcion == "2":
-            messagebox.showinfo("Pago realizado", "Pago con tarjeta")
-            metodo_pago_window.destroy()
+def validar_pago(total_dado,total_pagar):
+    total_dado = int(total_dado)
+    if total_dado < int(total_pagar):
+        messagebox.showerror("Error", "Efectivo incompleto")
+        return False
+    else:
+        cambio = total_dado - total_pagar
+        messagebox.showinfo("Pago realizado", f"Cambio: {cambio}")
+        return True
 
-    metodo_pago_window = tk.Toplevel()
-    metodo_pago_window.title("Método de Pago")
-
-    metodo_pago_var = tk.StringVar(value="1")
-
-    tk.Radiobutton(metodo_pago_window, text="Efectivo", variable=metodo_pago_var, value="1").pack(anchor=tk.W)
-    tk.Radiobutton(metodo_pago_window, text="Tarjeta", variable=metodo_pago_var, value="2").pack(anchor=tk.W)
-
-    efectivo_frame = tk.Frame(metodo_pago_window)
-    tk.Label(efectivo_frame, text="Ingrese el efectivo dado:").pack(side=tk.LEFT)
-    efectivo_entry = tk.Entry(efectivo_frame)
-    efectivo_entry.pack(side=tk.LEFT)
-    efectivo_frame.pack(anchor=tk.W)
-
-    tk.Button(metodo_pago_window, text="Pagar", command=procesar_pago).pack()
 
 class VentasApp(tk.Tk):
     def __init__(self):
@@ -267,7 +247,63 @@ class VentasApp(tk.Tk):
         self.cantidad_entry.pack()
 
         tk.Button(self, text="Agregar", command=self.procesar_agregar_venta).pack(pady=10)
-        tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
+        tk.Button(self, text="Finalizar venta", command=self.mostrar_ticket_ventas).pack(pady=10)
+        tk.Button(self, text="Volver", command=self.borrar_ticket).pack(pady=10)
+
+    def borrar_ticket(self):
+        Ticket.limpiar_ticket()
+        self.create_widgets()
+
+
+    def mostrar_ticket_ventas(self):
+        self.clear_frame()
+        self.geometry("600x600")
+        tk.Label(self, text="Ticket de venta", font=("Arial", 16)).pack(pady=10)
+
+        # Crear un frame para el Text y el Scrollbar
+        text_frame = tk.Frame(self)
+        text_frame.pack(pady=10)
+
+        self.resultado_text = tk.Text(text_frame, height=20, width=200, state=tk.DISABLED, wrap=tk.NONE)
+        self.resultado_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        scrollbar = tk.Scrollbar(text_frame, command=self.resultado_text.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.resultado_text.config(yscrollcommand=scrollbar.set)
+
+        productos = Ticket.lista_ticket
+        self.resultado_text.config(state=tk.NORMAL)
+        if productos:
+            self.resultado_text.insert(tk.END,
+                                       f"{'Nombre':<10} {'Cantidad':<20} {'Total':<15}\n")
+            for producto in productos:
+                self.resultado_text.insert(tk.END,
+                                           f"{producto.nombre:<10} {producto.cantidad:<20} {producto.total:<15}\n")
+            total_pagar = Ticket.mostar_ticket()
+            self.resultado_text.insert(tk.END,f"Total a pagar: ${total_pagar}")
+
+            #mostrar en la misma linea
+            cantidad_frame = tk.Frame(self)
+            cantidad_frame.pack(pady=5)
+            tk.Label(cantidad_frame, text="Cantidad").pack(side=tk.LEFT, padx=5)
+            self.cantidad_entry = tk.Entry(cantidad_frame)
+            self.cantidad_entry.pack(side=tk.LEFT, padx=5)
+            tk.Button(self,text="Aceptar",command=lambda:self.procesar_pago(total_pagar)).pack(pady=5)
+
+
+        else:
+            self.resultado_text.insert(tk.END, "No hay productos registrados para venta")
+            tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=5)
+        self.resultado_text.config(state=tk.DISABLED)
+
+    def procesar_pago(self,total_pagar):
+        valor = int(self.cantidad_entry.get())
+        if validar_pago(valor,total_pagar):
+            for venta in Ticket.lista_ticket:
+                venta = Ventas(venta.nombre,venta.cantidad,venta.total)
+                venta.guardar_venta()
+            self.create_widgets()
+
 
     def procesar_agregar_venta(self):
         producto = self.producto_entry.get()
@@ -297,17 +333,21 @@ class VentasApp(tk.Tk):
         ticket.guardar_producto()
 
         messagebox.showinfo("Éxito", "Producto agregado correctamente")
-        self.create_widgets()
+        self.producto_entry.delete(0, tk.END)
+        self.cantidad_entry.delete(0, tk.END)
+
+        #self.create_widgets()
 
     def mostrar_historial_ventas(self):
         self.clear_frame()
+        self.geometry("600x600")
         tk.Label(self, text="Historial de Ventas", font=("Arial", 16)).pack(pady=10)
         self.resultado_text = tk.Text(self, height=20, width=80)
         self.resultado_text.pack(pady=10)
         ventas = Ventas.ventas_list
         if ventas:
             for venta in ventas:
-                self.resultado_text.insert(tk.END, f"Nombre: {venta.nombre}, Cantidad: {venta.cantidad}, Total: {venta.total}\n")
+                self.resultado_text.insert(tk.END, f"Nombre: {venta.producto}, Cantidad: {venta.cantidad}, Total: {venta.total}\n")
         else:
             self.resultado_text.insert(tk.END, "No hay ventas registradas")
         tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
@@ -315,24 +355,26 @@ class VentasApp(tk.Tk):
     def corte_caja(self):
         self.clear_frame()
         tk.Label(self, text="Corte de Caja", font=("Arial", 16)).pack(pady=10)
-        monto = corte_caja()
+        monto = 0
+        for total_pagar in Ventas.ventas_list:
+            monto += total_pagar.total
         if monto >= 0:
             tk.Label(self, text=f"Total en caja: {monto}").pack(pady=10)
             self.monto_entry = tk.Entry(self)
             self.monto_entry.pack(pady=10)
-            tk.Button(self, text="Realizar Corte", command=self.procesar_corte_caja).pack(pady=10)
+            tk.Button(self, text="Realizar Corte", command=lambda:self.procesar_corte_caja(monto)).pack(pady=10)
         else:
             tk.Label(self, text="No hay ventas realizadas").pack(pady=10)
         tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
 
-    def procesar_corte_caja(self):
+    def procesar_corte_caja(self,monto_pagar):
         monto = int(self.monto_entry.get())
-        if monto > corte_caja():
+        if monto > monto_pagar:
             messagebox.showerror("Error", "Tiene sobrante, verifique la cantidad")
-        elif monto < corte_caja():
+        elif monto < monto_pagar:
             messagebox.showerror("Error", "Tiene faltante, verifique la cantidad")
         else:
-            cantidad = corte_caja()
+            cantidad = monto_pagar
             messagebox.showinfo("Éxito", "Corte de caja exitoso, buen día")
             fecha_actual = datetime.now().strftime("%d/%m/%Y")
             Ventas.ventas_historial.append({"fecha": fecha_actual, "cantidad": cantidad})
