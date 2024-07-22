@@ -166,8 +166,7 @@ class ComprasProveedorApp(tk.Tk):
         self.resultado_text.pack(pady=10)
         resultados=PedidosProveedor.mostrar_pedidos()
         if resultados:
-            self.resultado_text.insert(tk.END,
-                                       f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
+            self.resultado_text.insert(tk.END,f"{resultados.ID :<5}{resultados.Proveedor:<12}{resultados.Nombre:<12}{resultados.Marca:<12}{resultados.Cantidad:<12}{resultados.Precio:<12}{resultados.Estatus:<12}\n")
             for pedido in resultados:
                 self.resultado_text.insert(tk.END, f"{pedido.id:<5}{pedido.proveedor:<12}{pedido.nombre:<12}{pedido.marca:<12}{pedido.cantidad:<12}{pedido.precio:<12}{pedido.estatus:<12}\n")
         tk.Button(self, text="Volver", command=self.generar_historiales_compra).pack(pady=10)
@@ -203,7 +202,7 @@ class ComprasProveedorApp(tk.Tk):
         res=PedidosProveedor.pedidos_proveedor(nombre_proveedor)
         if res:
             self.resultado_text.insert(tk.END,
-                                       f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
+                                       f"{res.ID :<5}{res.Proveedor:<12}{res.Nombre:<12}{res.Marca:<12}{res.Cantidad:<12}{res.Precio:<12}{res.Estatus:<12}\n")
             for pedido in res:
                 if pedido.proveedor == nombre_proveedor:
                     self.resultado_text.insert(tk.END,
