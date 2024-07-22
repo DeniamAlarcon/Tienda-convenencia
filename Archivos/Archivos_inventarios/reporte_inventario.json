@@ -7,19 +7,19 @@
         "proveedor": "coca-cola",
         "entradas": "20",
         "salidas": "0",
-        "stock": "20",
+        "stock": "4",
         "existencias_anteriores": "0",
         "ajuste": "0"
     },
     {
         "codigo": "2",
-        "nombre": "refresco",
+        "nombre": "coca",
         "marca": "coca",
         "precio": "10",
         "proveedor": "coca-cola",
         "entradas": "10",
         "salidas": "0",
-        "stock": "10",
+        "stock": "0",
         "existencias_anteriores": "0",
         "ajuste": "0"
     }

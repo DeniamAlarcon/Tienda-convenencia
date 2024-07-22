@@ -14,6 +14,7 @@ class Inventario:
         self.producto = Producto.lista_productos
         self.proveedor = Proveedores.proveedores
 
+    @classmethod
     def escribir_archivo_csv(self):
         ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.csv'
         try:
@@ -23,7 +24,7 @@ class Inventario:
                 writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
                 writer.writeheader()
 
-                for producto in self.producto:
+                for producto in Producto.lista_productos:
                     writer.writerow({
                         "codigo": producto.codigo,
                         "nombre": producto.nombre,
@@ -36,9 +37,11 @@ class Inventario:
                         "existencias_anteriores": producto.existenciasAnteriores,
                         "ajuste": producto.ajuste
                     })
+                print("archivo CSV creado correctamente ")
         except PermissionError:
             print(f"Error al crear o escribir el archivo CSV")
 
+    @classmethod
     def escribir_archivo_json(self):
         ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.json'
 
@@ -56,16 +59,17 @@ class Inventario:
                     "existencias_anteriores": producto.existenciasAnteriores,
                     "ajuste": producto.ajuste
                 }
-                for producto in self.producto
+                for producto in Producto.lista_productos
             ]
             json_object = json.dumps(lista_productos_json, indent=4)
 
             with open(ruta_json, "w", encoding='utf8') as json_file:
                 json_file.write(json_object)
-
+            print("archivo JSON creado correctamente ")
         except Exception as e:
             print(f"Error al crear o escribir el archivo JSON: ")
 
+    @classmethod
     def escribir_archivo_pdf(self):
         archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\Archivos\\Archivos_inventarios\\reporte_inventario.pdf'
 
@@ -85,7 +89,7 @@ class Inventario:
                           "Existencias Anteriores", "Ajuste"]
             data = [fieldnames]
 
-            for product in self.producto:
+            for product in Producto.lista_productos:
                 data.append([
                     product.codigo,
                     product.nombre,
@@ -122,9 +126,11 @@ class Inventario:
             elementos.append(Spacer(1, 12))
 
             doc.build(elementos)
+            print("archivo PDF creado correctamente ")
         except Exception as e:
             print(f"Error al crear o escribir el archivo PDF")
 
+    @classmethod
     def escribir_archivo_xlsx(self):
         archivo_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.xlsx'
 
@@ -139,7 +145,7 @@ class Inventario:
             sheet.append(encabezados)
 
             # Escribir datos
-            for producto in self.producto:
+            for producto in Producto.lista_productos:
                 sheet.append([
                     producto.codigo,
                     producto.nombre,
@@ -154,6 +160,7 @@ class Inventario:
                 ])
 
             workbook.save(archivo_xlsx)
+            print("archivo xlsx creado correctamente ")
         except Exception as e:
             print(f"Error al crear o escribor el archivo XLSX")
 
@@ -211,8 +218,11 @@ class Inventario:
             if product.nombre == nombre:
                 if int(product.stock) < 5 and int(product.stock) >0:
                     print("Stock bajo de ",product.nombre)
+                    return "Stock bajo de ",product.nombre
                 elif int(product.stock) == 0:
                     print("No hay stock de ",product.nombre)
+                    return "No hay stock de ", product.nombre
+        return None
 
     def actualizarEntradas(self,nombre, cantidad):
         for product in self.producto:
@@ -237,6 +247,7 @@ class Inventario:
         print("Producto no encontrado")
         return False
 
+    @classmethod
     def escribir_archivo_stock_csv(self):
         ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.csv'
         try:
@@ -244,7 +255,7 @@ class Inventario:
                 fieldnames = ["codigo", "nombre", "marca", "precio", "stock"]
                 writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
                 writer.writeheader()
-                for producto in self.producto:
+                for producto in Producto.lista_productos:
                     writer.writerow({
                         "codigo": producto.codigo,
                         "nombre": producto.nombre,
@@ -255,6 +266,7 @@ class Inventario:
         except PermissionError:
             print(f"Error al crear o escribir el archivo CSV")
 
+    @classmethod
     def escribir_archivo_stock_pdf(self):
         archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.pdf'
 
@@ -274,7 +286,7 @@ class Inventario:
             fieldnames = ["Código", "Nombre", "Marca", "Precio", "Stock"]
             data = [fieldnames]
 
-            for producto in self.producto:
+            for producto in Producto.lista_productos:
                 data.append([
                     producto.codigo,
                     producto.nombre,
@@ -303,6 +315,7 @@ class Inventario:
         except Exception as e:
             print(f"Error al crear o escribir el archivo PDF")
 
+    @classmethod
     def escribir_archivo_stock_json(cls):
         ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.json'
         lista_productos_json = [
@@ -313,7 +326,7 @@ class Inventario:
                 "precio": producto.precio,
                 "stock": producto.stock
             }
-            for producto in cls.producto
+            for producto in Producto.lista_productos
         ]
 
         try:
@@ -322,6 +335,7 @@ class Inventario:
         except PermissionError:
             print(f"Error al crear o escribir el archivo JSON")
 
+    @classmethod
     def escribir_archivo_stock_xlsx(cls):
         ruta_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.xlsx'
         workbook = Workbook()
@@ -333,7 +347,7 @@ class Inventario:
         sheet.append(encabezados)
 
         # Escribir datos
-        for producto in cls.producto:
+        for producto in Producto.lista_productos:
             sheet.append([
                 producto.codigo,
                 producto.nombre,

@@ -10,7 +10,7 @@ from login1 import *
 
 def validar_tamanio(tamanio):
     unidades_validas = ["kg", "g", "L", "ml", "pcs", "m", "cm", "in"]
-    pattern = re.compile(r'^(\d+(\.\d+)?)(kg|g|L|ml|pcs|m|cm|in)$')
+    pattern = re.compile(r'^(\d+(\.\d+)?)(kg|g|L|ml|pcs|m|cm|in|gr)$')
     match = pattern.match(tamanio)
     if match:
         unidad = match.group(3)
@@ -55,7 +55,7 @@ class ProductosApp(tk.Tk):
         tk.Button(self, text="Detalles de Producto", width=30, command=self.detalles_producto).pack(pady=5)
         tk.Button(self, text="Actualizar Producto", width=30, command=self.actualizar_producto).pack(pady=5)
         tk.Button(self, text="Crear Archivos", width=30, command=self.menu_archivos).pack(pady=5)
-       # tk.Button(self, text="Salir", width=30, command=self.destroy()).pack(pady=20)
+        tk.Button(self, text="Salir", width=30, command=self.quit).pack(pady=20)
 
     def registrar_producto(self):
         self.clear_frame()
@@ -110,7 +110,7 @@ class ProductosApp(tk.Tk):
             messagebox.showerror("Error", "Favor de llenar todos los campos requeridos")
             return
 
-        if not Producto.validar_codigo(codigo):
+        if Producto.validar_codigo(codigo):
             messagebox.showerror("Error", "Código de producto ya registrado")
             return
 
@@ -174,7 +174,6 @@ class ProductosApp(tk.Tk):
         resultados = Producto.detalles_nombre(nombre)
         self.resultado_text.config(state=tk.NORMAL)
         self.resultado_text.delete(1.0, tk.END)
-
         if nombre != "":
             if resultados:
                 for producto in resultados:
@@ -188,7 +187,9 @@ class ProductosApp(tk.Tk):
             else:
                 self.resultado_text.insert(tk.END, "No se encontraron productos con ese nombre")
         else:
-            messagebox.showerror("Error", "No se ingreso ningun dato")
+            self.resultado_text.insert(tk.END,  f"{'Codigo': <8}{'Nombre': <8}{'Marca': <10}{'Proveedor': <10}{'Cantidad': <10}{'Tamaño': <8}{'Precio': <8}{'Vencimiento': <4}\n")
+            for producto in resultados:
+                self.resultado_text.insert(tk.END,f"{producto.codigo:<8}{producto.nombre:<8}{producto.marca:<10}{producto.proveedor:<10}{producto.cantidad:<10}{producto.tamanio:<8}{producto.precio:<8}{producto.fecha_caducidad:<}\n")
 
         self.resultado_text.config(state=tk.DISABLED)
 
@@ -242,6 +243,14 @@ class ProductosApp(tk.Tk):
         proveedor = self.proveedor_actualizar_entry.get()
         tamanio = self.tamanio_actualizar_entry.get()
         precio = self.precio_actualizar_entry.get()
+
+        if not codigo:
+            messagebox.showerror("Error","ingrese el campo codigo para actualizar")
+            return
+
+        if codigo and not Producto.validar_codigo(codigo):
+            messagebox.showerror("Error", "Producto no encontrado")
+            return
 
         if nombre and Producto.buscar_nombre(nombre):
             messagebox.showerror("Error", "Nombre de producto ya registrado")

@@ -26,7 +26,7 @@ class Producto:
 
     @classmethod
     def leer_archivo(cls):
-        archivo_proveedores = 'D:\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
+        archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
         try:
             with open(archivo_proveedores, encoding='utf8') as archivo_productos:
                 reader = csv.DictReader(archivo_productos)
@@ -51,6 +51,7 @@ class Producto:
                     producto.stock = row["stock"]
                     producto.existenciasAnteriores = row["existencias_anteriores"]
                     producto.ajuste = row["ajuste"]
+            print("Archivo creado correctamente")
         except csv.Error as e:
             print(f'Error al leer el archivo CSV')
 
@@ -75,6 +76,7 @@ class Producto:
                         "tamanio": producto.tamanio,
                         "fecha_caducidad": producto.fecha_caducidad
                     })
+            print("Archivo creado correctamente")
         except PermissionError:
             print(f"Error al crear o escribir el archivo CSV")
 
@@ -100,7 +102,7 @@ class Producto:
 
             with open(ruta_json, "w", encoding='utf8') as json_file:
                 json_file.write(json_object)
-
+            print("Archivo creado correctamente")
         except Exception as e:
             print(f"Error al crear o escribir el archivo JSON: ")
 
@@ -158,6 +160,7 @@ class Producto:
             elementos.append(Spacer(1, 12))
 
             doc.build(elementos)
+            print("Archivo creado correctamente")
         except Exception as e:
             print(f"Error al crear o escribir el archivo PDF")
 
@@ -188,6 +191,7 @@ class Producto:
                 ])
 
             workbook.save(archivo_xlsx)
+            print("Archivo creado correctamente")
         except Exception as e:
             print(f"Error al crear o escribor el archivo XLSX")
 
@@ -214,7 +218,7 @@ class Producto:
                 print("Codigo: ", product.codigo, "Nombre: ", product.nombre, "Marca: ", product.marca, "Proveedor: ",
                       product.proveedor, "Cantidad: ", product.cantidad, "Unidad de medida: ", product.tamanio,
                       "Precio: ", product.precio, "Fecha de caducidad:", product.fecha_caducidad)
-                return Producto.lista_productos
+            return Producto.lista_productos
         else:
             for product in Producto.lista_productos:
                 if product.nombre == nombre:
