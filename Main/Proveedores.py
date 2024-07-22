@@ -18,7 +18,7 @@ class Proveedores:
 
     @classmethod
     def leer_archivo(cls):
-        archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
+        archivo_proveedores = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
         try:
 
             with open(archivo_proveedores, encoding='utf8') as archivo:
@@ -49,7 +49,7 @@ class Proveedores:
 
     @classmethod
     def escribir_archivo_csv(cls):
-        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_csv.csv'
+        ruta_csv = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_csv.csv'
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["id", "nombre", "correo", "telefono"]
@@ -68,7 +68,7 @@ class Proveedores:
 
     @classmethod
     def escribir_archivo_json(cls):
-        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_json.json'
+        ruta_json = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_json.json'
 
         try:
             lista_proveedores_json = [
@@ -90,7 +90,7 @@ class Proveedores:
 
     @classmethod
     def escribir_archivo_pdf(cls):
-        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_pdf.pdf'
+        archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_pdf.pdf'
         try:
             doc = SimpleDocTemplate(
                 archivo_pdf,

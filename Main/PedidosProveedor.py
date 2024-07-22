@@ -1,5 +1,6 @@
 from Main.Inventario import *
 from datetime import datetime
+from tkinter import messagebox
 
 class PedidosProveedor:
     idAuto=0
@@ -55,7 +56,7 @@ class PedidosProveedor:
     @classmethod
     def pedidos_proveedorID(self, idp,cantidad):
         if not self.pedidos:
-            print("No hay pedidos guardados con este proveedor.")
+            messagebox.showerror("Error","No hay pedidos guardados con este proveedor.")
         else:
             for pedido in self.pedidos:
                 if pedido.id == int(idp):
@@ -64,19 +65,19 @@ class PedidosProveedor:
                             f"ID: {pedido.id}, Proveedor: {pedido.proveedor}, Nombre: {pedido.nombre}, Marca: {pedido.marca}, Cantidad: {pedido.cantidad},Precio de Compra: {pedido.precio},  Estatus: {pedido.estatus}")
 
                         if int(pedido.cantidad) < int(cantidad):
-                            print("Se exedio la cantidad de producto")
+                             messagebox.showerror("Eroro","Se exedio la cantidad de producto")
                         elif int(pedido.cantidad) > int(cantidad):
-                            print("Entrega Incompleta")
+                            messagebox.showerror("Error","Entrega Incompleta")
                         else:
                             inventario = Inventario()
                             inventario.actualizarEntradas(pedido.nombre, cantidad)
                             PedidosProveedor.actualizar_estatus_a_entregado(int(idp))
-                            print("Entrega correcta")
+                            messagebox.showinfo("Éxito","Entrega completa")
                         return True
                     else:
-                        print("No existen pedidos pendientes para validar")
+                        messagebox.showerror("Error","No existen pedidos pendientes para validar")
                 else:
-                    print("Pedido no encontrado con este ID")
+                    messagebox.showerror("Error","Pedido no encontrado con este ID")
 
     @classmethod
     def buscarID(self,idp):

@@ -107,7 +107,6 @@ class ComprasProveedorApp(tk.Tk):
 
         try:
             PedidosProveedor.pedidos_proveedorID(id_pedido, int(cantidad))
-            messagebox.showinfo("Éxito", "Entrega validada correctamente")
         except ValueError:
             messagebox.showerror("Error", "Ingrese datos correctos")
 
@@ -138,14 +137,14 @@ class ComprasProveedorApp(tk.Tk):
             return
 
         if not cantidad.isdigit() or int(cantidad) <= 0:
-            messagebox.showerror("Error", "Cantidad inválida")
+            messagebox.showerror("Error", "Ingrese cantidad numerica")
             return
 
         inventario = Inventario()
         if inventario.actualizarSalidas(producto, int(cantidad)):
-            messagebox.showinfo("Éxito", "Devolución registrada correctamente")
+            messagebox.showinfo("Éxito", "Devolución registrada")
         else:
-            messagebox.showerror("Error", "Error al registrar la devolución")
+            messagebox.showerror("Error", "Producto no registrado")
 
         self.create_widgets()
 
@@ -164,12 +163,21 @@ class ComprasProveedorApp(tk.Tk):
         tk.Label(self, text="Historial de Compras", font=("Arial", 16)).pack(pady=10)
         self.resultado_text = tk.Text(self, height=20, width=80)
         self.resultado_text.pack(pady=10)
-        resultados=PedidosProveedor.mostrar_pedidos()
-        if resultados:
-            self.resultado_text.insert(tk.END,
-                                       f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
-            for pedido in resultados:
-                self.resultado_text.insert(tk.END, f"{pedido.id:<5}{pedido.proveedor:<12}{pedido.nombre:<12}{pedido.marca:<12}{pedido.cantidad:<12}{pedido.precio:<12}{pedido.estatus:<12}\n")
+        try:
+            resultados = PedidosProveedor.mostrar_pedidos()
+            if resultados:
+                self.resultado_text.insert(tk.END,
+                                           f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
+                for pedido in resultados:
+                    self.resultado_text.insert(tk.END,
+                                               f"{pedido.id:<5}{pedido.proveedor:<12}{pedido.nombre:<12}{pedido.marca:<12}{pedido.cantidad:<12}{pedido.precio:<12}{pedido.estatus:<12}\n")
+            else:
+                self.resultado_text.insert(tk.END,
+                                           f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
+
+                messagebox.showerror("Error", "No hay pedidos guardados.")
+        except Exception:
+            messagebox.showerror("Error", "Ocurrio un error al generar el historial de compras")
         tk.Button(self, text="Volver", command=self.generar_historiales_compra).pack(pady=10)
 
     def historial_compras_proveedor(self):
@@ -193,7 +201,7 @@ class ComprasProveedorApp(tk.Tk):
 
         proveedor = Proveedores.validar_provedor(nombre_proveedor)
         if not proveedor:
-            messagebox.showerror("Error", "Proveedor no registrado")
+            messagebox.showerror("Error", "Proveedor no encontrado")
             return
 
         self.clear_frame()

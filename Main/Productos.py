@@ -26,7 +26,7 @@ class Producto:
 
     @classmethod
     def leer_archivo(cls):
-        archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
+        archivo_proveedores = 'D:\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
         try:
             with open(archivo_proveedores, encoding='utf8') as archivo_productos:
                 reader = csv.DictReader(archivo_productos)
