@@ -308,6 +308,7 @@ class VentasApp(tk.Tk):
                 venta = Ventas(venta.nombre,venta.cantidad,venta.total)
                 venta.guardar_venta()
             self.create_widgets()
+            Ticket.limpiar_ticket()
 
 
     def procesar_agregar_venta(self):

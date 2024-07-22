@@ -29,10 +29,11 @@ def validar_fecha(fecha):
         return False
 
 def validar_caducidad(fecha):
-    formato = "%d/%m/%Y"
-    fecha_actual = datetime.now()
-    fecha_dada = datetime.strptime(fecha, formato)
-    return fecha_dada < fecha_actual
+    if fecha:
+        formato = "%d/%m/%Y"
+        fecha_actual = datetime.now()
+        fecha_dada = datetime.strptime(fecha, formato)
+        return fecha_dada < fecha_actual
 
 def validar_cantidad(cantidad):
     return cantidad.isdigit() and int(cantidad) > 0
@@ -222,6 +223,8 @@ class ProductosApp(tk.Tk):
         tk.Label(self, text="Código del Producto").pack()
         self.codigo_actualizar_entry = tk.Entry(self)
         self.codigo_actualizar_entry.pack()
+        tk.Button(self, text="Buscar", command=self.mostar_datos_productos).pack(pady=10)
+
 
         tk.Label(self, text="Nuevo Nombre (dejar en blanco para no cambiar)").pack()
         self.nombre_actualizar_entry = tk.Entry(self)
@@ -239,8 +242,24 @@ class ProductosApp(tk.Tk):
         self.precio_actualizar_entry = tk.Entry(self)
         self.precio_actualizar_entry.pack()
 
+        tk.Label(self, text="Ingrese la fecha de caducidad (dd/mm/yyyy)").pack()
+        self.fecha_actualizar_entry = tk.Entry(self)
+        self.fecha_actualizar_entry.pack()
+
         tk.Button(self, text="Actualizar", command=self.procesar_actualizacion).pack(pady=10)
         tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
+
+    def mostar_datos_productos(self):
+        resultados = Producto.buscarProducto(self.codigo_actualizar_entry.get())
+        if resultados:
+            self.nombre_actualizar_entry.insert(tk.END, resultados.nombre)
+            self.proveedor_actualizar_entry.insert(tk.END, resultados.proveedor)
+            self.tamanio_actualizar_entry.insert(tk.END, resultados.tamanio)
+            self.precio_actualizar_entry.insert(tk.END, resultados.precio)
+            self.fecha_actualizar_entry.insert(tk.END, resultados.fecha_caducidad)
+        else:
+            messagebox.showerror("Error", "No se encontro el producto")
+
 
     def procesar_actualizacion(self):
         codigo = self.codigo_actualizar_entry.get()
@@ -248,6 +267,7 @@ class ProductosApp(tk.Tk):
         proveedor = self.proveedor_actualizar_entry.get()
         tamanio = self.tamanio_actualizar_entry.get()
         precio = self.precio_actualizar_entry.get()
+        fecha_caducidad = self.fecha_actualizar_entry.get()
 
         if not codigo:
             messagebox.showerror("Error","ingrese el campo codigo para actualizar")
@@ -273,7 +293,16 @@ class ProductosApp(tk.Tk):
             messagebox.showerror("Error", "Precio no válido")
             return
 
-        Producto.actualizar(codigo, nombre, proveedor, tamanio, precio)
+        if fecha_caducidad and not validar_fecha(fecha_caducidad):
+            messagebox.showerror("Error","Fecha no válida")
+            return
+
+        if validar_caducidad(fecha_caducidad):
+            messagebox.showerror("Error", "El producto está caduco")
+            return
+
+        print(codigo,nombre,tamanio,precio,fecha_caducidad, " esto me importa demasiado")
+        Producto.actualizar(codigo, nombre, proveedor, tamanio, precio, fecha_caducidad)
         messagebox.showinfo("Éxito", "Producto actualizado exitosamente")
         self.create_widgets()
 

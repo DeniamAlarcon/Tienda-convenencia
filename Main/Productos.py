@@ -26,7 +26,7 @@ class Producto:
 
     @classmethod
     def leer_archivo(cls):
-        archivo_proveedores = 'D:\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
+        archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
         try:
             with open(archivo_proveedores, encoding='utf8') as archivo_productos:
                 reader = csv.DictReader(archivo_productos)
@@ -260,40 +260,51 @@ class Producto:
 
 
     @classmethod
-    def actualizar(self, id, nombre, proveedor, tamanio, precio):
-        producto = self.buscarProducto(id)
+    def actualizar(self, id, nombre, proveedor, tamanio, precio, fecha_caducidad):
+        producto = Producto.buscarProducto(id)
         if producto:
-            if not nombre and not proveedor and not tamanio and not precio:
+            if nombre =="" and proveedor == "" and tamanio == "" and precio == "" and fecha_caducidad == "":
                 producto.nombre = producto.nombre
                 producto.proveedor = producto.proveedor
                 producto.tamanio = producto.tamanio
                 producto.precio = producto.precio
-            elif not nombre:
+                producto.fecha_caducidad = producto.fecha_caducidad
+            elif nombre == "":
                 producto.nombre = producto.nombre
                 producto.proveedor = proveedor
                 producto.tamanio = tamanio
                 producto.precio = precio
-            elif not proveedor:
+                producto.fecha_caducidad = fecha_caducidad
+            elif proveedor == "":
                 producto.nombre = nombre
                 producto.proveedor = producto.proveedor
                 producto.tamanio = tamanio
                 producto.precio = precio
-            elif not tamanio:
+                producto.fecha_caducidad = fecha_caducidad
+            elif tamanio == "":
                 producto.nombre = nombre
                 producto.proveedor = proveedor
                 producto.tamanio = producto.tamanio
                 producto.precio = precio
-            elif not precio:
+                producto.fecha_caducidad = fecha_caducidad
+            elif precio == "":
                 producto.nombre = nombre
                 producto.proveedor = proveedor
                 producto.tamanio = tamanio
                 producto.precio = producto.precio
+                producto.fecha_caducidad = fecha_caducidad
+            elif fecha_caducidad == "":
+                producto.nombre = nombre
+                producto.proveedor = proveedor
+                producto.tamanio = tamanio
+                producto.precio = precio
+                producto.fecha_caducidad = producto.fecha_caducidad
             else:
                 producto.nombre = nombre
                 producto.proveedor = proveedor
                 producto.tamanio = tamanio
                 producto.precio = precio
-
+                producto.fecha_caducidad = fecha_caducidad
             print("Prodcuto actualizado")
         else:
             print("Producto no encontrado")

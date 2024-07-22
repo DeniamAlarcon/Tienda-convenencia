@@ -249,7 +249,7 @@ class Inventario:
 
     @classmethod
     def escribir_archivo_stock_csv(self):
-        ruta_csv = 'D:\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.csv'
+        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.csv'
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["codigo", "nombre", "marca", "precio", "stock"]
@@ -268,7 +268,7 @@ class Inventario:
 
     @classmethod
     def escribir_archivo_stock_pdf(self):
-        archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.pdf'
+        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.pdf'
 
         try:
             # Ajustar márgenes
@@ -317,7 +317,7 @@ class Inventario:
 
     @classmethod
     def escribir_archivo_stock_json(cls):
-        ruta_json = 'D:\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.json'
+        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.json'
         lista_productos_json = [
             {
                 "codigo": producto.codigo,
@@ -337,7 +337,7 @@ class Inventario:
 
     @classmethod
     def escribir_archivo_stock_xlsx(cls):
-        ruta_xlsx = 'D:\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.xlsx'
+        ruta_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.xlsx'
         workbook = Workbook()
         sheet = workbook.active
         sheet.title = "Stock"
