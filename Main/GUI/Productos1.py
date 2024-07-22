@@ -41,11 +41,12 @@ def validar_precio(precio):
     return precio.isdigit() and int(precio) > 0
 
 class ProductosApp(tk.Tk):
-    def __init__(self):
+    def __init__(self,main_app):
         super().__init__()
         self.title("Gestión de Productos")
         self.geometry("600x600")
         self.create_widgets()
+        self.main_app = main_app
 
     def create_widgets(self):
         self.clear_frame()
@@ -55,7 +56,11 @@ class ProductosApp(tk.Tk):
         tk.Button(self, text="Detalles de Producto", width=30, command=self.detalles_producto).pack(pady=5)
         tk.Button(self, text="Actualizar Producto", width=30, command=self.actualizar_producto).pack(pady=5)
         tk.Button(self, text="Crear Archivos", width=30, command=self.menu_archivos).pack(pady=5)
-        tk.Button(self, text="Salir", width=30, command=self.quit).pack(pady=20)
+        tk.Button(self, text="Salir", width=30, command=self.volver_menu_principal).pack(pady=20)
+
+    def volver_menu_principal(self):
+        self.destroy()
+        self.main_app.deiconify()
 
     def registrar_producto(self):
         self.clear_frame()

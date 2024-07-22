@@ -13,12 +13,13 @@ from Main.Proveedores import *
 from Main.Inventario import *
 
 class InventarioApp(tk.Tk):
-    def __init__(self):
+    def __init__(self,main_app):
         super().__init__()
         self.title("Inventario de Productos")
         self.geometry("600x400")
         self.inventario = Inventarios()
         self.create_widgets()
+        self.main_app = main_app
 
     def create_widgets(self):
         self.clear_frame()
@@ -28,8 +29,11 @@ class InventarioApp(tk.Tk):
         tk.Button(self, text="Generar informe de stock", width=30, command=self.generar_informe_stock).pack(pady=5)
         tk.Button(self, text="Ajuste de inventario", width=30, command=self.ajuste_inventario).pack(pady=5)
         tk.Button(self, text="Revisión de fechas de caducidad", width=30, command=self.revision_fechas_caducidad).pack(pady=5)
-        tk.Button(self, text="Salir", width=30, command=self.quit).pack(pady=20)
+        tk.Button(self, text="Salir", width=30, command=self.volver_menu_principal).pack(pady=20)
 
+    def volver_menu_principal(self):
+        self.destroy()
+        self.main_app.deiconify()
 
     def generar_informe_inventario(self):
         self.clear_frame()

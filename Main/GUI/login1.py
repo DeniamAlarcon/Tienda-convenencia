@@ -14,28 +14,30 @@ usuarios = [
     "admin"
 ]
 
+
 class App(tk.Tk):
 
     def __init__(self):
         super().__init__()
-        self.title("Sistema de Gestión")
-        self.geometry("500x500")
+        self.title("Tiendita")
+        self.geometry("400x340")
+        self.resizable(False, False)
         self.create_login_screen()
 
     def create_login_screen(self):
         self.clear_screen()
 
-        tk.Label(self, text="---Inicio de sesión---").pack()
+        tk.Label(self, text="---Inicio de sesión---").pack(pady=15)
 
         tk.Label(self, text="Usuario:").pack()
-        self.usuario_entry = tk.Entry(self)
-        self.usuario_entry.pack()
+        self.usuario_entry = tk.Entry(self,width=30,highlightcolor="red")
+        self.usuario_entry.pack(pady=15)
 
         tk.Label(self, text="Contraseña:").pack()
-        self.contraseña_entry = tk.Entry(self, show="*")
-        self.contraseña_entry.pack()
+        self.contraseña_entry = tk.Entry(self, show="*",width=30)
+        self.contraseña_entry.pack(pady=15)
 
-        tk.Button(self, text="Ingresar", command=self.solicitar_credenciales).pack()
+        tk.Button(self, text="Ingresar",width=30, command=self.solicitar_credenciales).pack(pady=15)
 
     def solicitar_credenciales(self):
         usuario = self.usuario_entry.get()
@@ -50,25 +52,28 @@ class App(tk.Tk):
 
     def create_menu_screen(self):
         self.clear_screen()
+        self.geometry("400x340")
+        self.resizable(False, False)
         Proveedores.leer_archivo()
         Producto.leer_archivo()
 
-        tk.Label(self, text="--- Menu principal ---").pack()
-        tk.Button(self, text="Proveedores", command=self.menuProveedores).pack()
-        tk.Button(self, text="Productos", command=self.menuProductos).pack()
-        tk.Button(self, text="Compras", command=self.menu_compras).pack()
-        tk.Button(self, text="Inventarios", command=self.menuInventarios).pack()
-        tk.Button(self, text="Ventas", command=self.menuVentas).pack()
-        tk.Button(self, text="Salir", command=self.quit).pack()
+        tk.Label(self, text="--- Menu principal ---").pack(pady=5)
+        tk.Button(self, text="Proveedores", width=30,command=self.menuProveedores).pack(pady=5)
+        tk.Button(self, text="Productos", width=30,command=self.menuProductos).pack(pady=5)
+        tk.Button(self, text="Compras", width=30,command=self.menu_compras).pack(pady=5)
+        tk.Button(self, text="Inventarios", width=30,command=self.menuInventarios).pack(pady=5)
+        tk.Button(self, text="Ventas",width=30, command=self.menuVentas).pack(pady=5)
+        tk.Button(self, text="Salir",width=30, command=self.quit).pack(pady=5)
 
     def menuProveedores(self):
         self.withdraw()  # Hide the main window
-        menuProv = ProveedorApp()
+        menuProv = ProveedorApp(self)
         menuProv.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
         menuProv.mainloop()
+
     def menuProductos(self):
         self.withdraw()  # Hide the main window
-        menuPro = ProductosApp()
+        menuPro = ProductosApp(self)
         menuPro.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
         menuPro.mainloop()
 
@@ -80,14 +85,14 @@ class App(tk.Tk):
 
     def menuInventarios(self):
         self.withdraw()  # Hide the main window
-        menuProv = InventarioApp()
+        menuProv = InventarioApp(self)
         menuProv.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
         menuProv.mainloop()
 
     def menu_compras(self):
         if Proveedores.mostrar():
             self.withdraw()  # Hide the main window
-            menuC = ComprasProveedorApp()
+            menuC = ComprasProveedorApp(self)
             menuC.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
             menuC.mainloop()
         else:
@@ -96,6 +101,7 @@ class App(tk.Tk):
     def clear_screen(self):
         for widget in self.winfo_children():
             widget.destroy()
+
 
 if __name__ == "__main__":
     app = App()

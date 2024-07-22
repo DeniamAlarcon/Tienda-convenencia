@@ -4,12 +4,13 @@ from Main.Proveedores import *
 import re
 
 class ProveedorApp(tk.Tk):
-    def __init__(self):
+    def __init__(self,main_app):
         super().__init__()
         self.title("Gestión de Proveedores")
         self.geometry("500x500")
         self.resizable(False, False)
         self.create_widgets()
+        self.main_app = main_app
 
     def create_widgets(self):
         self.clear_frame()
@@ -18,7 +19,11 @@ class ProveedorApp(tk.Tk):
         tk.Button(self, text="Actualizar Proveedor", width=30, command=self.actualizar_proveedores).pack(pady=5)
         tk.Button(self, text="Mostrar Proveedor", width=30, command=self.mostrar_proveedor).pack(pady=5)
         tk.Button(self, text="Eliminar Proveedor", width=30, command=self.eliminar_proveedor).pack(pady=5)
-        tk.Button(self, text="Salir", width=30, command=self.destroy).pack(pady=20)
+        tk.Button(self, text="Salir", width=30, command=self.volver_menu_principal).pack(pady=20)
+
+    def volver_menu_principal(self):
+        self.destroy()
+        self.main_app.deiconify()
 
     def registrar_proveedor(self):
         self.clear_frame()
@@ -100,7 +105,7 @@ class ProveedorApp(tk.Tk):
                     self.n_nombre_entry.insert(tk.END, i.nombre)
                     self.n_correo_entry.insert(tk.END, i.correo)
                     self.n_telefono_entry.insert(tk.END, i.telefono)
-                messagebox.showerror("Si se encotro el ID", i.id)
+
         else:
             messagebox.showerror("Error", "No se encontro al proveedor")
 
