@@ -14,7 +14,6 @@ class ProveedorApp(tk.Tk):
     def create_widgets(self):
         self.clear_frame()
         tk.Label(self, text="--- Menu de Proveedor ---", font=("Arial", 16)).pack(pady=10)
-
         tk.Button(self, text="Registrar Proveedor", width=30, command=self.registrar_proveedor).pack(pady=5)
         tk.Button(self, text="Actualizar Proveedor", width=30, command=self.actualizar_proveedores).pack(pady=5)
         tk.Button(self, text="Mostrar Proveedor", width=30, command=self.mostrar_proveedor).pack(pady=5)
