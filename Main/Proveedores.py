@@ -1,6 +1,6 @@
 import csv
 import json
-
+from tkinter import messagebox
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
@@ -257,8 +257,9 @@ class Proveedores:
                         proveedor.nombre = nom
                         proveedor.correo = correo
                         proveedor.telefono = telefono
+                    messagebox.showinfo("Exito","Proveedor actualizado correctamente")
         else:
-            print("Proveedor ya registrado con esos datos.")
+            messagebox.showerror("Error","Proveedor ya registrado con esos datos.")
 
 
 

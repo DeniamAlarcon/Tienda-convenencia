@@ -80,7 +80,8 @@ class ProveedorApp(tk.Tk):
         tk.Label(self, text="Nombre del Proveedor").pack()
         self.id_entry = tk.Entry(self)
         self.id_entry.pack()
-        tk.Button(self, text="Buscar", command=self.mostrar_proveedoresAct).pack(pady=10)
+        self.boton_buscar=tk.Button(self, text="Buscar", command=self.mostrar_proveedoresAct)
+        self.boton_buscar.pack(pady=10)
 
         tk.Label(self, text="Nuevo Nombre").pack()
         self.n_nombre_entry = tk.Entry(self)
@@ -98,7 +99,9 @@ class ProveedorApp(tk.Tk):
         tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
 
     def mostrar_proveedoresAct(self):
+
         resultados=Proveedores.mostrar_nombre(self.id_entry.get())
+
         if resultados:
             for i in resultados:
                 if i.nombre==self.id_entry.get():
@@ -108,6 +111,9 @@ class ProveedorApp(tk.Tk):
 
         else:
             messagebox.showerror("Error", "No se encontro al proveedor")
+        self.id_entry.config(state=tk.DISABLED)
+        self.boton_buscar.config(state="disabled")
+
 
 
     def procesar_actualizacion(self):
@@ -128,7 +134,6 @@ class ProveedorApp(tk.Tk):
 
                 if n_nombre != "" and n_correo != "" and n_telefono != "":
                     Proveedores.actualizarGUI(id, n_nombre, n_correo, n_telefono)
-                    messagebox.showinfo("Éxito", "Proveedor actualizado")
                     self.create_widgets()
                 else:
                     messagebox.showerror("Error", "Favor de ingresar todos los campos requeridos")
