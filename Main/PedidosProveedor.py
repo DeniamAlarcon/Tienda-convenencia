@@ -29,6 +29,7 @@ class PedidosProveedor:
             for pedido in cls.pedidos:
                 print(
                     f"ID: {pedido.id}, Proveedor: {pedido.proveedor}, Nombre: {pedido.nombre}, Marca: {pedido.marca}, Cantidad: {pedido.cantidad},Precio de Compra: {pedido.precio}, Estatus: {pedido.estatus}")
+            return cls.pedidos
 
     @classmethod
     def pedidos_proveedor(self,proveedor):
@@ -39,8 +40,8 @@ class PedidosProveedor:
                 if pedido.proveedor == proveedor:
                     print(
                         f"ID: {pedido.id}, Proveedor: {pedido.proveedor}, Nombre: {pedido.nombre}, Marca: {pedido.marca}, Cantidad: {pedido.cantidad}, Precio de Compra: {pedido.precio},  Estatus: {pedido.estatus}")
-                else:
-                    print("Pedido no encontrado")
+
+            return self.pedidos
 
     @classmethod
     def actualizar_estatus_a_entregado(cls, idp):

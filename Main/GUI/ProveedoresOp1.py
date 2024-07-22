@@ -107,7 +107,7 @@ class ProveedorApp(tk.Tk):
 
 
     def procesar_actualizacion(self):
-        #try:
+        try:
             id = self.id_entry.get()
             if Proveedores.mostrar_nombre(id):
                 n_nombre = self.n_nombre_entry.get()
@@ -130,10 +130,10 @@ class ProveedorApp(tk.Tk):
                     messagebox.showerror("Error", "Favor de ingresar todos los campos requeridos")
             else:
                 messagebox.showerror("Error","Proveedor no encontrado")
-       # except ValueError:
-        #    messagebox.showerror("Error", "Ingrese un ID de proveedor válido")
-        #except Exception as e:
-        #    messagebox.showerror("Error", f"Error al actualizar proveedor: {e}")
+        except ValueError:
+            messagebox.showerror("Error", "Ingrese un ID de proveedor válido")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al actualizar proveedor: {e}")
 
     def mostrar_proveedor(self):
         self.clear_frame()

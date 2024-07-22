@@ -151,6 +151,7 @@ class ComprasProveedorApp(tk.Tk):
 
     def generar_historiales_compra(self):
         self.clear_frame()
+
         tk.Label(self, text="Historiales de Compra", font=("Arial", 16)).pack(pady=10)
 
         tk.Button(self, text="Historial de compras", command=self.mostrar_historial_compras).pack(pady=10)
@@ -159,20 +160,26 @@ class ComprasProveedorApp(tk.Tk):
 
     def mostrar_historial_compras(self):
         self.clear_frame()
+        self.geometry("660x550")
         tk.Label(self, text="Historial de Compras", font=("Arial", 16)).pack(pady=10)
         self.resultado_text = tk.Text(self, height=20, width=80)
         self.resultado_text.pack(pady=10)
-        PedidosProveedor.mostrar_pedidos()
+        resultados=PedidosProveedor.mostrar_pedidos()
+        if resultados:
+            self.resultado_text.insert(tk.END,
+                                       f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
+            for pedido in resultados:
+                self.resultado_text.insert(tk.END, f"{pedido.id:<5}{pedido.proveedor:<12}{pedido.nombre:<12}{pedido.marca:<12}{pedido.cantidad:<12}{pedido.precio:<12}{pedido.estatus:<12}\n")
         tk.Button(self, text="Volver", command=self.generar_historiales_compra).pack(pady=10)
 
     def historial_compras_proveedor(self):
         self.clear_frame()
+        self.geometry("660x550")
         tk.Label(self, text="Historial de Compras por Proveedor", font=("Arial", 16)).pack(pady=10)
 
         tk.Label(self, text="Nombre del proveedor").pack()
         self.proveedor_historial_entry = tk.Entry(self)
         self.proveedor_historial_entry.pack()
-
         tk.Button(self, text="Mostrar historial", command=self.procesar_historial_compras_proveedor).pack(pady=10)
         tk.Button(self, text="Volver", command=self.generar_historiales_compra).pack(pady=10)
 
@@ -183,6 +190,7 @@ class ComprasProveedorApp(tk.Tk):
             messagebox.showerror("Error", "Favor de ingresar el nombre del proveedor")
             return
 
+
         proveedor = Proveedores.validar_provedor(nombre_proveedor)
         if not proveedor:
             messagebox.showerror("Error", "Proveedor no registrado")
@@ -192,7 +200,17 @@ class ComprasProveedorApp(tk.Tk):
         tk.Label(self, text=f"Historial de Compras de {nombre_proveedor}", font=("Arial", 16)).pack(pady=10)
         self.resultado_text = tk.Text(self, height=20, width=80)
         self.resultado_text.pack(pady=10)
-        PedidosProveedor.pedidos_proveedor(nombre_proveedor)
+        res=PedidosProveedor.pedidos_proveedor(nombre_proveedor)
+        if res:
+            self.resultado_text.insert(tk.END,
+                                       f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
+            for pedido in res:
+                if pedido.proveedor == nombre_proveedor:
+                    self.resultado_text.insert(tk.END,
+                                               f"{pedido.id:<5}{pedido.proveedor:<12}{pedido.nombre:<12}{pedido.marca:<12}{pedido.cantidad:<12}{pedido.precio:<12}{pedido.estatus:<12}\n")
+        else:
+            messagebox.showerror("Error", "No hay pedidos guardados con este proveedor")
+
         tk.Button(self, text="Volver", command=self.generar_historiales_compra).pack(pady=10)
 
     def clear_frame(self):
