@@ -1,0 +1,22 @@
+[
+    {
+        "codigo": "1",
+        "nombre": "papas",
+        "marca": "sabritas",
+        "precio": "20",
+        "proveedor": "coca-cola",
+        "cantidad": "20",
+        "tamanio": "61gr",
+        "fecha_caducidad": "30/07/2024"
+    },
+    {
+        "codigo": "2",
+        "nombre": "coca",
+        "marca": "coca",
+        "precio": "10",
+        "proveedor": "coca-cola",
+        "cantidad": "20",
+        "tamanio": "1L",
+        "fecha_caducidad": "22/07/2024"
+    }
+]

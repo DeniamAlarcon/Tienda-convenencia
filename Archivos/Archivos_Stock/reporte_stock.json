@@ -1,0 +1,16 @@
+[
+    {
+        "codigo": "1",
+        "nombre": "papas",
+        "marca": "sabritas",
+        "precio": "20",
+        "stock": "4"
+    },
+    {
+        "codigo": "2",
+        "nombre": "coca",
+        "marca": "coca",
+        "precio": "10",
+        "stock": "0"
+    }
+]

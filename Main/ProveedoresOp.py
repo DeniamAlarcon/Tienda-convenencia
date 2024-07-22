@@ -83,7 +83,8 @@ def menuProveedor():
        print("2. Actualizar Proveedor")
        print("3. Mostrar Proveedor")
        print("4. Eliminar Proveedor")
-       print("5. Salir")
+       print("5. Crear archivo")
+       print("6. Salir")
        opcion = input("Ingrese opcion: ")
        if opcion == "1":
            registrarProveedor()
@@ -99,9 +100,31 @@ def menuProveedor():
            elif opc1 == "2":
                Proveedores.mostrar()
        elif opcion == "4":
-            id=int(input("Ingrese id del proveedor: "))
-            Proveedores.eliminarProveedor(id)
+            try:
+                id = int(input("Ingrese id del proveedor: "))
+                Proveedores.eliminarProveedor(id)
+            except ValueError as e:
+                print("Intentelo nuevamente, no ha sido eliminado: ")
        elif opcion == "5":
+           while True:
+               print("---Menu de archivos---")
+               print("1. Crear archivo csv")
+               print("2. Crear archivo json")
+               print("3. Crear archivo pdf")
+               print("4. Crear archivo xlsx")
+               print("5. Salir")
+               opc2 = input("Ingrese opcion: ")
+               if opc2 == "1":
+                   Proveedores.escribir_archivo_csv()
+               elif opc2 == "2":
+                   Proveedores.escribir_archivo_json()
+               elif opc2 == "3":
+                   Proveedores.escribir_archivo_pdf()
+               elif opc2 == "4":
+                   Proveedores.escribir_archivo_xlsx()
+               elif opc2 == "5":
+                   break
+       elif opcion == "6":
            print("Saliendo...")
            break
        else:
