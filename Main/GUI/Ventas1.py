@@ -218,11 +218,12 @@ def validar_pago(total_dado,total_pagar):
 
 
 class VentasApp(tk.Tk):
-    def __init__(self):
+    def __init__(self,main_app):
         super().__init__()
         self.title("Gestión de Ventas")
         self.geometry("600x400")
         self.create_widgets()
+        self.main_app = main_app
 
     def create_widgets(self):
         self.clear_frame()
@@ -232,7 +233,11 @@ class VentasApp(tk.Tk):
         tk.Button(self, text="Mostrar Historial Ventas", width=30, command=self.mostrar_historial_ventas).pack(pady=5)
         tk.Button(self, text="Corte de Caja", width=30, command=self.corte_caja).pack(pady=5)
         tk.Button(self, text="Generar Reporte de Ventas", width=30, command=self.generar_reporte_ventas).pack(pady=5)
-        tk.Button(self, text="Salir", width=30, command=self.destroy).pack(pady=20)
+        tk.Button(self, text="Salir", width=30, command=self.volver_menu_principal).pack(pady=20)
+
+    def volver_menu_principal(self):
+        self.destroy()
+        self.main_app.deiconify()
 
     def agregar_venta(self):
         self.clear_frame()

@@ -79,7 +79,7 @@ class App(tk.Tk):
 
     def menuVentas(self):
         self.withdraw()  # Hide the main window
-        menuV = VentasApp()
+        menuV = VentasApp(self)
         menuV.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
         menuV.mainloop()
 
