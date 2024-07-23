@@ -23,7 +23,6 @@ class Proveedores:
         #archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
         base_dir = os.path.dirname(os.path.abspath(__file__))
         archivo_proveedores = os.path.join(base_dir, 'Archivos', 'Archivos_proveedores', 'proveedores.csv')
-        print(archivo_proveedores)
         try:
 
             with open(archivo_proveedores, encoding='utf8') as archivo:

@@ -154,6 +154,7 @@ class PedidosProveedor:
                             inventario.actualizarEntradas(pedido.nombre, cantidad)
                             PedidosProveedor.actualizar_estatus_a_entregado(int(idp))
                             Producto.escribir_archivo_csv_productos_principal()
+                            PedidosProveedor.escribir_archivo_csv_principal_compras()
                             messagebox.showinfo("Éxito","Entrega completa")
                         return True
                     else:

@@ -3,12 +3,12 @@ import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter, MonthLocator
 from reportlab.platypus import Image
 
-from Main.VentaP import corte_caja
+from Main.VentaP import corte_caja, Ventas
 from Main.VentasMain import *
 from Main.tickets import *
 
 
-class Ventas:
+class Ventas1:
     ventas_list = []
     ventas_historial=[]
     def __init__(self, producto, cantidad,total):
@@ -16,175 +16,18 @@ class Ventas:
         self.cantidad = cantidad
         self.total = total
 
-
     def guardar_venta(self):
-        Ventas.ventas_list.append(self)
+        Ventas1.ventas_list.append(self)
         return True
 
-    @classmethod
-    def leer_ventas_historial_csv(cls):
-        archivo_ventas_historial = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\ventas_historial.csv'
-        try:
-            with open(archivo_ventas_historial, encoding='utf8') as archivo:
-                reader = csv.DictReader(archivo)
-                filas = list(reader)
-
-                if not filas or all(not any(row.values()) for row in filas):
-                    print('No hay datos que leer.')
-                    return
-                # Leer datos y crear objetos Proveedores
-                for row in filas:
-                    Ventas.ventas_historial.append({"fecha":row["fecha"],"cantidad":row["cantidad"]})
-                print('Datos cargados exitosamente.')
-        except csv.Error as e:
-            print(f'Error al leer el archivo CSV')
-
-    @classmethod
-    def escribir_ventas_historial_csv(cls):
-        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\ventas_historial.csv'
-        try:
-            with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
-                fieldnames = ["fecha", "cantidad"]
-                writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
-                writer.writeheader()
-
-                for venta in Ventas.ventas_historial:
-                    writer.writerow({
-                        "fecha":venta["fecha"],
-                        "cantidad":venta["cantidad"]
-                    })
-            print(f'Archivo CSV actualizado correctamente: {ruta_csv}')
-        except PermissionError:
-            print(f'Error de permisos al crear o escribir el archivo CSV')
-        except csv.Error as e:
-            print(f'Error al escribir el archivo CSV: {e}')
-
-    @classmethod
-    def crear_grafico_ventas(cls):
-        try:
-            # Agrupar datos por fecha y sumar cantidades
-            ventas_agrupadas = defaultdict(int)
-            for venta in cls.ventas_historial:
-                fecha = datetime.strptime(venta["fecha"], '%d/%m/%Y')  # Convertir la fecha a datetime
-                ventas_agrupadas[fecha] += int(venta["cantidad"])
-
-            # Ordenar las fechas
-            fechas = sorted(ventas_agrupadas.keys())
-            cantidades = [ventas_agrupadas[fecha] for fecha in fechas]
-
-            plt.figure(figsize=(12, 6))
-            plt.plot(fechas, cantidades, marker='o', linestyle='-', color='b')
-            plt.title('Reporte de ventas por mes')
-            plt.xlabel('Fecha')
-            plt.ylabel('Cantidad')
-            plt.grid(True)
-
-            # Formato del eje X para mostrar fechas correctamente
-            plt.gca().xaxis.set_major_locator(MonthLocator())  # Mostrar un tick por mes
-            plt.gca().xaxis.set_major_formatter(DateFormatter('%d/%m/%Y'))
-            plt.xticks(rotation=45)
-
-            # Agregar etiquetas a los puntos
-            for fecha, cantidad in zip(fechas, cantidades):
-                plt.annotate(
-                    f'{fecha.strftime("%d/%m/%Y")}',
-                    (fecha, cantidad),
-                    textcoords="offset points",
-                    xytext=(0, 10),  # Desplazamiento de la etiqueta
-                    ha='center'
-                )
-
-            plt.tight_layout()
-
-            #grafico_path = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\grafico_ventas.png'
-            base_dir = os.path.dirname(os.path.abspath(__file__))
-            grafico_path = os.path.join(base_dir, 'Archivos', 'Archivos_ventas', 'grafico_ventas.png')
-            plt.savefig(grafico_path)
-            plt.close()
-
-            return grafico_path
-        except FileNotFoundError:
-            print(f'Archivo no encontrado:')
-        except PermissionError:
-            print(f'Permiso denegado al intentar escribir en el archivo:')
-        except IOError:
-            print(f'Error de entrada/salida al intentar abrir el archivo:')
-        except KeyError as e:
-            print(f'Llave no encontrada en los datos del archivo: {e}')
-        except ValueError as e:
-            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
-        except Exception as e:
-            print(f'Ocurrió un error inesperado: {e}')
-
-    @classmethod
-    def crear_archivo_pdf_con_grafico(cls):
-        #archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\reporte_ventas.pdf'
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        archivo_pdf = os.path.join(base_dir, 'Archivos', 'Archivos_ventas', 'reporte_ventas.pdf')
-        try:
-            doc = SimpleDocTemplate(
-                archivo_pdf,
-                pagesize=letter,
-                rightMargin=inch,
-                leftMargin=inch,
-                topMargin=inch,
-                bottomMargin=inch
-            )
-            elementos = []
-
-            # Estilos
-            estilos = getSampleStyleSheet()
-            estilo_titulo = estilos['Title']
-            estilo_normal = estilos['Normal']
-
-            # Agregar título
-            titulo = Paragraph('Reporte de ventas por mes', estilo_titulo)
-            elementos.append(titulo)
-            elementos.append(Spacer(1, 12))
-
-            # Agregar fecha de emisión
-            fecha_emision = datetime.now().strftime('%d-%m-%Y')
-            fecha_parrafo = Paragraph(f'Fecha de emisión: {fecha_emision}', estilo_normal)
-            elementos.append(fecha_parrafo)
-            elementos.append(Spacer(1, 12))
-
-            # Crear y agregar gráfico
-            grafico_path = cls.crear_grafico_ventas()
-            if grafico_path:
-                img = Image(grafico_path)
-                img.drawHeight = 4 * inch
-                img.drawWidth = 6 * inch
-                elementos.append(img)
-                elementos.append(Spacer(1, 12))
-            else:
-                elementos.append(Paragraph('No se pudo generar el gráfico.', estilo_normal))
-
-            # Agregar agradecimiento
-            agradecimiento = Paragraph('¡Gracias por su trabajo!', estilo_normal)
-            elementos.append(agradecimiento)
-
-            # Construir el documento PDF
-            doc.build(elementos)
-
-            print(f'Reporte de ventas PDF generado correctamente: {archivo_pdf}')
-        except FileNotFoundError:
-            print(f'Archivo no encontrado: {archivo_pdf}')
-        except PermissionError:
-            print(f'Permiso denegado al intentar escribir en el archivo: {archivo_pdf}')
-        except IOError:
-            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_pdf}')
-        except KeyError as e:
-            print(f'Llave no encontrada en los datos del archivo: {e}')
-        except ValueError as e:
-            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
-        except Exception as e:
-            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def guardar_historial_grafico(cls):
-        Ventas.leer_ventas_historial_csv()
-        Ventas.escribir_ventas_historial_csv()
-        Ventas.crear_archivo_pdf_con_grafico() #sacar de aqui va al menu para crear reporte
+        print("no hace nada jajajaj")
+        #Ventas.leer_ventas_historial_csv()
+        #Ventas.leer_ventas_historial_csv()
+        #Ventas.escribir_ventas_historial_csv()
+        #Ventas.crear_archivo_pdf_con_grafico() #sacar de aqui va al menu para crear reporte
 
 
 
@@ -410,11 +253,11 @@ class VentasApp(tk.Tk):
             messagebox.showerror("Error", "Tiene faltante, verifique la cantidad")
         else:
             cantidad = monto_pagar
-            messagebox.showinfo("Éxito", "Corte de caja exitoso, buen día")
             fecha_actual = datetime.now().strftime("%d/%m/%Y")
             Ventas.ventas_historial.append({"fecha": fecha_actual, "cantidad": cantidad})
             Ventas.guardar_historial_grafico()
             Ventas.ventas_list.clear()
+            messagebox.showinfo("Éxito", "Corte de caja exitoso, buen día")
             self.create_widgets()
 
     def generar_reporte_ventas(self):
