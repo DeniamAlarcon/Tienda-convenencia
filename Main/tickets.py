@@ -27,8 +27,10 @@ class Ticket:
 
     @classmethod
     def crear_archivo_pdf_ticket(cls):
+        #archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_tickets\\ticket.pdf'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        archivo_pdf = os.path.join(base_dir, 'Archivos', 'Archivos_tickets', 'ticket.pdf')
         try:
-            archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_tickets\\ticket.pdf'
             # Crear el documento PDF
             doc = SimpleDocTemplate(
                 archivo_pdf,
@@ -103,8 +105,18 @@ class Ticket:
             doc.build(elementos)
 
             print(f'Ticket PDF generado correctamente: {archivo_pdf}')
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {archivo_pdf}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {archivo_pdf}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_pdf}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f'Ha ocurrido un error al generar el ticket: {e}')
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def mostar_ticket(self):

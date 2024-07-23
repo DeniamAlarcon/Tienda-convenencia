@@ -87,6 +87,7 @@ class ComprasProveedorApp(tk.Tk):
         pedido.guardar()
 
         messagebox.showinfo("Éxito", "Pedido registrado correctamente")
+        PedidosProveedor.escribir_archivo_csv_principal_compras()
         self.create_widgets()
 
     def validacion_entregas(self):
@@ -153,6 +154,7 @@ class ComprasProveedorApp(tk.Tk):
 
         inventario = Inventario()
         if inventario.actualizarSalidas(producto, int(cantidad)):
+            Producto.escribir_archivo_csv_productos_principal()
             messagebox.showinfo("Éxito", "Devolución registrada")
         else:
             messagebox.showerror("Error", "Producto no registrado")

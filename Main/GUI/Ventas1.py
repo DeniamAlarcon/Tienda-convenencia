@@ -96,19 +96,32 @@ class Ventas:
 
             plt.tight_layout()
 
-            grafico_path = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\grafico_ventas.png'
+            #grafico_path = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\grafico_ventas.png'
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            grafico_path = os.path.join(base_dir, 'Archivos', 'Archivos_ventas', 'grafico_ventas.png')
             plt.savefig(grafico_path)
             plt.close()
 
             return grafico_path
+        except FileNotFoundError:
+            print(f'Archivo no encontrado:')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo:')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo:')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f'Error al generar el gráfico: {e}')
-            return None
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def crear_archivo_pdf_con_grafico(cls):
+        #archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\reporte_ventas.pdf'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        archivo_pdf = os.path.join(base_dir, 'Archivos', 'Archivos_ventas', 'reporte_ventas.pdf')
         try:
-            archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\reporte_ventas.pdf'
             doc = SimpleDocTemplate(
                 archivo_pdf,
                 pagesize=letter,
@@ -154,8 +167,18 @@ class Ventas:
             doc.build(elementos)
 
             print(f'Reporte de ventas PDF generado correctamente: {archivo_pdf}')
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {archivo_pdf}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {archivo_pdf}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_pdf}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f'Ha ocurrido un error al generar el reporte de ventas: {e}')
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def guardar_historial_grafico(cls):
@@ -256,6 +279,10 @@ class VentasApp(tk.Tk):
         tk.Button(self, text="Volver", command=self.borrar_ticket).pack(pady=10)
 
     def borrar_ticket(self):
+        for i in Ticket.lista_ticket:
+            for j in Producto.lista_productos:
+                if i.nombre == j.nombre:
+                    j.stock = int(j.stock) + int(i.cantidad)
         Ticket.limpiar_ticket()
         self.create_widgets()
 
@@ -285,6 +312,7 @@ class VentasApp(tk.Tk):
                 self.resultado_text.insert(tk.END,
                                            f"{producto.nombre:<10} {producto.cantidad:<20} {producto.total:<15}\n")
             total_pagar = Ticket.mostar_ticket()
+            Ticket.crear_archivo_pdf_ticket()
             self.resultado_text.insert(tk.END,f"Total a pagar: ${total_pagar}")
 
             #mostrar en la misma linea
@@ -308,6 +336,7 @@ class VentasApp(tk.Tk):
                 venta = Ventas(venta.nombre,venta.cantidad,venta.total)
                 venta.guardar_venta()
             self.create_widgets()
+            Producto.escribir_archivo_csv_productos_principal()
             Ticket.limpiar_ticket()
 
 

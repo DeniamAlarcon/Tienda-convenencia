@@ -56,6 +56,7 @@ class App(tk.Tk):
         self.resizable(False, False)
         Proveedores.leer_archivo()
         Producto.leer_archivo()
+        PedidosProveedor.leer_archivo()
 
         tk.Label(self, text="--- Menu principal ---").pack(pady=5)
         tk.Button(self, text="Proveedores", width=30,command=self.menuProveedores).pack(pady=5)

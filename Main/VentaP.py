@@ -22,7 +22,9 @@ class Ventas:
 
     @classmethod
     def leer_ventas_historial_csv(cls):
-        archivo_ventas_historial = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\ventas_historial.csv'
+        #archivo_ventas_historial = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\ventas_historial.csv'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        archivo_ventas_historial = os.path.join(base_dir, 'Archivos', 'Archivos_ventas', 'ventas_historial.csv')
         try:
             with open(archivo_ventas_historial, encoding='utf8') as archivo:
                 reader = csv.DictReader(archivo)
@@ -35,12 +37,28 @@ class Ventas:
                 for row in filas:
                     Ventas.ventas_historial.append({"fecha":row["fecha"],"cantidad":row["cantidad"]})
                 print('Datos cargados exitosamente.')
-        except csv.Error as e:
-            print(f'Error al leer el archivo CSV')
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {archivo_ventas_historial}. Creando archivo nuevo...')
+            os.makedirs(os.path.dirname(archivo_ventas_historial), exist_ok=True)
+            with open(archivo_ventas_historial, mode='w', newline='', encoding='utf8') as archivo:
+                fieldnames = ["fecha", "cantidad"]
+                writer = csv.DictWriter(archivo, fieldnames=fieldnames)
+                writer.writeheader()
+            print(f'Archivo creado: {archivo_ventas_historial}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_ventas_historial}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def escribir_ventas_historial_csv(cls):
-        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\ventas_historial.csv'
+        #ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\ventas_historial.csv'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_ventas', 'ventas_historial.csv')
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["fecha", "cantidad"]
@@ -53,10 +71,18 @@ class Ventas:
                         "cantidad":venta["cantidad"]
                     })
             print(f'Archivo CSV actualizado correctamente: {ruta_csv}')
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_csv}')
         except PermissionError:
-            print(f'Error de permisos al crear o escribir el archivo CSV')
-        except csv.Error as e:
-            print(f'Error al escribir el archivo CSV: {e}')
+            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_csv}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_csv}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def crear_grafico_ventas(cls):
@@ -95,19 +121,32 @@ class Ventas:
 
             plt.tight_layout()
 
-            grafico_path = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\grafico_ventas.png'
+            #grafico_path = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\grafico_ventas.png'
+            base_dir = os.path.dirname(os.path.abspath(__file__))
+            grafico_path = os.path.join(base_dir, 'Archivos', 'Archivos_ventas', 'grafico_ventas.png')
             plt.savefig(grafico_path)
             plt.close()
 
             return grafico_path
+        except FileNotFoundError:
+            print(f'Archivo no encontrado:')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: ')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: ')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f'Error al generar el gráfico: {e}')
-            return None
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def crear_archivo_pdf_con_grafico(cls):
+        #archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\reporte_ventas.pdf'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        archivo_pdf = os.path.join(base_dir, 'Archivos', 'Archivos_ventas', 'reporte_ventas.pdf')
         try:
-            archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_ventas\\reporte_ventas.pdf'
             doc = SimpleDocTemplate(
                 archivo_pdf,
                 pagesize=letter,
@@ -153,8 +192,18 @@ class Ventas:
             doc.build(elementos)
 
             print(f'Reporte de ventas PDF generado correctamente: {archivo_pdf}')
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {archivo_pdf}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {archivo_pdf}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_pdf}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f'Ha ocurrido un error al generar el reporte de ventas: {e}')
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def guardar_historial_grafico(cls):

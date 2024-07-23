@@ -1,3 +1,6 @@
+import csv
+import os
+
 from Main.Inventario import *
 from datetime import datetime
 from tkinter import messagebox
@@ -17,6 +20,84 @@ class PedidosProveedor:
         self.precio = precio
         self.estatus = PedidosProveedor.estatus="Pendiente"
 
+    @classmethod
+    def leer_archivo(cls):
+        #archivo_compras = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_compras\\compras.csv'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        archivo_compras = os.path.join(base_dir, 'Archivos', 'Archivos_compras', 'compras.csv')
+        try:
+            with open(archivo_compras, encoding='utf8') as archivo:
+                reader = csv.DictReader(archivo)
+                filas = list(reader)
+
+                if not filas or all(not any(row.values()) for row in filas):
+                    print('No hay datos que leer.')
+                    return
+
+            # Encontrar el ID máximo en el archivo
+            max_id = 0
+            for row in filas:
+                if row["id"].isdigit():
+                    max_id = max(max_id, int(row["id"]))
+
+            # Configurar idAuto para continuar desde el ID máximo encontrado
+            PedidosProveedor.idAuto = max_id + 1
+
+            # Leer datos y crear objetos Proveedores
+            for row in filas:
+                compras = cls(row["proveedor"], row["nombre"], row["marca"], row["cantidad"], row["precio"])
+                compras.id = int(row["id"])  # Asignar el ID del archivo
+                compras.estatus = row["estatus"]
+                cls.pedidos.append(compras)
+            print('Datos cargados exitosamente.')
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {archivo_compras}. Creando archivo nuevo...')
+            os.makedirs(os.path.dirname(archivo_compras), exist_ok=True)
+            with open(archivo_compras, mode='w', newline='', encoding='utf8') as archivo:
+                fieldnames = ["id", "proveedor", "nombre", "marca", "cantidad", "precio", "estatus"]
+                writer = csv.DictWriter(archivo, fieldnames=fieldnames)
+                writer.writeheader()
+            print(f'Archivo creado: {archivo_compras}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_compras}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
+
+    @classmethod
+    def escribir_archivo_csv_principal_compras(cls):
+        #ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_compras\\compras.csv'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_compras', 'compras.csv')
+        try:
+            with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
+                fieldnames = ["id", "proveedor", "nombre", "marca", "cantidad", "precio","status"]
+                writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
+                writer.writeheader()
+
+                for compras in PedidosProveedor.pedidos:
+                    writer.writerow({
+                        "id": compras.id,
+                        "proveedor": compras.proveedor,
+                        "nombre": compras.nombre,
+                        "marca": compras.marca,
+                        "cantidad": compras.cantidad,
+                        "precio": compras.precio,
+                        "status": compras.estatus
+                    })
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_csv}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_csv}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
 
     def guardar(self):
         PedidosProveedor.pedidos.append(self)
@@ -72,6 +153,7 @@ class PedidosProveedor:
                             inventario = Inventario()
                             inventario.actualizarEntradas(pedido.nombre, cantidad)
                             PedidosProveedor.actualizar_estatus_a_entregado(int(idp))
+                            Producto.escribir_archivo_csv_productos_principal()
                             messagebox.showinfo("Éxito","Entrega completa")
                         return True
                     else:

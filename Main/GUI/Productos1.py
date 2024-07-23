@@ -9,7 +9,7 @@ from Main.Proveedores import Proveedores
 from login1 import *
 
 def validar_tamanio(tamanio):
-    unidades_validas = ["kg", "g", "L", "ml", "pcs", "m", "cm", "in"]
+    unidades_validas = ["kg", "g", "L", "ml", "pcs", "m", "cm", "in", "gr"]
     pattern = re.compile(r'^(\d+(\.\d+)?)(kg|g|L|ml|pcs|m|cm|in|gr)$')
     match = pattern.match(tamanio)
     if match:
@@ -56,6 +56,7 @@ class ProductosApp(tk.Tk):
         tk.Button(self, text="Registrar Producto", width=30, command=self.registrar_producto).pack(pady=5)
         tk.Button(self, text="Detalles de Producto", width=30, command=self.detalles_producto).pack(pady=5)
         tk.Button(self, text="Actualizar Producto", width=30, command=self.actualizar_producto).pack(pady=5)
+        tk.Button(self, text="Eliminar Producto", width=30, command=self.eliminar_producto).pack(pady=5)
         tk.Button(self, text="Crear Archivos", width=30, command=self.menu_archivos).pack(pady=5)
         tk.Button(self, text="Salir", width=30, command=self.volver_menu_principal).pack(pady=20)
 
@@ -151,6 +152,7 @@ class ProductosApp(tk.Tk):
         registro = Producto(codigo, nombre, marca, proveedor, cantidad, tamanio, precio, fecha_vencimiento)
         if registro.registrar():
             messagebox.showinfo("Éxito", "Producto registrado exitosamente")
+            Producto.escribir_archivo_csv_productos_principal()
             self.create_widgets()
         else:
             messagebox.showerror("Error", "Producto no registrado")
@@ -223,26 +225,27 @@ class ProductosApp(tk.Tk):
         tk.Label(self, text="Código del Producto").pack()
         self.codigo_actualizar_entry = tk.Entry(self)
         self.codigo_actualizar_entry.pack()
-        tk.Button(self, text="Buscar", command=self.mostar_datos_productos).pack(pady=10)
+        self.boton_buscar=(tk.Button(self, text="Buscar", command=self.mostar_datos_productos))
+        self.boton_buscar.pack(pady=10)
 
 
-        tk.Label(self, text="Nuevo Nombre (dejar en blanco para no cambiar)").pack()
+        tk.Label(self, text="Nuevo Nombre").pack()
         self.nombre_actualizar_entry = tk.Entry(self)
         self.nombre_actualizar_entry.pack()
 
-        tk.Label(self, text="Nuevo Proveedor (dejar en blanco para no cambiar)").pack()
+        tk.Label(self, text="Nuevo Proveedor").pack()
         self.proveedor_actualizar_entry = tk.Entry(self)
         self.proveedor_actualizar_entry.pack()
 
-        tk.Label(self, text="Nuevo Tamaño (dejar en blanco para no cambiar)").pack()
+        tk.Label(self, text="Nuevo Tamaño").pack()
         self.tamanio_actualizar_entry = tk.Entry(self)
         self.tamanio_actualizar_entry.pack()
 
-        tk.Label(self, text="Nuevo Precio (dejar en blanco para no cambiar)").pack()
+        tk.Label(self, text="Nuevo Precio").pack()
         self.precio_actualizar_entry = tk.Entry(self)
         self.precio_actualizar_entry.pack()
 
-        tk.Label(self, text="Ingrese la fecha de caducidad (dd/mm/yyyy)").pack()
+        tk.Label(self, text="Nueva fecha de caducidad (dd/mm/yyyy)").pack()
         self.fecha_actualizar_entry = tk.Entry(self)
         self.fecha_actualizar_entry.pack()
 
@@ -257,6 +260,8 @@ class ProductosApp(tk.Tk):
             self.tamanio_actualizar_entry.insert(tk.END, resultados.tamanio)
             self.precio_actualizar_entry.insert(tk.END, resultados.precio)
             self.fecha_actualizar_entry.insert(tk.END, resultados.fecha_caducidad)
+            self.codigo_actualizar_entry.config(state=tk.DISABLED)
+            self.boton_buscar.config(state="disabled")
         else:
             messagebox.showerror("Error", "No se encontro el producto")
 
@@ -277,9 +282,14 @@ class ProductosApp(tk.Tk):
             messagebox.showerror("Error", "Producto no encontrado")
             return
 
-        if nombre and Producto.buscar_nombre(nombre):
-            messagebox.showerror("Error", "Nombre de producto ya registrado")
+        if not nombre or not proveedor or not tamanio or not precio or not fecha_caducidad:
+            messagebox.showerror("Error", "Ingrese todos los campos")
             return
+
+        if nombre and not Producto.buscar_nombre_GUI(nombre,codigo):
+            if nombre and Producto.buscar_nombre(nombre):
+                messagebox.showerror("Error", "Nombre de producto ya registrado")
+                return
 
         if proveedor and not Proveedores.validar_provedor(proveedor):
             messagebox.showerror("Error", "Proveedor no encontrado")
@@ -304,7 +314,35 @@ class ProductosApp(tk.Tk):
         print(codigo,nombre,tamanio,precio,fecha_caducidad, " esto me importa demasiado")
         Producto.actualizar(codigo, nombre, proveedor, tamanio, precio, fecha_caducidad)
         messagebox.showinfo("Éxito", "Producto actualizado exitosamente")
+        Producto.escribir_archivo_csv_productos_principal()
         self.create_widgets()
+
+    def eliminar_producto(self):
+        self.clear_frame()
+        tk.Label(self, text="Eliminar Producto", font=("Arial", 16)).pack(pady=10)
+
+        tk.Label(self, text="Codigo del Producto").pack()
+        self.id_eliminar_entry = tk.Entry(self)
+        self.id_eliminar_entry.pack()
+        tk.Button(self, text="Eliminar", command=self.procesar_eliminacion).pack(pady=10)
+
+        tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
+
+    def procesar_eliminacion(self):
+        try:
+            id = self.id_eliminar_entry.get()
+            if Producto.eliminar_producto(id):
+                messagebox.showinfo("Éxito", "Producto eliminado")
+                Producto.escribir_archivo_csv_productos_principal()
+                self.create_widgets()
+                #self.id_eliminar_entry.delete(0, tk.END)
+            else:
+                messagebox.showerror("Error", "Producto no encontrado")
+                self.id_eliminar_entry.delete(0, tk.END)
+        except ValueError:
+            messagebox.showerror("Error", "Ingrese un codigo de producto válido")
+        except Exception as e:
+            messagebox.showerror("Error", f"Error al eliminar el producto: {e}")
 
     def menu_archivos(self):
         self.clear_frame()

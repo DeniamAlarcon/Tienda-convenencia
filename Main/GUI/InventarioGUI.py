@@ -59,6 +59,8 @@ class InventarioApp(tk.Tk):
             for producto in productos:
                 self.resultado_text.insert(tk.END,
                                            f"{producto.codigo:<10} {producto.nombre:<20} {producto.marca:<15} {producto.precio:<10} {producto.proveedor:<20} {producto.entradas:<10} {producto.salidas:<10} {producto.stock:<10} {producto.existenciasAnteriores:<20} {producto.ajuste:<10}\n")
+                producto.existenciasAnteriores = producto.stock
+            Producto.escribir_archivo_csv_productos_principal()
         else:
             self.resultado_text.insert(tk.END, "No hay productos registrados")
         self.resultado_text.config(state=tk.DISABLED)
@@ -72,8 +74,15 @@ class InventarioApp(tk.Tk):
         tk.Button(archivo_frame, text="Generar archivo PDF", command= Inventario.escribir_archivo_pdf).pack(side=tk.LEFT, padx=5)
         tk.Button(archivo_frame, text="Generar archivo XLSX", command= Inventario.escribir_archivo_xlsx).pack(side=tk.LEFT, padx=5)
 
+        tk.Button(self,text="Limpiar entradas,salidas y ajuste", command=self.procesar_limpieza).pack(pady=10)
         tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
+
         #self.inventario.obtenerInventario()
+    def procesar_limpieza(self):
+        if self.inventario.limpiar():
+            messagebox.showinfo("Limpieza", "Limpieza de entradas, salidas y ajustes realizado")
+        else:
+            messagebox.showinfo("Sin datos","no hay productos registrados")
 
     def generar_informe_stock(self):
 
@@ -168,6 +177,7 @@ class InventarioApp(tk.Tk):
         Inventario.actualizarSalidas(nombre, int(cantidad))
         mensaje_stock=Inventario.mensajes_stock(nombre)
         messagebox.showinfo("Éxito", f"Ajuste realizado exitosamente\ntotal a reponer {total}\n{mensaje_stock}")
+        Producto.escribir_archivo_csv_productos_principal()
         self.create_widgets()
 
     def revision_fechas_caducidad(self):
@@ -242,6 +252,17 @@ class Inventarios:
                 print('No hay proveedores registrados')
         else:
             print('No hay productos registrados')
+
+    def limpiar(self):
+        if self.producto:
+            for product in self.producto:
+                product.entradas = 0
+                product.salidas = 0
+                product.ajuste = 0
+            return True
+        else:
+            return False
+
 
     def informeStock(self):
         if self.producto:

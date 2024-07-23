@@ -16,7 +16,9 @@ class Inventario:
 
     @classmethod
     def escribir_archivo_csv(self):
-        ruta_csv = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.csv'
+        #ruta_csv = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.csv'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_inventarios', 'reporte_inventario.csv')
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["codigo", "nombre", "marca", "precio", "proveedor", "entradas", "salidas", "stock",
@@ -38,13 +40,24 @@ class Inventario:
                         "ajuste": producto.ajuste
                     })
                 print("archivo CSV creado correctamente ")
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_csv}')
         except PermissionError:
-            print(f"Error al crear o escribir el archivo CSV")
+            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_csv}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_csv}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def escribir_archivo_json(self):
-        ruta_json = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.json'
-
+        #ruta_json = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.json'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_json = os.path.join(base_dir, 'Archivos', 'Archivos_inventarios', 'reporte_inventario.json')
         try:
             lista_productos_json = [
                 {
@@ -66,13 +79,24 @@ class Inventario:
             with open(ruta_json, "w", encoding='utf8') as json_file:
                 json_file.write(json_object)
             print("archivo JSON creado correctamente ")
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_json}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_json}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_json}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f"Error al crear o escribir el archivo JSON: ")
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def escribir_archivo_pdf(self):
-        archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.pdf'
-
+        #archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.pdf'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        archivo_pdf = os.path.join(base_dir, 'Archivos', 'Archivos_inventarios', 'reporte_inventario.pdf')
         try:
             doc = SimpleDocTemplate(
                 archivo_pdf,
@@ -127,13 +151,24 @@ class Inventario:
 
             doc.build(elementos)
             print("archivo PDF creado correctamente ")
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {archivo_pdf}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {archivo_pdf}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_pdf}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f"Error al crear o escribir el archivo PDF")
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def escribir_archivo_xlsx(self):
-        archivo_xlsx = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.xlsx'
-
+        #archivo_xlsx = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.xlsx'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        archivo_xlsx = os.path.join(base_dir, 'Archivos', 'Archivos_inventarios', 'reporte_inventario.xlsx')
         try:
             workbook = Workbook()
             sheet = workbook.active
@@ -161,8 +196,18 @@ class Inventario:
 
             workbook.save(archivo_xlsx)
             print("archivo xlsx creado correctamente ")
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {archivo_xlsx}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {archivo_xlsx}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_xlsx}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f"Error al crear o escribor el archivo XLSX")
+            print(f'Ocurrió un error inesperado: {e}')
 
     def menu_archivos(self):
         while True:
@@ -249,7 +294,9 @@ class Inventario:
 
     @classmethod
     def escribir_archivo_stock_csv(self):
-        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.csv'
+        #ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.csv'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_Stock', 'reporte_stock.csv')
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["codigo", "nombre", "marca", "precio", "stock"]
@@ -263,13 +310,24 @@ class Inventario:
                         "precio": producto.precio,
                         "stock": producto.stock
                     })
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_csv}')
         except PermissionError:
-            print(f"Error al crear o escribir el archivo CSV")
+            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_csv}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_csv}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def escribir_archivo_stock_pdf(self):
-        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.pdf'
-
+        #archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.pdf'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        archivo_pdf = os.path.join(base_dir, 'Archivos', 'Archivos_Stock', 'reporte_stock.pdf')
         try:
             # Ajustar márgenes
             doc = SimpleDocTemplate(
@@ -312,12 +370,24 @@ class Inventario:
             tabla.setStyle(estilo)
             elementos.append(tabla)
             doc.build(elementos)
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {archivo_pdf}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {archivo_pdf}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_pdf}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f"Error al crear o escribir el archivo PDF")
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def escribir_archivo_stock_json(cls):
-        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.json'
+        #ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.json'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_json = os.path.join(base_dir, 'Archivos', 'Archivos_Stock', 'reporte_stock.json')
         lista_productos_json = [
             {
                 "codigo": producto.codigo,
@@ -332,12 +402,24 @@ class Inventario:
         try:
             with open(ruta_json, "w", encoding='utf8') as archivo_json:
                 json.dump(lista_productos_json, archivo_json, indent=4, ensure_ascii=False)
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_json}')
         except PermissionError:
-            print(f"Error al crear o escribir el archivo JSON")
+            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_json}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_json}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def escribir_archivo_stock_xlsx(cls):
-        ruta_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.xlsx'
+        #ruta_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_Stock\\reporte_stock.xlsx'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_xlsx = os.path.join(base_dir, 'Archivos', 'Archivos_Stock', 'reporte_stock.xlsx')
         workbook = Workbook()
         sheet = workbook.active
         sheet.title = "Stock"
@@ -358,8 +440,18 @@ class Inventario:
 
         try:
             workbook.save(ruta_xlsx)
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_xlsx}')
         except PermissionError:
-            print(f"Error al crear o escribir el archivo xlsx")
+            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_xlsx}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_xlsx}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
 
     def informeStock(self):
         if self.producto:
