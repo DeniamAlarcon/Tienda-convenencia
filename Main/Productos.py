@@ -75,7 +75,7 @@ class Producto:
             print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
-    def crear_archivos_eliminaciones(cls,fecha_eliminacion):
+    def crear_archivos_eliminaciones(cls,fecha_eliminacion,codigo):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_productos', 'productos_eliminados.csv')
         try:
@@ -85,14 +85,15 @@ class Producto:
                 writer.writeheader()
 
                 for producto in Producto.lista_productos:
-                    writer.writerow({
-                        "codigo": producto.codigo,
-                        "nombre": producto.nombre,
-                        "marca": producto.marca,
-                        "precio": producto.precio,
-                        "proveedor": producto.proveedor,
-                        "fecha_eliminacion": fecha_eliminacion
-                    })
+                    if producto.codigo == codigo:
+                        writer.writerow({
+                            "codigo": producto.codigo,
+                            "nombre": producto.nombre,
+                            "marca": producto.marca,
+                            "precio": producto.precio,
+                            "proveedor": producto.proveedor,
+                            "fecha_eliminacion": fecha_eliminacion
+                        })
             print("Archivo creado correctamente")
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_csv}')
@@ -473,7 +474,7 @@ class Producto:
             producto = cls.buscarProducto(id)
             print(producto)
             if producto:
-                Producto.crear_archivos_eliminaciones(datetime.now())
+                Producto.crear_archivos_eliminaciones(datetime.now(),producto.codigo)
                 cls.lista_productos.remove(producto)
                 print("Producto eliminado con exito.")
                 return True

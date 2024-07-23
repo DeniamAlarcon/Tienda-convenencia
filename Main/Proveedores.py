@@ -68,9 +68,9 @@ class Proveedores:
             print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
-    def crear_archivos_eliminaciones(cls, fecha_eliminacion):
+    def crear_archivos_eliminaciones(cls, fecha_eliminacion, id2):
         base_dir = os.path.dirname(os.path.abspath(__file__))
-        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_prooveedores', 'proveedores_eliminados.csv')
+        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_proveedores', 'proveedores_eliminados.csv')
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["id", "nombre", "correo", "telefono","fecha_eliminacion"]
@@ -78,13 +78,14 @@ class Proveedores:
                 writer.writeheader()
 
                 for proveedor in Proveedores.proveedores:
-                    writer.writerow({
-                        "id": proveedor.codigo,
-                        "nombre": proveedor.nombre,
-                        "correo": proveedor.marca,
-                        "telefono": proveedor.precio,
-                        "fecha_eliminacion": fecha_eliminacion
-                    })
+                    if proveedor.id == id2:
+                        writer.writerow({
+                            "id": proveedor.id,
+                            "nombre": proveedor.nombre,
+                            "correo": proveedor.correo,
+                            "telefono": proveedor.telefono,
+                            "fecha_eliminacion": fecha_eliminacion
+                        })
             print("Archivo creado correctamente")
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_csv}')
@@ -406,7 +407,7 @@ class Proveedores:
         try:
             proveedor = cls.buscar_proveedor(id)
             if proveedor:
-                Proveedores.crear_archivos_eliminaciones(datetime.now())
+                Proveedores.crear_archivos_eliminaciones(datetime.now(),proveedor.id)
                 cls.proveedores.remove(proveedor)
                 print("Proveedor eliminado con exito.")
                 return True
