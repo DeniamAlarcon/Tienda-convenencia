@@ -246,19 +246,22 @@ class VentasApp(tk.Tk):
         tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
 
     def procesar_corte_caja(self,monto_pagar):
-        monto = int(self.monto_entry.get())
-        if monto > monto_pagar:
-            messagebox.showerror("Error", "Tiene sobrante, verifique la cantidad")
-        elif monto < monto_pagar:
-            messagebox.showerror("Error", "Tiene faltante, verifique la cantidad")
-        else:
-            cantidad = monto_pagar
-            fecha_actual = datetime.now().strftime("%d/%m/%Y")
-            Ventas.ventas_historial.append({"fecha": fecha_actual, "cantidad": cantidad})
-            Ventas.guardar_historial_grafico()
-            Ventas.ventas_list.clear()
-            messagebox.showinfo("Éxito", "Corte de caja exitoso, buen día")
-            self.create_widgets()
+        try:
+            monto = int(self.monto_entry.get())
+            if monto > monto_pagar:
+                messagebox.showerror("Error", "Tiene sobrante, verifique la cantidad")
+            elif monto < monto_pagar:
+                messagebox.showerror("Error", "Tiene faltante, verifique la cantidad")
+            else:
+                cantidad = monto_pagar
+                fecha_actual = datetime.now().strftime("%d/%m/%Y")
+                Ventas.ventas_historial.append({"fecha": fecha_actual, "cantidad": cantidad})
+                Ventas.guardar_historial_grafico()
+                Ventas.ventas_list.clear()
+                messagebox.showinfo("Éxito", "Corte de caja exitoso, buen día")
+                self.create_widgets()
+        except ValueError:
+            messagebox.showerror("Error","Inngrese una cantidad valida")
 
     def generar_reporte_ventas(self):
         Ventas.guardar_historial_grafico()
