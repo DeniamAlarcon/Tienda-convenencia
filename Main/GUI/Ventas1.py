@@ -142,14 +142,17 @@ class VentasApp(tk.Tk):
         self.resultado_text.config(state=tk.DISABLED)
 
     def procesar_pago(self,total_pagar):
-        valor = int(self.cantidad_entry.get())
-        if validar_pago(valor,total_pagar):
-            for venta in Ticket.lista_ticket:
-                venta = Ventas(venta.nombre,venta.cantidad,venta.total)
-                venta.guardar_venta()
-            self.create_widgets()
-            Producto.escribir_archivo_csv_productos_principal()
-            Ticket.limpiar_ticket()
+        try:
+            valor = int(self.cantidad_entry.get())
+            if validar_pago(valor,total_pagar):
+                for venta in Ticket.lista_ticket:
+                    venta = Ventas(venta.nombre,venta.cantidad,venta.total)
+                    venta.guardar_venta()
+                self.create_widgets()
+                Producto.escribir_archivo_csv_productos_principal()
+                Ticket.limpiar_ticket()
+        except ValueError:
+            messagebox.showerror("Error","Ingrese los datos requeridos")
 
 
     def procesar_agregar_venta(self):
