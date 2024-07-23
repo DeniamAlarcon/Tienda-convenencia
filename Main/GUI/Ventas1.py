@@ -6,37 +6,6 @@ from reportlab.platypus import Image
 from Main.VentaP import corte_caja, Ventas
 from Main.VentasMain import *
 from Main.tickets import *
-
-
-class Ventas1:
-    ventas_list = []
-    ventas_historial=[]
-    def __init__(self, producto, cantidad,total):
-        self.producto = producto
-        self.cantidad = cantidad
-        self.total = total
-
-    def guardar_venta(self):
-        Ventas1.ventas_list.append(self)
-        return True
-
-
-    @classmethod
-    def guardar_historial_grafico(cls):
-        print("no hace nada jajajaj")
-        #Ventas.leer_ventas_historial_csv()
-        #Ventas.leer_ventas_historial_csv()
-        #Ventas.escribir_ventas_historial_csv()
-        #Ventas.crear_archivo_pdf_con_grafico() #sacar de aqui va al menu para crear reporte
-
-
-
-    @staticmethod
-    def mostrar_ventas():
-        for venta in Ventas.ventas_list:
-            print(f"Producto: {venta.producto}, Cantidad: {venta.cantidad}, Total: {venta.total}")
-
-
 import tkinter as tk
 from tkinter import messagebox
 from datetime import datetime

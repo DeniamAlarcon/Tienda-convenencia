@@ -17,6 +17,7 @@ class Proveedores:
         self.nombre=nombre
         self.correo=correo
         self.telefono=telefono
+        # expeciones
 
     @classmethod
     def leer_archivo(cls):
@@ -49,6 +50,7 @@ class Proveedores:
                     proveedor.id = int(row["id"])  # Asignar el ID del archivo
                     cls.proveedores.append(proveedor)
             print('Datos cargados exitosamente.')
+
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_proveedores}. Creando archivo nuevo...')
             os.makedirs(os.path.dirname(archivo_proveedores), exist_ok=True)
