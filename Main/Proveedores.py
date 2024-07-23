@@ -1,11 +1,13 @@
 import csv
 import json
+import os
 from tkinter import messagebox
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
 from reportlab.lib.units import inch
 from openpyxl import Workbook
+from datetime import datetime
 class Proveedores:
     idAuto=0
     proveedores = []
@@ -18,14 +20,16 @@ class Proveedores:
 
     @classmethod
     def leer_archivo(cls):
-        archivo_proveedores = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
+        #archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        archivo_proveedores = os.path.join(base_dir, 'Archivos', 'Archivos_proveedores', 'proveedores.csv')
         try:
 
             with open(archivo_proveedores, encoding='utf8') as archivo:
                 reader = csv.DictReader(archivo)
                 filas = list(reader)
 
-                if not filas or all(not any(row.values()) for row in filas):
+                if not filas:
                     print('No hay datos que leer.')
                     return
 
@@ -40,16 +44,66 @@ class Proveedores:
 
             # Leer datos y crear objetos Proveedores
             for row in filas:
-                proveedor = cls(row["nombre"], row["correo"], row["telefono"])
-                proveedor.id = int(row["id"])  # Asignar el ID del archivo
-                cls.proveedores.append(proveedor)
+                if all(row.values()):
+                    proveedor = cls(row["nombre"], row["correo"], row["telefono"])
+                    proveedor.id = int(row["id"])  # Asignar el ID del archivo
+                    cls.proveedores.append(proveedor)
             print('Datos cargados exitosamente.')
-        except csv.Error as e:
-            print(f'Error al leer el archivo CSV: {e}')
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {archivo_proveedores}. Creando archivo nuevo...')
+            os.makedirs(os.path.dirname(archivo_proveedores), exist_ok=True)
+            with open(archivo_proveedores, mode='w', newline='', encoding='utf8') as archivo:
+                fieldnames = ["id","nombre","correo","telefono"]
+                writer = csv.DictWriter(archivo, fieldnames=fieldnames)
+                writer.writeheader()
+            print(f'Archivo creado: {archivo_proveedores}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_proveedores}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
-    def escribir_archivo_csv(cls):
-        ruta_csv = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_csv.csv'
+    def crear_archivos_eliminaciones(cls, fecha_eliminacion, id2):
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_proveedores', 'proveedores_eliminados.csv')
+        try:
+            with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
+                fieldnames = ["id", "nombre", "correo", "telefono","fecha_eliminacion"]
+                writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
+                writer.writeheader()
+
+                for proveedor in Proveedores.proveedores:
+                    if proveedor.id == id2:
+                        writer.writerow({
+                            "id": proveedor.id,
+                            "nombre": proveedor.nombre,
+                            "correo": proveedor.correo,
+                            "telefono": proveedor.telefono,
+                            "fecha_eliminacion": fecha_eliminacion
+                        })
+            print("Archivo creado correctamente")
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_csv}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_csv}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_csv}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
+
+    @classmethod
+    def escribir_archivo_csv_principal(cls):
+        #ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_proveedores', 'proveedores.csv')
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["id", "nombre", "correo", "telefono"]
@@ -63,13 +117,55 @@ class Proveedores:
                         "correo": proveedor.correo,
                         "telefono": proveedor.telefono
                     })
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_csv}')
         except PermissionError:
-            print(f"Error al crear o escribir el archivo CSV")
+            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_csv}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_csv}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
+
+    @classmethod
+    def escribir_archivo_csv(cls):
+        #ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_csv.csv'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_proveedores', 'reporte_proveedores_csv.csv')
+        try:
+            with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
+                fieldnames = ["id", "nombre", "correo", "telefono"]
+                writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
+                writer.writeheader()
+
+                for proveedor in Proveedores.proveedores:
+                    writer.writerow({
+                        "id": proveedor.id,
+                        "nombre": proveedor.nombre,
+                        "correo": proveedor.correo,
+                        "telefono": proveedor.telefono
+                    })
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_csv}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_csv}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_csv}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def escribir_archivo_json(cls):
-        ruta_json = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_json.json'
-
+        #ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_json.json'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_json = os.path.join(base_dir, 'Archivos', 'Archivos_proveedores', 'reporte_proveedores_json.json')
         try:
             lista_proveedores_json = [
                 {
@@ -84,13 +180,24 @@ class Proveedores:
 
             with open(ruta_json, "w", encoding='utf8') as json_file:
                 json_file.write(json_object)
-
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_json}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_json}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_json}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f"Error al crear o escribir el archivo JSON: ")
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def escribir_archivo_pdf(cls):
-        archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_pdf.pdf'
+        #archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_pdf.pdf'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        archivo_pdf = os.path.join(base_dir, 'Archivos', 'Archivos_proveedores', 'reporte_proveedores_pdf.pdf')
         try:
             doc = SimpleDocTemplate(
                 archivo_pdf,
@@ -137,13 +244,24 @@ class Proveedores:
             elementos.append(Spacer(1, 12))
 
             doc.build(elementos)
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {archivo_pdf}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {archivo_pdf}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_pdf}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f"Error al crear o escribir el archivo PDF")
+            print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
     def escribir_archivo_xlsx(cls):
-        archivo_xlsx = 'D:\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_xlsx.xlsx'
-
+        #archivo_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\reporte_proveedores_xlsx.xlsx'
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        archivo_xlsx = os.path.join(base_dir, 'Archivos', 'Archivos_proveedores', 'reporte_proveedores_xlsx.xlsx')
         try:
             workbook = Workbook()
             sheet = workbook.active
@@ -163,8 +281,18 @@ class Proveedores:
                 ])
 
             workbook.save(archivo_xlsx)
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {archivo_xlsx}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {archivo_xlsx}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_xlsx}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f"Error al crear o escribor el archivo XLSX")
+            print(f'Ocurrió un error inesperado: {e}')
 
     def guardar(self):
         Proveedores.proveedores.append(self)
@@ -278,6 +406,7 @@ class Proveedores:
         try:
             proveedor = cls.buscar_proveedor(id)
             if proveedor:
+                Proveedores.crear_archivos_eliminaciones(datetime.now(),proveedor.id)
                 cls.proveedores.remove(proveedor)
                 print("Proveedor eliminado con exito.")
                 return True

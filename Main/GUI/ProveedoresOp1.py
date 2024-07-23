@@ -69,6 +69,7 @@ class ProveedorApp(tk.Tk):
         else:
             if registro.guardar():
                 messagebox.showinfo("Éxito", "Proveedor registrado")
+                Proveedores.escribir_archivo_csv_principal()
                 self.create_widgets()
             else:
                 messagebox.showerror("Error", "Ocurrió un error al registrar proveedor")
@@ -134,6 +135,7 @@ class ProveedorApp(tk.Tk):
 
                 if n_nombre != "" and n_correo != "" and n_telefono != "":
                     Proveedores.actualizarGUI(id, n_nombre, n_correo, n_telefono)
+                    Proveedores.escribir_archivo_csv_principal()
                     self.create_widgets()
                 else:
                     messagebox.showerror("Error", "Favor de ingresar todos los campos requeridos")
@@ -212,6 +214,7 @@ class ProveedorApp(tk.Tk):
             id = int(self.id_eliminar_entry.get())
             if Proveedores.eliminarProveedor(id):
                 messagebox.showinfo("Éxito", "Proveedor eliminado")
+                Proveedores.escribir_archivo_csv_principal()
                 self.create_widgets()
                 #self.id_eliminar_entry.delete(0, tk.END)
             else:

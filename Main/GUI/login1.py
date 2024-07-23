@@ -56,6 +56,8 @@ class App(tk.Tk):
         self.resizable(False, False)
         Proveedores.leer_archivo()
         Producto.leer_archivo()
+        PedidosProveedor.leer_archivo()
+        Ventas.leer_ventas_historial_csv()
 
         tk.Label(self, text="--- Menu principal ---").pack(pady=5)
         tk.Button(self, text="Proveedores", width=30,command=self.menuProveedores).pack(pady=5)
@@ -72,22 +74,37 @@ class App(tk.Tk):
         menuProv.mainloop()
 
     def menuProductos(self):
-        self.withdraw()  # Hide the main window
-        menuPro = ProductosApp(self)
-        menuPro.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
-        menuPro.mainloop()
+        if Proveedores.proveedores:
+            self.withdraw()  # Hide the main window
+            menuPro = ProductosApp(self)
+            menuPro.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
+            menuPro.mainloop()
+        else:
+            messagebox.showwarning("Advertencia","Registre un proveedor")
 
     def menuVentas(self):
-        self.withdraw()  # Hide the main window
-        menuV = VentasApp(self)
-        menuV.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
-        menuV.mainloop()
+        if Proveedores.proveedores:
+            if Producto.lista_productos:
+                self.withdraw()  # Hide the main window
+                menuV = VentasApp(self)
+                menuV.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
+                menuV.mainloop()
+            else:
+                messagebox.showwarning("Advertencia", "Registre un producto.")
+        else:
+            messagebox.showwarning("Advertencia", "Registre un proveedor.")
 
     def menuInventarios(self):
-        self.withdraw()  # Hide the main window
-        menuProv = InventarioApp(self)
-        menuProv.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
-        menuProv.mainloop()
+        if Proveedores.proveedores:
+            if Producto.lista_productos:
+                self.withdraw()  # Hide the main window
+                menuProv = InventarioApp(self)
+                menuProv.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
+                menuProv.mainloop()
+            else:
+                messagebox.showwarning("Advertencia", "Registre un producto.")
+        else:
+            messagebox.showwarning("Advertencia", "Registre un proveedor.")
 
     def menu_compras(self):
         if Proveedores.mostrar():
