@@ -20,6 +20,7 @@ class PedidosProveedor:
 
     def guardar(self):
         PedidosProveedor.pedidos.append(self)
+        return True
 
 
     @classmethod
@@ -90,7 +91,7 @@ class PedidosProveedor:
         if cls.pedidos.__len__() != 0:
             if cls.buscarID(id):
                 cls.pedidos.remove(id)
+                return True
             else:
                 print("Pedido no encontrado")
-        else:
-            print("No existen pedidos")
+        return False

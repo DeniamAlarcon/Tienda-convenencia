@@ -230,6 +230,7 @@ class Inventario:
                 product.entradas = int(product.entradas) + int(cantidad)
                 product.stock = int(product.stock) + int(cantidad)
                 Inventario.mensajes_stock(nombre)
+                return True
 
 
 
