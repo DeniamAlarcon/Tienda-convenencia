@@ -1,13 +1,10 @@
 import csv
 import json
-import os
-
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
 from reportlab.lib.units import inch
 from openpyxl import Workbook
-from datetime import datetime
 
 
 class Producto:
@@ -29,15 +26,13 @@ class Producto:
 
     @classmethod
     def leer_archivo(cls):
-        #archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        archivo_proveedores = os.path.join(base_dir, 'Archivos', 'Archivos_productos', 'productos.csv')
+        archivo_proveedores = 'D:\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
         try:
             with open(archivo_proveedores, encoding='utf8') as archivo_productos:
                 reader = csv.DictReader(archivo_productos)
                 filas = list(reader)
                 if not filas or all(not any(row.values()) for row in filas):
-                    print('No hay datos que leer 1')
+                    print('No hay datos que leer')
                     return
                 for row in filas:
                     producto = Producto(
@@ -46,7 +41,7 @@ class Producto:
                         row["marca"],
                         row["proveedor"],
                         row["cantidad"],
-                        row["tamanio"],
+                        row["unidad_medida"],
                         row["precio"],
                         row["fecha_caducidad"]
                     )
@@ -56,105 +51,13 @@ class Producto:
                     producto.stock = row["stock"]
                     producto.existenciasAnteriores = row["existencias_anteriores"]
                     producto.ajuste = row["ajuste"]
-            print("Datos cargados correctamente")
-        except FileNotFoundError:
-            print(f'Archivo no encontrado: {archivo_proveedores}. Creando archivo nuevo...')
-            os.makedirs(os.path.dirname(archivo_proveedores), exist_ok=True)
-            with open(archivo_proveedores, mode='w', newline='', encoding='utf8') as archivo:
-                fieldnames = ["codigo", "nombre","marca","proveedor","cantidad","tamanio","precio","fecha_caducidad","entradas","salidas","stock","existencias_anteriores","ajuste"]
-                writer = csv.DictWriter(archivo, fieldnames=fieldnames)
-                writer.writeheader()
-            print(f'Archivo creado: {archivo_proveedores}')
-        except IOError:
-            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_proveedores}')
-        except KeyError as e:
-            print(f'Llave no encontrada en los datos del archivo: {e}')
-        except ValueError as e:
-            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
-        except Exception as e:
-            print(f'Ocurrió un error inesperado: {e}')
-
-    @classmethod
-    def crear_archivos_eliminaciones(cls,fecha_eliminacion,codigo):
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_productos', 'productos_eliminados.csv')
-        try:
-            with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
-                fieldnames = ["codigo", "nombre", "marca", "precio", "proveedor","fecha_eliminacion"]
-                writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
-                writer.writeheader()
-
-                for producto in Producto.lista_productos:
-                    if producto.codigo == codigo:
-                        writer.writerow({
-                            "codigo": producto.codigo,
-                            "nombre": producto.nombre,
-                            "marca": producto.marca,
-                            "precio": producto.precio,
-                            "proveedor": producto.proveedor,
-                            "fecha_eliminacion": fecha_eliminacion
-                        })
             print("Archivo creado correctamente")
-        except FileNotFoundError:
-            print(f'Archivo no encontrado: {ruta_csv}')
-        except PermissionError:
-            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_csv}')
-        except IOError:
-            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_csv}')
-        except KeyError as e:
-            print(f'Llave no encontrada en los datos del archivo: {e}')
-        except ValueError as e:
-            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
-        except Exception as e:
-            print(f'Ocurrió un error inesperado: {e}')
-
-    @classmethod
-    def escribir_archivo_csv_productos_principal(cls):
-        #ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_productos', 'productos.csv')
-        try:
-            with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
-                fieldnames = ["codigo", "nombre", "marca", "precio", "proveedor", "cantidad", "tamanio",
-                              "fecha_caducidad","entradas","salidas","stock","existencias_anteriores","ajuste"]
-                writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
-                writer.writeheader()
-
-                for producto in Producto.lista_productos:
-                    writer.writerow({
-                        "codigo": producto.codigo,
-                        "nombre": producto.nombre,
-                        "marca": producto.marca,
-                        "precio": producto.precio,
-                        "proveedor": producto.proveedor,
-                        "cantidad": producto.cantidad,
-                        "tamanio": producto.tamanio,
-                        "fecha_caducidad": producto.fecha_caducidad,
-                        "entradas": producto.entradas,
-                        "salidas": producto.salidas,
-                        "stock": producto.stock,
-                        "existencias_anteriores": producto.existenciasAnteriores,
-                        "ajuste": producto.ajuste
-                    })
-            print("Archivo creado correctamente")
-        except FileNotFoundError:
-            print(f'Archivo no encontrado: {ruta_csv}')
-        except PermissionError:
-            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_csv}')
-        except IOError:
-            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_csv}')
-        except KeyError as e:
-            print(f'Llave no encontrada en los datos del archivo: {e}')
-        except ValueError as e:
-            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
-        except Exception as e:
-            print(f'Ocurrió un error inesperado: {e}')
+        except csv.Error as e:
+            print(f'Error al leer el archivo CSV')
 
     @classmethod
     def crear_archivo_csv(cls):
-        #ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_csv.csv'
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_productos', 'reporte_productos_csv.csv')
+        ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_csv.csv'
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["codigo", "nombre", "marca", "precio", "proveedor", "cantidad", "tamanio",
@@ -174,26 +77,14 @@ class Producto:
                         "fecha_caducidad": producto.fecha_caducidad
                     })
             print("Archivo creado correctamente")
-        except FileNotFoundError:
-            print(f'Archivo no encontrado: {ruta_csv}')
         except PermissionError:
-            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_csv}')
-        except IOError:
-            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_csv}')
-        except KeyError as e:
-            print(f'Llave no encontrada en los datos del archivo: {e}')
-        except ValueError as e:
-            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
-        except Exception as e:
-            print(f'Ocurrió un error inesperado: {e}')
+            print(f"Error al crear o escribir el archivo CSV")
 
     @classmethod
     def crear_archivo_json(cls):
-        #ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_json.json'
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        ruta_json = os.path.join(base_dir, 'Archivos', 'Archivos_productos', 'reporte_productos_json.json')
-        try:
+        ruta_json = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_json.json'
 
+        try:
             lista_productos_json = [
                 {
                     "codigo": producto.codigo,
@@ -212,24 +103,13 @@ class Producto:
             with open(ruta_json, "w", encoding='utf8') as json_file:
                 json_file.write(json_object)
             print("Archivo creado correctamente")
-        except FileNotFoundError:
-            print(f'Archivo no encontrado: {ruta_json}')
-        except PermissionError:
-            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_json}')
-        except IOError:
-            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_json}')
-        except KeyError as e:
-            print(f'Llave no encontrada en los datos del archivo: {e}')
-        except ValueError as e:
-            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f'Ocurrió un error inesperado: {e}')
+            print(f"Error al crear o escribir el archivo JSON: ")
 
     @classmethod
     def crear_archivo_pdf(cls):
-        #archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_pdf.pdf'
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        archivo_pdf = os.path.join(base_dir, 'Archivos', 'Archivos_productos', 'reporte_productos_pdf.pdf')
+        archivo_pdf = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_productos_pdf.pdf'
+
         try:
             doc = SimpleDocTemplate(
                 archivo_pdf,
@@ -281,24 +161,13 @@ class Producto:
 
             doc.build(elementos)
             print("Archivo creado correctamente")
-        except FileNotFoundError:
-            print(f'Archivo no encontrado: {archivo_pdf}')
-        except PermissionError:
-            print(f'Permiso denegado al intentar escribir en el archivo: {archivo_pdf}')
-        except IOError:
-            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_pdf}')
-        except KeyError as e:
-            print(f'Llave no encontrada en los datos del archivo: {e}')
-        except ValueError as e:
-            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f'Ocurrió un error inesperado: {e}')
+            print(f"Error al crear o escribir el archivo PDF")
 
     @classmethod
     def crear_archivo_xlsx(cls):
-        #archivo_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_producto_xlsx.xlsx'
-        base_dir = os.path.dirname(os.path.abspath(__file__))
-        archivo_xlsx = os.path.join(base_dir, 'Archivos', 'Archivos_productos', 'reporte_productos_xlsx.xlsx')
+        archivo_xlsx = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\reporte_producto_xlsx.xlsx'
+
         try:
             workbook = Workbook()
             sheet = workbook.active
@@ -323,18 +192,8 @@ class Producto:
 
             workbook.save(archivo_xlsx)
             print("Archivo creado correctamente")
-        except FileNotFoundError:
-            print(f'Archivo no encontrado: {archivo_xlsx}')
-        except PermissionError:
-            print(f'Permiso denegado al intentar escribir en el archivo: {archivo_xlsx}')
-        except IOError:
-            print(f'Error de entrada/salida al intentar abrir el archivo: {archivo_xlsx}')
-        except KeyError as e:
-            print(f'Llave no encontrada en los datos del archivo: {e}')
-        except ValueError as e:
-            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
-            print(f'Ocurrió un error inesperado: {e}')
+            print(f"Error al crear o escribor el archivo XLSX")
 
 
     def registrar(self):
@@ -349,17 +208,6 @@ class Producto:
                     print("Nombre de producto ya registrado")
                     return True
             return False
-
-    @classmethod
-    def buscar_nombre_GUI(self,nombre,id):
-        if Producto.lista_productos.__len__() != 0:
-            for product in Producto.lista_productos:
-                if product.nombre == nombre and product.codigo == id:
-                    print("Nombre coincide con el id")
-                    return True
-            return False
-
-
 
     @classmethod
     def detalles_nombre(cls, nombre):
@@ -395,7 +243,6 @@ class Producto:
             for product in Producto.lista_productos:
                 if product.codigo == id:
                     return product
-            return None
         else:
             print("producto no encontrado")
 
@@ -419,70 +266,43 @@ class Producto:
 
 
     @classmethod
-    def actualizar(self, id, nombre, proveedor, tamanio, precio, fecha_caducidad):
-        producto = Producto.buscarProducto(id)
+    def actualizar(self, id, nombre, proveedor, tamanio, precio):
+        producto = self.buscarProducto(id)
         if producto:
-            if nombre =="" and proveedor == "" and tamanio == "" and precio == "" and fecha_caducidad == "":
+            if not nombre and not proveedor and not tamanio and not precio:
                 producto.nombre = producto.nombre
                 producto.proveedor = producto.proveedor
                 producto.tamanio = producto.tamanio
                 producto.precio = producto.precio
-                producto.fecha_caducidad = producto.fecha_caducidad
-            elif nombre == "":
+            elif not nombre:
                 producto.nombre = producto.nombre
                 producto.proveedor = proveedor
                 producto.tamanio = tamanio
                 producto.precio = precio
-                producto.fecha_caducidad = fecha_caducidad
-            elif proveedor == "":
+            elif not proveedor:
                 producto.nombre = nombre
                 producto.proveedor = producto.proveedor
                 producto.tamanio = tamanio
                 producto.precio = precio
-                producto.fecha_caducidad = fecha_caducidad
-            elif tamanio == "":
+            elif not tamanio:
                 producto.nombre = nombre
                 producto.proveedor = proveedor
                 producto.tamanio = producto.tamanio
                 producto.precio = precio
-                producto.fecha_caducidad = fecha_caducidad
-            elif precio == "":
+            elif not precio:
                 producto.nombre = nombre
                 producto.proveedor = proveedor
                 producto.tamanio = tamanio
                 producto.precio = producto.precio
-                producto.fecha_caducidad = fecha_caducidad
-            elif fecha_caducidad == "":
-                producto.nombre = nombre
-                producto.proveedor = proveedor
-                producto.tamanio = tamanio
-                producto.precio = precio
-                producto.fecha_caducidad = producto.fecha_caducidad
             else:
                 producto.nombre = nombre
                 producto.proveedor = proveedor
                 producto.tamanio = tamanio
                 producto.precio = precio
-                producto.fecha_caducidad = fecha_caducidad
+
             print("Prodcuto actualizado")
         else:
             print("Producto no encontrado")
-
-    @classmethod
-    def eliminar_producto(cls, id):
-        try:
-            producto = cls.buscarProducto(id)
-            print(producto)
-            if producto:
-                Producto.crear_archivos_eliminaciones(datetime.now(),producto.codigo)
-                cls.lista_productos.remove(producto)
-                print("Producto eliminado con exito.")
-                return True
-            else:
-                print("Producto no encontrado.")
-        except Exception as e:
-            print("Intentelo nuevamente, no ha sido eliminado")
-
 
     @classmethod
     def validar_codigo(cls, codigo):
