@@ -1,7 +1,6 @@
-from Productos import *
-from Proveedores import *
-from PedidosProveedor import *
-from Inventario import *
+from Main.PedidosProveedor import *
+from Main.VentasMain import *
+
 
 def pedidoProveedor():
     while True:
@@ -15,12 +14,11 @@ def pedidoProveedor():
             while not nombreProveedor:
                 nombreProveedor = input("Ingrese el nombre del proveedor: ")
             proveedor = Proveedores.validar_provedor(nombreProveedor)
-            print(proveedor)
             if proveedor:
-                nombreProducto = input("Ingrese el codigo del producto: ")
+                nombreProducto = input("Ingrese el nombre del producto: ")
                 while not nombreProducto:
-                    nombreProducto = input("Ingrese el codigo del producto registrado: ")
-                prodcutoN=Producto.validar_codigo(nombreProducto)
+                    nombreProducto = input("Ingrese el nombre del producto registrado: ")
+                prodcutoN=Producto.validar_nombre(nombreProducto)
                 if prodcutoN:
                     marcaProducto = input("Ingrese la marca del producto: ")
                     while not marcaProducto:
@@ -30,10 +28,9 @@ def pedidoProveedor():
                         cantidadProducto = (input("Ingrese la cantidad de productos: "))
                         if cantidadProducto.isdigit():
                             if int(cantidadProducto) > 0:
-                                guarda = PedidosProveedor(nombreProveedor, nombreProducto, marcaProducto,cantidadProducto)
+                                precio= VentasMain.total_venta_actual(nombreProducto,int(cantidadProducto))
+                                guarda = PedidosProveedor(nombreProveedor, nombreProducto, marcaProducto,cantidadProducto,precio)
                                 guarda.guardar()
-                                inventario = Inventario()
-                                inventario.actualizarEntradas(nombreProducto, cantidadProducto)
                             else:
                                 print("No se pueden pedir menos de 0  cosas")
                         else:
@@ -70,15 +67,22 @@ def menuComprasProveedor():
                 id = input("Ingrese el id del pedido: ")
                 cantidad = int(input("Ingrese la cantidad de productos: "))
                 PedidosProveedor.pedidos_proveedorID(id, cantidad)
+
             except ValueError as e:
                 print("Ingrese datos correctos ")
         elif opcion == "3":
-            print("DESCUENTA EL VALOR QUE SE INTRODUCE AL INVENTARIO Y LISTO")
+            Inventario.informeStockC()
             productos = input("Ingrese el producto para la devolucion: ")
-            cantidad = int(input("Ingrese la cantidad de productos: "))
-            inventario = Inventario()
-            if inventario.actualizarSalidas(productos, cantidad):
-                print("Devolucion realizada")
+            while not productos:
+                productos = input("Ingrese el producto para la devolucion: ")
+            try:
+                cantidad = int(input("Ingrese la cantidad de productos: "))
+                inventario = Inventario()
+                if inventario.actualizarSalidas(productos, cantidad):
+                    print("Devolucion realizada")
+            except ValueError as e:
+                print("Ingrese cantidad numerica ")
+
 
 
         elif opcion == "4":
@@ -108,6 +112,3 @@ def menuComprasProveedor():
             break
         else:
             print("Opcion invalida")
-
-
-

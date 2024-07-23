@@ -1,5 +1,5 @@
-from Productos import *
-from Inventario import *
+from Main.Productos import *
+from Main.Inventario import *
 
 class VentasMain:
     lista_ventas= []

@@ -1,7 +1,21 @@
-from Productos import *
-from Proveedores import *
+from Main.Productos import *
+from Main.Proveedores import *
 from datetime import datetime
 
+import re
+
+def validar_tamanio(tamanio):
+    # Lista de unidades de medida válidas
+    unidades_validas = ["kg", "g", "L", "ml", "pcs", "m", "cm", "in"]
+    # Crear una expresión regular para verificar el formato
+    pattern = re.compile(r'^(\d+(\.\d+)?)(kg|g|L|ml|pcs|m|cm|in)$')
+    match = pattern.match(tamanio)
+    if match:
+        # Extraer la unidad de medida del tamaño validado
+        unidad = match.group(3)
+        # Verificar si la unidad de medida extraída es válida
+        return unidad in unidades_validas
+    return False
 def validarDigitos(digito):
     if digito.isdigit():
         return True
@@ -19,17 +33,6 @@ def validar_caducidad(fecha):
     fecha_actual = datetime.now()
     fecha_dada = datetime.strptime(fecha, formato)
     return fecha_dada < fecha_actual
-
-
-def validar_tamanio(tamanio):
-    if tamanio.isdigit():
-        if int(tamanio) > 0:
-            return True
-        else:
-            print("Unidad de medida del producto no puede ser menor o igual a 0")
-    else:
-        print("No se admite texto en la uniddad de medida del producto")
-        return False
 
 
 def validar_cantidad(cantidad):
@@ -88,9 +91,9 @@ def registrarProducto():
         if not proveedor:
             print("Favor de ingresar los datos requeridos")
             proveedor = ""
-#        else:
-#            if not Proveedores.validar_provedor(proveedor):
-#                menuProductos()
+        else:
+            if not Proveedores.validar_provedor(proveedor):
+                proveedor = ""
 
 
     cantidad = ""
@@ -106,14 +109,13 @@ def registrarProducto():
 
     tamanio = ""
     while not tamanio:
-        #validar que sea mayor a 0
-        tamanio = input("Ingrese la unidad de medida del producto: ")
+        tamanio = input("Ingrese el tamaño del producto (ej. 10kg, 250ml, 30pcs): ")
         if not tamanio:
             print("Favor de ingresar los datos requeridos")
+        elif not validar_tamanio(tamanio):
+            print(
+                "Tamaño inválido. Debe ser un número seguido de una unidad de medida válida (kg, g, L, ml, pcs, m, cm, in).")
             tamanio = ""
-        else:
-            if not validar_tamanio(tamanio):
-                tamanio = ""
 
 
     precio = ""
@@ -162,7 +164,14 @@ def actualizarproducto():
            break
 
 
-   proveedor = input("Ingrese el proveedor del producto: ")
+   proveedor = ""
+   while not proveedor:
+       proveedor=input("Ingrese el proveedor del producto: ")
+       if not Proveedores.validar_provedor(proveedor):
+           print("Proveedor no encontrado")
+           proveedor=""
+       else:
+           break
 
    tamanio = ""
    while not tamanio:
@@ -185,28 +194,49 @@ def actualizarproducto():
    Producto.actualizar(codigo, nombre, proveedor, tamanio, precio)
 
 def menuProductos():
-    while True:
-        print("---Menu de productos---")
-        print("1. Registrar")
-        print("2. Detalles")
-        print("3. Actualizar")
-        print("4. Salir")
-        opcion = input("Ingrese opcion: ")
-        if opcion == "1":
-            registrarProducto()
-        elif opcion == "2":
-            print("1. Busqueda por nombre")
-            print("2. Gestion de productos")
-            opc1 = input("Ingrese opcion: ")
-            if opc1 == "1":
-                nombre = input("Ingrese nombre del producto: ")
-                Producto.detalles_nombre(nombre)
-            elif opc1 == "2":
-                Producto.detalles()
+    if Proveedores.proveedores:
+        while True:
+            print("---Menu de productos---")
+            print("1. Registrar")
+            print("2. Detalles")
+            print("3. Actualizar")
+            print("4. Crear archivo")
+            print("5. Salir")
+            opcion = input("Ingrese opcion: ")
+            if opcion == "1":
+                registrarProducto()
+            elif opcion == "2":
+                print("1. Busqueda por nombre")
+                print("2. Gestion de productos")
+                opc1 = input("Ingrese opcion: ")
+                if opc1 == "1":
+                    nombre = input("Ingrese nombre del producto: ")
+                    Producto.detalles_nombre(nombre)
+                elif opc1 == "2":
+                    Producto.detalles()
 
-        elif opcion == "3":
-            actualizarproducto()
-        elif opcion == "4":
-            break
-
-#menuProductos()
+            elif opcion == "3":
+                actualizarproducto()
+            elif opcion == "4":
+                while True:
+                    print("---Menu de archivos---")
+                    print("1. Crear archivo csv")
+                    print("2. Crear archivo json")
+                    print("3. Crear archivo pdf")
+                    print("4. Crear archivo xlsx")
+                    print("5. Salir")
+                    opc2 = input("Ingrese opcion: ")
+                    if opc2 == "1":
+                        Producto.crear_archivo_csv()
+                    elif opc2 == "2":
+                        Producto.crear_archivo_json()
+                    elif opc2 == "3":
+                        Producto.crear_archivo_pdf()
+                    elif opc2 == "4":
+                        Producto.crear_archivo_xlsx()
+                    elif opc2 == "5":
+                        break
+            elif opcion == "5":
+                break
+    else:
+        print("No se encuentra ningun proveedore registrado")

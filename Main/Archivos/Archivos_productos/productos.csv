@@ -1,0 +1,3 @@
+codigo,nombre,marca,precio,proveedor,cantidad,tamanio,fecha_caducidad,entradas,salidas,stock,existencias_anteriores,ajuste
+1,papas,sabritas,10,coca,50,10gr,01/02/2028,0,64,6,7,0
+2,papas Barcel,barcel,15,pepsi,60,61gr,01/02/2025,0,0,50,50,0
