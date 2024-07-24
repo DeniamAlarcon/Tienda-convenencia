@@ -329,6 +329,8 @@ class Proveedores:
             if proveedor.id == id2:
                 return proveedor
         return None
+
+    #Metodo utilizado para la actualizacion en consola
     @classmethod
     def actualizar(cls,id,nombre,correo,telefono):
         proveedor = cls.buscar_proveedor(id)
@@ -360,9 +362,11 @@ class Proveedores:
         else:
             print("Proveedor no encontrado.")
 
+
+    #Actualizacion en GUI
     @classmethod
     def actualizarGUI(cls, id, nom, correo, telefono):
-        buscar=cls.actualizarGUIV(id,nom,correo,telefono)
+        buscar=cls.actualizarGUI_Validar(id,nom,correo,telefono)
         print(buscar)
         if buscar:
             for proveedor in cls.proveedores:
@@ -392,9 +396,9 @@ class Proveedores:
             messagebox.showerror("Error","Proveedor ya registrado con esos datos.")
 
 
-
+    #No agregado al diagrama de clases
     @classmethod
-    def actualizarGUIV(cls, id, nom, correo, telefono):
+    def actualizarGUI_Validar(cls, id, nom, correo, telefono):
         for prov in cls.proveedores:
             if (prov.nombre) != (nom) and prov.telefono != telefono and prov.correo != correo:
                 return True
@@ -416,6 +420,8 @@ class Proveedores:
                 print("Proveedor no encontrado.")
         except Exception as e:
             print("Intentelo nuevamente, no ha sido eliminado")
+
+    #Metodo utilizado en el apartado de CLI
     @classmethod
     def comprobarExistencia(self,nombre,correo,telefono):
         for proveedor in Proveedores.proveedores:
@@ -433,6 +439,7 @@ class Proveedores:
         else:
             print("No hay proveedores registrado.")
 
+    #Falta agregar
     @classmethod
     def mandar_proveedores(cls):
         if Proveedores.proveedores.__len__() != 0:
