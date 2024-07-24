@@ -57,6 +57,7 @@ class VentasApp(tk.Tk):
         super().__init__()
         self.title("Gestión de Ventas")
         self.geometry("600x400")
+        self.resizable(False, False)
         self.create_widgets()
         self.main_app = main_app
 
@@ -86,7 +87,20 @@ class VentasApp(tk.Tk):
         self.cantidad_entry = tk.Entry(self)
         self.cantidad_entry.pack()
 
+
         tk.Button(self, text="Agregar", command=self.procesar_agregar_venta).pack(pady=10)
+
+        text_frame = tk.Frame(self)
+        text_frame.pack(pady=10)
+
+        self.resultado_text = tk.Text(text_frame, height=5, width=50, state=tk.DISABLED, wrap=tk.NONE)
+        self.resultado_text.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        scrollbar = tk.Scrollbar(text_frame, command=self.resultado_text.yview)
+        scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
+        self.resultado_text.config(yscrollcommand=scrollbar.set)
+
+
         tk.Button(self, text="Finalizar venta", command=self.mostrar_ticket_ventas).pack(pady=10)
         tk.Button(self, text="Volver", command=self.borrar_ticket).pack(pady=10)
 
