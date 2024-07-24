@@ -11,7 +11,7 @@ from tkinter import messagebox
 from datetime import datetime
 import re
 
-# Assuming Producto, Proveedores, Inventario, Ticket, Ventas classes are defined in the Main module
+
 
 def validar_tamanio(tamanio):
     unidades_validas = ["kg", "g", "L", "ml", "pcs", "m", "cm", "in"]
