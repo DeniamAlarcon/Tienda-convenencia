@@ -131,6 +131,21 @@ class Ticket:
         print("Total a pagar: ", total_pagar)
         return int(total_pagar)
 
+    @classmethod
+    def quitar_producto(cls,nombre, cantidad):
+        if Ticket.lista_ticket:
+            for ticket in Ticket.lista_ticket:
+                if ticket.nombre == nombre and ticket.cantidad == cantidad:
+                    for producto in Producto.lista_productos:
+                        if ticket.nombre == producto.nombre:
+                            producto.salidas = int(producto.salidas) - int(cantidad)
+                            producto.stock = int(producto.stock) + int(cantidad)
+                            Ticket.lista_ticket.remove(ticket)
+                            return True
+            return False
+
+
+
 
     @classmethod
     def limpiar_ticket(cls):

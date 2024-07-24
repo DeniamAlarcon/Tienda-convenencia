@@ -56,13 +56,18 @@ class VentasApp(tk.Tk):
     def __init__(self,main_app):
         super().__init__()
         self.title("Gestión de Ventas")
-        self.geometry("650x400")
+        self.geometry("600x400")
         self.resizable(False, False)
         self.create_widgets()
         self.main_app = main_app
 
+    def on_closing(self):
+        # Opcionalmente, puedes mostrar un mensaje o simplemente hacer nada.
+        messagebox.showinfo("Información", "No puedes cerrar esta ventana ocupe el boton salir.")
+
     def create_widgets(self):
         self.clear_frame()
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
         tk.Label(self, text="--- Menu de Ventas ---", font=("Arial", 16)).pack(pady=10)
 
         tk.Button(self, text="Agregar Venta", width=30, command=self.agregar_venta).pack(pady=5)
@@ -77,6 +82,7 @@ class VentasApp(tk.Tk):
 
     def agregar_venta(self):
         self.clear_frame()
+        self.protocol("WM_DELETE_WINDOW", self.on_closing)
         tk.Label(self, text="Agregar Venta", font=("Arial", 16)).pack(pady=10)
 
         tk.Label(self, text="Nombre del Producto").pack()
@@ -87,8 +93,10 @@ class VentasApp(tk.Tk):
         self.cantidad_entry = tk.Entry(self)
         self.cantidad_entry.pack()
 
-
-        tk.Button(self, text="Agregar", command=self.procesar_agregar_venta).pack(pady=10)
+        archivo_frame = tk.Frame(self)
+        archivo_frame.pack(pady=5)
+        tk.Button(archivo_frame, text="Agregar", command=self.procesar_agregar_venta).pack(side=tk.LEFT,pady=10)
+        tk.Button(archivo_frame, text="Quitar producto", command=self.procesar_quitar).pack(side=tk.LEFT,pady=5)
 
         text_frame = tk.Frame(self)
         text_frame.pack(pady=10)
@@ -103,6 +111,25 @@ class VentasApp(tk.Tk):
 
         tk.Button(self, text="Finalizar venta", command=self.mostrar_ticket_ventas).pack(pady=10)
         tk.Button(self, text="Volver", command=self.borrar_ticket).pack(pady=10)
+
+    def procesar_quitar(self):
+        cantidad = self.cantidad_entry.get()
+        producto = self.producto_entry.get()
+        if cantidad != "" and producto != "":
+            if Ticket.quitar_producto(producto, cantidad):
+                productos = Ticket.lista_ticket
+                self.resultado_text.config(state=tk.NORMAL)
+                self.resultado_text.delete('1.0', tk.END)
+                if productos:
+                    self.resultado_text.insert(tk.END,
+                                               f"{'Nombre':<10} {'Cantidad':<20} {'Total':<15}\n")
+                    for producto in productos:
+                        self.resultado_text.insert(tk.END,
+                                                   f"{producto.nombre:<10} {producto.cantidad:<20} {producto.total:<15}\n")
+                self.producto_entry.delete(0, tk.END)
+                self.cantidad_entry.delete(0, tk.END)
+        else:
+            messagebox.showerror("Error","Ingrese todos los campos")
 
     def borrar_ticket(self):
         for i in Ticket.lista_ticket:
@@ -157,14 +184,17 @@ class VentasApp(tk.Tk):
 
     def procesar_pago(self,total_pagar):
         try:
-            valor = int(self.cantidad_entry.get())
-            if validar_pago(valor,total_pagar):
-                for venta in Ticket.lista_ticket:
-                    venta = Ventas(venta.nombre,venta.cantidad,venta.total)
-                    venta.guardar_venta()
-                self.create_widgets()
-                Producto.escribir_archivo_csv_productos_principal()
-                Ticket.limpiar_ticket()
+            valor = self.cantidad_entry.get()
+            if valor.isdigit():
+                if validar_pago(int(valor),total_pagar):
+                    for venta in Ticket.lista_ticket:
+                        venta = Ventas(venta.nombre,venta.cantidad,venta.total)
+                        venta.guardar_venta()
+                    self.create_widgets()
+                    Producto.escribir_archivo_csv_productos_principal()
+                    Ticket.limpiar_ticket()
+            else:
+                messagebox.showwarning("Advertencia", "Cantidad invalida")
         except ValueError:
             messagebox.showerror("Error","Ingrese los datos requeridos")
 
@@ -197,6 +227,15 @@ class VentasApp(tk.Tk):
         ticket.guardar_producto()
 
         messagebox.showinfo("Éxito", "Producto agregado correctamente")
+        productos = Ticket.lista_ticket
+        self.resultado_text.config(state=tk.NORMAL)
+        self.resultado_text.delete('1.0', tk.END)
+        if productos:
+            self.resultado_text.insert(tk.END,
+                                       f"{'Nombre':<10} {'Cantidad':<20} {'Total':<15}\n")
+            for producto in productos:
+                self.resultado_text.insert(tk.END,
+                                           f"{producto.nombre:<10} {producto.cantidad:<20} {producto.total:<15}\n")
         self.producto_entry.delete(0, tk.END)
         self.cantidad_entry.delete(0, tk.END)
 
