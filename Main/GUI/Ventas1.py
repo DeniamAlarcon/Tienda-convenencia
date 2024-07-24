@@ -56,7 +56,7 @@ class VentasApp(tk.Tk):
     def __init__(self,main_app):
         super().__init__()
         self.title("Gestión de Ventas")
-        self.geometry("600x400")
+        self.geometry("650x400")
         self.resizable(False, False)
         self.create_widgets()
         self.main_app = main_app
