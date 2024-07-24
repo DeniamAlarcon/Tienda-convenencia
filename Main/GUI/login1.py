@@ -67,6 +67,8 @@ class App(tk.Tk):
         tk.Button(self, text="Ventas",width=30, command=self.menuVentas).pack(pady=5)
         tk.Button(self, text="Salir",width=30, command=self.quit).pack(pady=5)
 
+
+
     def menuProveedores(self):
         self.withdraw()  # Hide the main window
         menuProv = ProveedorApp(self)
