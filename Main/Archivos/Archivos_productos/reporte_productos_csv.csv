@@ -1,1 +1,4 @@
 codigo,nombre,marca,precio,proveedor,cantidad,tamanio,fecha_caducidad
+1,papas,sabritas,10,coca,50,10gr,01/02/2028
+2,papas Barcel,barcel,15,pepsi,60,61gr,01/02/2025
+3,manga ,panini,169,panini,50,200g,02/01/2030

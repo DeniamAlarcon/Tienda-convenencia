@@ -66,7 +66,6 @@ class PedidosProveedor:
             print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
         except Exception as e:
             print(f'Ocurrió un error inesperado: {e}')
-
     @classmethod
     def escribir_archivo_csv_principal_compras(cls):
         #ruta_csv = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_compras\\compras.csv'
@@ -74,7 +73,7 @@ class PedidosProveedor:
         ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_compras', 'compras.csv')
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
-                fieldnames = ["id", "proveedor", "nombre", "marca", "cantidad", "precio","status"]
+                fieldnames = ["id", "proveedor", "nombre", "marca", "cantidad", "precio","estatus"]
                 writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
                 writer.writeheader()
 
@@ -102,7 +101,6 @@ class PedidosProveedor:
     def guardar(self):
         PedidosProveedor.pedidos.append(self)
         return True
-
 
     @classmethod
     def mostrar_pedidos(cls):
@@ -169,12 +167,3 @@ class PedidosProveedor:
             if pedido.id == idp:
                 return pedido
         return
-    @classmethod
-    def eliminar_pedidos(cls,id):
-        if cls.pedidos.__len__() != 0:
-            if cls.buscarID(id):
-                cls.pedidos.remove(id)
-                return True
-            else:
-                print("Pedido no encontrado")
-        return False

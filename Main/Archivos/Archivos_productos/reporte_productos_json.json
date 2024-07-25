@@ -3,20 +3,30 @@
         "codigo": "1",
         "nombre": "papas",
         "marca": "sabritas",
-        "precio": "20",
-        "proveedor": "coca-cola",
-        "cantidad": "20",
-        "tamanio": "61gr",
-        "fecha_caducidad": "30/07/2024"
+        "precio": "10",
+        "proveedor": "coca",
+        "cantidad": "50",
+        "tamanio": "10gr",
+        "fecha_caducidad": "01/02/2028"
     },
     {
         "codigo": "2",
-        "nombre": "coca",
-        "marca": "coca",
-        "precio": "10",
-        "proveedor": "coca-cola",
-        "cantidad": "20",
-        "tamanio": "1L",
-        "fecha_caducidad": "22/07/2024"
+        "nombre": "papas Barcel",
+        "marca": "barcel",
+        "precio": "15",
+        "proveedor": "pepsi",
+        "cantidad": "60",
+        "tamanio": "61gr",
+        "fecha_caducidad": "01/02/2025"
+    },
+    {
+        "codigo": "3",
+        "nombre": "manga ",
+        "marca": "panini",
+        "precio": "169",
+        "proveedor": "panini",
+        "cantidad": "50",
+        "tamanio": "200g",
+        "fecha_caducidad": "02/01/2030"
     }
 ]

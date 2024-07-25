@@ -3,14 +3,28 @@
         "codigo": "1",
         "nombre": "papas",
         "marca": "sabritas",
-        "precio": "20",
-        "stock": "4"
+        "precio": "10",
+        "stock": "0"
     },
     {
         "codigo": "2",
-        "nombre": "coca",
-        "marca": "coca",
-        "precio": "10",
-        "stock": "0"
+        "nombre": "papas Barcel",
+        "marca": "barcel",
+        "precio": "15",
+        "stock": "50"
+    },
+    {
+        "codigo": "3",
+        "nombre": "manga",
+        "marca": "panini",
+        "precio": "159",
+        "stock": "60"
+    },
+    {
+        "codigo": "4",
+        "nombre": "figuras",
+        "marca": "sega",
+        "precio": "1500",
+        "stock": "19"
     }
 ]

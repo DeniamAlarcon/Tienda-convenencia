@@ -1,24 +1,17 @@
-import tkinter as tk
-from tkinter import messagebox
-from datetime import datetime
-import re
+from tkinter import ttk
 
 from login1 import *
-from Main.Productos import Producto
-from Main.Proveedores import Proveedores
 from login1 import *
+
 
 def validar_tamanio(tamanio):
-    unidades_validas = ["kg", "g", "L", "ml", "pcs", "m", "cm", "in", "gr"]
-    pattern = re.compile(r'^(\d+(\.\d+)?)(kg|g|L|ml|pcs|m|cm|in|gr)$')
+    unidades_validas = ["kg", "g", "L", "ml", "pcs", "m", "cm", "in"]
+    pattern = re.compile(r'^(\d+(\.\d+)?)(kg|g|L|ml|pcs|m|cm|in)$')
     match = pattern.match(tamanio)
     if match:
         unidad = match.group(3)
         return unidad in unidades_validas
     return False
-
-def validarDigitos(digito):
-    return digito.isdigit()
 
 def validar_fecha(fecha):
     formato = "%d/%m/%Y"
@@ -45,9 +38,23 @@ class ProductosApp(tk.Tk):
     def __init__(self,main_app):
         super().__init__()
         self.title("Gestión de Productos")
-        self.geometry("600x600")
+        self.center_window(600,500)
+        self.resizable(False, False)
+        self.overrideredirect(True)
         self.create_widgets()
         self.main_app = main_app
+
+    def center_window(self, width, height):
+        # Obtener el tamaño de la pantalla
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Calcular las coordenadas x e y para centrar la ventana
+        x = (screen_width // 2) - (width // 2)
+        y = (screen_height // 2) - (height // 2)
+
+        # Establecer la geometría de la ventana
+        self.geometry(f'{width}x{height}+{x}+{y}')
 
     def create_widgets(self):
         self.clear_frame()
@@ -125,7 +132,7 @@ class ProductosApp(tk.Tk):
             messagebox.showerror("Error", "Nombre de producto ya registrado")
             return
 
-        if not Proveedores.validar_provedor(proveedor):
+        if  not Proveedores.validar_provedor(proveedor):
             messagebox.showerror("Error", "Proveedor no encontrado")
             return
 
@@ -160,63 +167,124 @@ class ProductosApp(tk.Tk):
     def detalles_producto(self):
         self.clear_frame()
         tk.Label(self, text="Detalles de Producto", font=("Arial", 16)).pack(pady=10)
-
         tk.Button(self, text="Busqueda por Nombre", width=30, command=self.buscar_por_nombre).pack(pady=5)
         tk.Button(self, text="Gestión de Productos", width=30, command=self.gestion_productos).pack(pady=5)
         tk.Button(self, text="Volver", width=30, command=self.create_widgets).pack(pady=10)
 
     def buscar_por_nombre(self):
         self.clear_frame()
-        self.geometry("650x500")
+        self.center_window(650,500)
         tk.Label(self, text="Buscar Producto por Nombre", font=("Arial", 16)).pack(pady=10)
         tk.Label(self, text="Nombre del Producto").pack()
         self.nombre_busqueda_entry = tk.Entry(self)
         self.nombre_busqueda_entry.pack()
         tk.Button(self, text="Buscar", command=self.procesar_busqueda_nombre).pack(pady=10)
         tk.Button(self, text="Volver", command=self.detalles_producto).pack(pady=10)
-        self.resultado_text = tk.Text(self, height=10, width=75, state=tk.DISABLED)
-        self.resultado_text.pack(pady=10)
+
+        # Crear un Label para el mensaje de error
+        self.error_label = tk.Label(self, text="", fg="red", font=("Arial", 12))
+        self.error_label.pack(pady=10)
+
+        # Frame for Treeview and Scrollbars
+        self.tree_frame = tk.Frame(self)
+        self.tree_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Create the Treeview
+        self.tree = ttk.Treeview(self.tree_frame, columns=(
+        'Codigo', 'Nombre', 'Marca', 'Proveedor', 'Cantidad', 'Tamaño', 'Precio', 'Vencimiento'), show='headings')
+        self.tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
+
+        # Scrollbars for the Treeview
+        scrollbar_y = ttk.Scrollbar(self.tree_frame, orient=tk.VERTICAL, command=self.tree.yview)
+        scrollbar_y.pack(side=tk.RIGHT, fill=tk.Y)
+        scrollbar_x = ttk.Scrollbar(self.tree_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
+        scrollbar_x.pack(side=tk.BOTTOM, fill=tk.X)
+        self.tree.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
 
     def procesar_busqueda_nombre(self):
         nombre = self.nombre_busqueda_entry.get()
         resultados = Producto.detalles_nombre(nombre)
-        self.resultado_text.config(state=tk.NORMAL)
-        self.resultado_text.delete(1.0, tk.END)
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100, anchor='center')
+
+        for row in self.tree.get_children():
+            self.tree.delete(row)
         if nombre != "":
             if resultados:
+                self.tree_frame.pack(fill=tk.BOTH, expand=True)
+                self.error_label.pack_forget()
+                # Configurar los encabezados de las columnas
+                for col in self.tree['columns']:
+                    self.tree.heading(col, text=col)
                 for producto in resultados:
                     if producto.nombre == nombre:
-                        self.resultado_text.insert(tk.END,
-                                                   f"{'Codigo': <8}{'Nombre': <8}{'Marca': <10}{'Proveedor': <10}{'Cantidad': <10}{'Tamaño': <8}{'Precio': <8}{'Vencimiento': <4}\n")
-                        self.resultado_text.insert(tk.END,
 
-                                                   f"{producto.codigo:<8}{producto.nombre:<8}{producto.marca:<10}{producto.proveedor:<10}{producto.cantidad:<10}{producto.tamanio:<8}{producto.precio:<8}{producto.fecha_caducidad:<}\n")
-
+                        self.tree.insert('', tk.END, values=(
+                            producto.codigo, producto.nombre, producto.marca, producto.proveedor,
+                            producto.cantidad, producto.tamanio, producto.precio, producto.fecha_caducidad
+                        ))
             else:
-                self.resultado_text.insert(tk.END, "No se encontraron productos con ese nombre")
+                self.error_label.config(text="No se encontraron productos con ese nombre")
+                self.error_label.pack(pady=10)  # Mostrar el mensaje de error
+                self.tree_frame.forget()  # Ocultar la tabla
         else:
-            self.resultado_text.insert(tk.END,  f"{'Codigo': <8}{'Nombre': <8}{'Marca': <10}{'Proveedor': <10}{'Cantidad': <10}{'Tamaño': <8}{'Precio': <8}{'Vencimiento': <4}\n")
+            self.tree_frame.pack(fill=tk.BOTH, expand=True)
+            self.error_label.pack_forget()
             for producto in resultados:
-                self.resultado_text.insert(tk.END,f"{producto.codigo:<8}{producto.nombre:<8}{producto.marca:<10}{producto.proveedor:<10}{producto.cantidad:<10}{producto.tamanio:<8}{producto.precio:<8}{producto.fecha_caducidad:<}\n")
-
-        self.resultado_text.config(state=tk.DISABLED)
+                self.tree.insert('', tk.END, values=(
+                    producto.codigo, producto.nombre, producto.marca, producto.proveedor,
+                    producto.cantidad, producto.tamanio, producto.precio, producto.fecha_caducidad))
 
     def gestion_productos(self):
         self.clear_frame()
         tk.Label(self, text="Gestión de Productos", font=("Arial", 16)).pack(pady=10)
-        self.resultado_text = tk.Text(self, height=20, width=80, state=tk.DISABLED)
-        self.resultado_text.pack(pady=10)
-        productos = Producto.detalles()
-        self.resultado_text.config(state=tk.NORMAL)
-        if productos:
-            self.resultado_text.insert(tk.END, f"{'Codigo': <8}{'Nombre': <8}{'Marca': <10}{'Proveedor': <10}{'Cantidad': <10}{'Tamaño': <8}{'Precio': <8}{'Vencimiento': <4}\n")
-            for producto in productos:
-                self.resultado_text.insert(tk.END, f"{producto.codigo:<8}{producto.nombre:<8}{producto.marca:<10}{producto.proveedor:<10}{producto.cantidad:<10}{producto.tamanio:<8}{producto.precio:<8}{producto.fecha_caducidad:<}\n")
-        else:
-            self.resultado_text.insert(tk.END, "No hay productos registrados")
-        self.resultado_text.config(state=tk.DISABLED)
 
+        # Frame for Treeview and Scrollbars
+        tree_frame = tk.Frame(self)
+        tree_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Create the Treeview
+        self.tree = ttk.Treeview(tree_frame, columns=(
+            'Codigo', 'Nombre', 'Marca', 'Proveedor', 'Cantidad', 'Tamaño', 'Precio', 'Vencimiento'), show='headings')
+
+        self.tree.grid(row=0, column=0, sticky='nsew')
+
+        # Scrollbars for the Treeview
+        scrollbar_y = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.tree.yview)
+        scrollbar_y.grid(row=0, column=1, sticky='ns')
+
+        scrollbar_x = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
+        scrollbar_x.grid(row=1, column=0, sticky='ew')
+
+        self.tree.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
+        # Configure column headings
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100, anchor='center')
+
+        # Load product data
+        productos = Producto.detalles()
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+
+        if productos:
+            for producto in productos:
+                self.tree.insert('', tk.END, values=(
+                    producto.codigo, producto.nombre, producto.marca, producto.proveedor,
+                    producto.cantidad, producto.tamanio, producto.precio, producto.fecha_caducidad
+                ))
+        else:
+            self.tree.insert('', tk.END, values=("No hay productos registrados",))
+
+        # Button to return
         tk.Button(self, text="Volver", command=self.detalles_producto).pack(pady=10)
+
+        # Configure the tree frame to expand with the window
+        tree_frame.grid_rowconfigure(0, weight=1)
+        tree_frame.grid_columnconfigure(0, weight=1)
 
     def actualizar_producto(self):
         self.clear_frame()

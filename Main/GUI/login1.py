@@ -1,13 +1,8 @@
-import tkinter as tk
-from tkinter import messagebox
-from Productos1 import *
-from InventarioGUI import *
-from ProveedoresOp1 import *
-from Main.ComprasProveedores import *
-from Ventas1 import *
 from ComprasProveedores1 import *
-from Main.Productos import *
-import re
+from InventarioGUI import *
+from Productos1 import *
+from ProveedoresOp1 import *
+from Ventas1 import *
 
 usuarios = [
     "admin",
@@ -20,9 +15,24 @@ class App(tk.Tk):
     def __init__(self):
         super().__init__()
         self.title("Tiendita")
-        self.geometry("400x340")
         self.resizable(False, False)
+        self.overrideredirect(True)
+        self.center_window(600, 400)
+        self.overrideredirect(True)
         self.create_login_screen()
+
+    def center_window(self, width, height):
+        # Obtener el tamaño de la pantalla
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Calcular las coordenadas x e y para centrar la ventana
+        x = (screen_width // 2) - (width // 2)
+        y = (screen_height // 2) - (height // 2)
+
+        # Establecer la geometría de la ventana
+        self.geometry(f'{width}x{height}+{x}+{y}')
+
 
     def create_login_screen(self):
         self.clear_screen()
@@ -52,7 +62,7 @@ class App(tk.Tk):
 
     def create_menu_screen(self):
         self.clear_screen()
-        self.geometry("400x340")
+        self.center_window(600, 400)
         self.resizable(False, False)
         Proveedores.leer_archivo()
         Producto.leer_archivo()

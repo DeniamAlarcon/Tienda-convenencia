@@ -1,16 +1,8 @@
-from collections import defaultdict
-import matplotlib.pyplot as plt
-from matplotlib.dates import DateFormatter, MonthLocator
-from reportlab.platypus import Image
-
-from Main.VentaP import corte_caja, Ventas
+import re
+import tkinter as tk
+from Main.VentaP import Ventas
 from Main.VentasMain import *
 from Main.tickets import *
-import tkinter as tk
-from tkinter import messagebox
-from datetime import datetime
-import re
-
 
 
 def validar_tamanio(tamanio):
@@ -56,10 +48,23 @@ class VentasApp(tk.Tk):
     def __init__(self,main_app):
         super().__init__()
         self.title("Gestión de Ventas")
-        self.geometry("600x400")
         self.resizable(False, False)
+        self.overrideredirect(True)
+        self.center_window(600, 400)
         self.create_widgets()
         self.main_app = main_app
+
+    def center_window(self, width, height):
+        # Obtener el tamaño de la pantalla
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Calcular las coordenadas x e y para centrar la ventana
+        x = (screen_width // 2) - (width // 2)
+        y = (screen_height // 2) - (height // 2)
+
+        # Establecer la geometría de la ventana
+        self.geometry(f'{width}x{height}+{x}+{y}')
 
     def on_closing(self):
         # Opcionalmente, puedes mostrar un mensaje o simplemente hacer nada.

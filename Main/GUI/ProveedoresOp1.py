@@ -1,16 +1,31 @@
-import tkinter as tk
-from tkinter import messagebox
-from Main.Proveedores import *
 import re
+import tkinter as tk
+from tkinter import ttk
+
+from Main.Proveedores import *
+
 
 class ProveedorApp(tk.Tk):
     def __init__(self,main_app):
         super().__init__()
         self.title("Gestión de Proveedores")
-        self.geometry("500x500")
+        self.center_window(500,500)
         self.resizable(False, False)
+        self.overrideredirect(True)
         self.create_widgets()
         self.main_app = main_app
+
+    def center_window(self, width, height):
+        # Obtener el tamaño de la pantalla
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Calcular las coordenadas x e y para centrar la ventana
+        x = (screen_width // 2) - (width // 2)
+        y = (screen_height // 2) - (height // 2)
+
+        # Establecer la geometría de la ventana
+        self.geometry(f'{width}x{height}+{x}+{y}')
 
     def create_widgets(self):
         self.clear_frame()
@@ -115,8 +130,6 @@ class ProveedorApp(tk.Tk):
         self.id_entry.config(state=tk.DISABLED)
         self.boton_buscar.config(state="disabled")
 
-
-
     def procesar_actualizacion(self):
         try:
             id = self.id_entry.get()
@@ -162,39 +175,108 @@ class ProveedorApp(tk.Tk):
         self.nombre_busqueda_entry.pack()
         tk.Button(self, text="Buscar", command=self.procesar_busqueda_nombre).pack(pady=10)
         tk.Button(self, text="Volver", command=self.mostrar_proveedor).pack(pady=10)
-        self.resultado_text = tk.Text(self, height=10, width=50, state=tk.DISABLED)
-        self.resultado_text.pack(pady=10)
+        # Crear un Label para el mensaje de error
+        self.error_label = tk.Label(self, text="", fg="red", font=("Arial", 12))
+        self.error_label.pack(pady=10)
+        # Frame para el Treeview y Scrollbars
+        self.tree_frame = tk.Frame(self)
+        self.tree_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Crear el Treeview
+        self.tree = ttk.Treeview(self.tree_frame, columns=(
+            'ID', 'Nombre', 'Correo', 'Teléfono'), show='headings')
+
+        self.tree.grid(row=0, column=0, sticky='nsew')
+
+        # Scrollbars para el Treeview
+        scrollbar_y = ttk.Scrollbar(self.tree_frame, orient=tk.VERTICAL, command=self.tree.yview)
+        scrollbar_y.grid(row=0, column=1, sticky='ns')
+
+        scrollbar_x = ttk.Scrollbar(self.tree_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
+        scrollbar_x.grid(row=1, column=0, sticky='ew')
+
+        self.tree.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
+        # Asegurarse de que el Treeview se expanda para llenar el frame
+        self.tree_frame.grid_rowconfigure(0, weight=1)
+        self.tree_frame.grid_columnconfigure(0, weight=1)
 
     def procesar_busqueda_nombre(self):
+        # Configurar los encabezados de las columnas
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100, anchor='center')
+
+        # Limpiar las filas existentes
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+
+        # Obtener resultados y llenar la tabla
         nombre = self.nombre_busqueda_entry.get()
         resultados = Proveedores.mostrar_nombre(nombre)
-        self.resultado_text.config(state=tk.NORMAL)  # Habilitar edición temporalmente
-        self.resultado_text.delete(1.0, tk.END)  # Limpiar el cuadro de texto
 
         if resultados:
+            self.tree_frame.pack(fill=tk.BOTH, expand=True)  # Mostrar la tabla
+            self.error_label.pack_forget()  # Ocultar el mensaje de error
             for proveedor in resultados:
-                if proveedor.nombre==nombre:
-                    self.resultado_text.insert(tk.END, f"{'ID': <5}{'NOMBRE': <10}{'CORREO': <15}{'TELEFONO': <10}\n"
-                                                       f"{proveedor.id: <5}{proveedor.nombre: <10}{proveedor.correo: <15}{proveedor.telefono: <10}\n")
+                if proveedor.nombre == nombre:
+                    self.tree.insert('', tk.END, values=(
+                        proveedor.id, proveedor.nombre, proveedor.correo, proveedor.telefono))
         else:
-            self.resultado_text.insert(tk.END, "No se encontraron proveedores con ese nombre")
-
-        self.resultado_text.config(state=tk.DISABLED)  # Deshabilitar edición nuevamente
+            self.error_label.config(text="No se encontraron proveedores con ese nombre")
+            self.error_label.pack(pady=10)  # Mostrar el mensaje de error
+            self.tree_frame.forget()  # Ocultar la tabla
 
     def gestion_proveedores(self):
         self.clear_frame()
         tk.Label(self, text="Gestion de Proveedores", font=("Arial", 16)).pack(pady=10)
-        self.resultado_text = tk.Text(self, height=20, width=60, state=tk.DISABLED)
-        self.resultado_text.pack(pady=10)
+        # Crear un Label para el mensaje de error
+        self.error_label = tk.Label(self, text="", fg="red", font=("Arial", 12))
+        self.error_label.pack(pady=10)
+        # Frame para el Treeview y Scrollbars
+        self.tree_frame = tk.Frame(self)
+        self.tree_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Crear el Treeview
+        self.tree = ttk.Treeview(self.tree_frame, columns=(
+            'ID', 'Nombre', 'Correo', 'Teléfono'), show='headings')
+
+        self.tree.grid(row=0, column=0, sticky='nsew')
+
+        # Scrollbars para el Treeview
+        scrollbar_y = ttk.Scrollbar(self.tree_frame, orient=tk.VERTICAL, command=self.tree.yview)
+        scrollbar_y.grid(row=0, column=1, sticky='ns')
+
+        scrollbar_x = ttk.Scrollbar(self.tree_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
+        scrollbar_x.grid(row=1, column=0, sticky='ew')
+
+        self.tree.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
+        # Asegurarse de que el Treeview se expanda para llenar el frame
+        self.tree_frame.grid_rowconfigure(0, weight=1)
+        self.tree_frame.grid_columnconfigure(0, weight=1)
+
+        # Configurar los encabezados de las columnas
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100, anchor='center')
+
+        # Limpiar las filas existentes
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+
         proveedores = Proveedores.mostrar()
-        self.resultado_text.config(state=tk.NORMAL)  # Habilitar edición temporalmente
         if proveedores:
-            self.resultado_text.insert(tk.END,f"{'ID': <10}{'NOMBRE': <15}{'CORREO': <20}{'TELEFONO': <10}\n")
+            self.tree_frame.pack(fill=tk.BOTH, expand=True)
+            self.error_label.pack_forget()
             for proveedor in proveedores:
-                self.resultado_text.insert(tk.END,f"{proveedor.id: <10}{proveedor.nombre: <15}{proveedor.correo: <20}{proveedor.telefono: <10}\n")
+                self.tree.insert('', tk.END, values=(
+                    proveedor.id, proveedor.nombre, proveedor.correo, proveedor.telefono))
         else:
-            self.resultado_text.insert(tk.END, "No hay proveedores registrados")
-        self.resultado_text.config(state=tk.DISABLED)  # Deshabilitar edición nuevamente
+            self.error_label.config(text="No hay proveedores registrados")
+            self.error_label.pack(pady=10)  # Mostrar el mensaje de error
+            self.tree_frame.forget()  # Ocultar la tabla
+
 
         tk.Button(self, text="Volver", command=self.mostrar_proveedor).pack(pady=10)
 

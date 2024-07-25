@@ -1,17 +1,15 @@
 from collections import defaultdict
 from datetime import timedelta
-
 import matplotlib.pyplot as plt
 from matplotlib.dates import DateFormatter, MonthLocator
 from reportlab.platypus import Image
-
-from Main.VentasMain import *
 from Main.tickets import *
 
 
 class Ventas:
     ventas_list = []
     ventas_historial=[]
+
     def __init__(self, producto, cantidad,total):
         self.producto = producto
         self.cantidad = cantidad
@@ -221,76 +219,7 @@ class Ventas:
     @classmethod
     def guardar_historial_grafico(cls):
         Ventas.escribir_ventas_historial_csv()
-        Ventas.crear_archivo_pdf_con_grafico() #sacar de aqui va al menu para crear reporte
-
-
-
-    @staticmethod
-    def mostrar_ventas():
-        for venta in Ventas.ventas_list:
-            print(f"Producto: {venta.producto}, Cantidad: {venta.cantidad}, Total: {venta.total}")
-
-
-def buscar_producto(producto):
-    print(producto)
-    while not producto:
-        producto = input("Ingrese el nombre del producto: ")
-        print(f"Buscando el producto '{producto}'...")
-        for i in Producto.lista_productos:
-            if i.nombre == producto:
-                return producto
-            else:
-                print("Producto no encontrado")
-                producto = ""
-
-def validar_stock(producto):
-    for i in Producto.lista_productos:
-        if i.nombre == producto:
-            if i.stock == 0:
-                print("No hay stock de ", producto)
-                return False
-            else:
-                return True
-
-def seleccionar_cantidad_producto(producto, cantidad):
-    for i in Producto.lista_productos:
-        if i.nombre == producto:
-            if int(cantidad) > int(i.stock):
-                print("La cantidad excede el stock")
-                return False
-            elif int(cantidad) == 0:
-                print("La cantidad debe ser mayor a 0")
-                return False
-            else:
-                Inventario.actualizarSalidas(producto, cantidad)
-                print("Se a seleccionado correctamente cantidad de producto para venta")
-                return True
-
-
-
-def metodo_pago(total_pagar):
-    while True:
-        print("1. Efectivo")
-        print("2. tarjeta")
-        opcion = input("Ingrese una opcion: ")
-        if opcion == "1":
-            while True:
-                total_dado = int(input("Ingrese el efectivo dado: "))
-                if total_dado < total_pagar:
-                    print("Efectivo incompleto")
-                elif total_dado > total_pagar:
-                    print("Cambio: ", total_dado - total_pagar)
-                    break
-                elif total_dado == total_pagar:
-                    print("Cambio: 0")
-                    break
-            break
-        elif opcion == "2":
-            print("tarjeta")
-            print("Cambio: 0")
-            break
-        else:
-            print(f"No se ha seleccionado Metodo de pago")
+        Ventas.crear_archivo_pdf_con_grafico()
 
 def corte_caja():
     cantidad = 0
@@ -300,102 +229,5 @@ def corte_caja():
         return cantidad
     else:
         return cantidad
-
-def venta():
-    while True:
-        print("1.- Agregar producto")
-        print("2.- Finalizar venta")
-        print("3.- salir")
-        opcion2 = input("Seleccione una opcion: ")
-        if opcion2 == "1":
-            producto = input("Ingrese el nombre del producto: ")
-            validaNP = Producto.validar_nombre(producto)
-            if validaNP:
-                print("Se ha seleccionado producto correctamente")
-                if validar_stock(producto):
-                    cant = ""
-                    while not cant:
-                        cant = input("Ingrese la cantidad")
-                        if cant.isdigit():
-                            if int(cant) > 0:
-                                if not seleccionar_cantidad_producto(producto, cant):
-                                    cant = ""
-                                else:
-                                    ticket = Ticket(producto, cant)
-                                    ticket.guardar_producto()
-                                    break
-                            else:
-                                print("No se ha registrado cantidad de productos a vender")
-                                cant = ""
-                        else:
-                            print("No se a registrado cantidad de productos a vender")
-                            cant = ""
-            else:
-                print("Producto no encontrado")
-        elif opcion2 == "2":
-            metodo_pago(Ticket.mostar_ticket())
-            Ticket.crear_archivo_pdf_ticket()
-            for i in Ticket.lista_ticket:
-                venta = Ventas(i.nombre, i.cantidad, i.total)
-                venta.guardar_venta()
-            Ticket.limpiar_ticket()
-            break
-        elif opcion2 == "3":
-            Producto.lista_productos.clear()
-            Producto.leer_archivo()
-            Ticket.limpiar_ticket()
-            print("Saliendo...")
-            break
-
-def menuVentas():
-    if Proveedores.proveedores:
-        if Producto.lista_productos:
-            while True:
-                print("----Ventas---")
-                print("1 - Agregar Venta")
-                print("2 - Mostrar Historial Ventas")
-                print("3 - Corte de caja")
-                print("4 - Generar reporte de ventas")
-                print("5 - Salir")
-                opcion= input("Seleccione una opcion: ")
-                if opcion == "1":
-                    venta()
-                elif opcion == "2":
-                    Ventas.mostrar_ventas()
-                elif opcion == "3":
-                    if corte_caja() >= 0:
-                        monto = ""
-                        while not monto:
-                            monto = input("Ingrese el total que se tiene en la caja: ")
-                            if int(monto) > corte_caja():
-                                print("Tiene sobrante verifique la cantidad")
-                                print("La cantidad que debe tener es: ", corte_caja())
-                                monto = ""
-                            elif int(monto) < corte_caja():
-                                print("Tiene faltante verifique la cantidad")
-                                print("La cantidad que debe tener es: ", corte_caja())
-                                monto = ""
-                            elif int(monto) == corte_caja():
-                                cantidad= corte_caja()
-                                print("Corte de caja exitoso buen dia")
-                                fecha_actual = datetime.now().strftime("%d/%m/%Y")
-                                Ventas.ventas_historial.append({"fecha": fecha_actual, "cantidad": cantidad})
-                                Ventas.guardar_historial_grafico()
-                                Ventas.ventas_list.clear()
-                                break
-                        break
-                    else:
-                        print("No hay ventas realizadas")
-                        break
-                elif opcion == "4":
-                    Ventas.guardar_historial_grafico()
-                elif opcion == "5":
-                    break
-        else:
-            print("no hay productos registrados")
-    else:
-        print("No hay proveedores registrados")
-
-
 
 

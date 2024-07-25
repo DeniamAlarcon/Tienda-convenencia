@@ -209,54 +209,6 @@ class Inventario:
         except Exception as e:
             print(f'Ocurrió un error inesperado: {e}')
 
-    def menu_archivos(self):
-        while True:
-            print("1. Crear archivo CSV")
-            print("2. Crear archivo JSON")
-            print("3. Crear archivo PDF")
-            print("4. Crear archivo XLSX")
-            print("5 Salir")
-            opcion = input("Seleccione una opcion")
-            if opcion == "1":
-                Inventario.escribir_archivo_csv(self)
-            elif opcion == "2":
-                Inventario.escribir_archivo_json(self)
-            elif opcion == "3":
-                Inventario.escribir_archivo_pdf(self)
-            elif opcion == "4":
-                Inventario.escribir_archivo_xlsx(self)
-            elif opcion == "5":
-                break
-
-    def obtenerInventario(self):
-        if self.proveedor:
-            if self.producto:
-                while True:
-                    print("Desea crear un archivo del informe de inventario?")
-                    print("1. Si")
-                    print("2. No")
-                    opcion = input("Seleccione una opcion")
-                    if opcion == "1":
-                        Inventario.menu_archivos(self)
-                        break
-                    elif opcion == "2":
-                        break
-                print("INFORME DE INVENTARIO CREADO EL: ", datetime.now())
-                print(f"{'Código':<10} {'Nombre':<20} {'Marca':<15} {'Precio':<10} {'Proveedor':<20} {'Entradas':<10} {'Salidas':<10} {'Stock':<10} {'Existencias_anteriores'} {'Ajustes':<10}")
-                print("=" * 105)
-                for product in self.producto:
-                    # Imprimir cada producto con su información formateada en columnas
-                    print(f"{product.codigo:<10} {product.nombre:<20} {product.marca:<15} {product.precio:<10} {product.proveedor:<20} {product.entradas:<10} {product.salidas:<10} {product.stock:<10} {product.existenciasAnteriores} {product.ajuste:<10}")
-                    product.entradas=0
-                    product.salidas=0
-                    product.ajuste=0
-                    print("=" * 105)
-            else:
-                print('No hay proveedores registrados')
-        else:
-            print('No hay productos registrados')
-
-
     @classmethod
     def mensajes_stock(self,nombre):
         for product in Producto.lista_productos:
@@ -276,8 +228,6 @@ class Inventario:
                 product.stock = int(product.stock) + int(cantidad)
                 Inventario.mensajes_stock(nombre)
                 return True
-
-
 
     @classmethod
     def actualizarSalidas(self, nombre, cantidad):
@@ -454,26 +404,6 @@ class Inventario:
         except Exception as e:
             print(f'Ocurrió un error inesperado: {e}')
 
-    def informeStock(self):
-        if self.producto:
-            if self.proveedor:
-                Inventario.escribir_archivo_stock_csv(self)
-                Inventario.escribir_archivo_stock_json(self)
-                Inventario.escribir_archivo_stock_pdf(self)
-                Inventario.escribir_archivo_stock_xlsx(self)
-                print("INFORME DE STOCK DISPONIBLE")
-                print(f"{'Código':<10} {'Nombre':<20} {'Marca':<15} {'Precio':<10} {'Stock':<10}")
-                print("=" * 105)
-                for product in self.producto:
-                    print(f"{product.codigo:<10} {product.nombre:<20} {product.marca:<15} {product.precio:<10} {product.stock:<10}")
-                print("=" * 105)
-                for product in self.producto:
-                    Inventario.mensajes_stock(product.nombre)
-            else:
-                print('No hay proveedores registrados')
-        else:
-            print('No hay productos registrados')
-
     @classmethod
     def informeStockC(cls):
         if Producto.lista_productos:
@@ -490,112 +420,3 @@ class Inventario:
                 print('No hay proveedores registrados')
         else:
             print('No hay productos registrados')
-
-
-    def calculoAjuste(self,cantidad,nombre,precio):
-        for product in self.producto:
-            if product.nombre == nombre:
-                total_reponer = int(cantidad)*int(precio)
-                print("Ajuste realizada")
-                print("Total a reponer: ",total_reponer)
-                product.ajuste = cantidad
-
-    def ajuste_inventario(self):
-        if self.proveedor:
-            if self.producto:
-                nombre = ""
-                while not nombre:
-                    nombre = input("Ingrese el nombre del producto: ")
-                    if nombre:
-                        if not Producto.validar_nombre(nombre):
-                            print("El nombre del producto no existe")
-                            nombre = ""
-                    else:
-                        print("Favor de ingresar el dato requerido")
-
-                cantidad = ""
-                while not cantidad:
-                    cantidad = input("Ingrese la cantidad de producto dañado: ")
-                    if cantidad:
-                        if cantidad.isdigit():
-                            if int(cantidad) < Producto.validar_stock(nombre):
-                                if int(cantidad) < 0:
-                                    print("Ingrese una cantidad mayor a 0")
-                                    cantidad = ""
-                                else:
-                                    cantidad = int(cantidad)
-                                    break
-                            else:
-                                print("La cantidad ingresada excede el stock")
-                                cantidad = ""
-                        else:
-                            print("Favor de ingresar el dato numerico")
-                            cantidad = ""
-                    else:
-                        print("Favor de ingresar el dato requerido")
-
-                precio = ""
-                while not precio:
-                    try:
-                        precio = input("Ingrese el precio del producto: ")
-                        if precio:
-                            if int(precio) < 0:
-                                print("Ingrese una precio mayor a 0")
-                                precio = ""
-                            else:
-                                Inventario.calculoAjuste(self, cantidad, nombre, precio)
-                                Inventario.actualizarSalidas(nombre, cantidad)
-                        else:
-                            print("Favor de ingresar el dato requerido")
-                    except ValueError:
-                        print("Precio no valido")
-            else:
-                print('No hay productos registrados')
-        else:
-            print('No hay proveedores registrados')
-
-    def fechas_caducidad(self):
-        formato = "%d/%m/%Y"
-        for product in self.producto:
-            fecha_caducidad = datetime.strptime(product.fecha_caducidad,formato)
-            fecha_actual = datetime.now()
-            diferencia_dias = (fecha_caducidad - fecha_actual).days
-            if diferencia_dias <= 10:
-                if diferencia_dias <= 2:
-                    print("Realizar cambio de: ", product.nombre)
-                else:
-                    print(product.nombre, " Proximo a caducar")
-            else:
-                print("Sin productos proximos a caducar")
-                break
-
-
-
-def menuInventario():
-    inventario = Inventario()
-    while True:
-        print("1. Generacion de informe de inventario")
-        print("2. Generacion de stock")
-        print("3. Ajuste de inventario(robos,perdidas,daños)")
-        print("4  Revision fechas caducidad")
-        print("5. Salir")
-        opcion = input("Ingrese una opcion: ")
-        if opcion == "1":
-            inventario.obtenerInventario()
-        elif opcion == "2":
-            inventario.informeStock()
-        elif opcion == "3":
-            inventario.ajuste_inventario()
-            while True:
-                print("1. Ingresar otro ajuste")
-                print("2. Salir")
-                opcion1 = input("Ingrese una opcion: ")
-                if opcion1 == "1":
-                    inventario.ajuste_inventario()
-                elif opcion1 == "2":
-                    break
-        elif opcion == "4":
-            inventario.fechas_caducidad()
-        elif opcion == "5":
-            break
-

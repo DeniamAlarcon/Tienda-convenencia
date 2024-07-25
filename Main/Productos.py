@@ -354,10 +354,8 @@ class Producto:
         if Producto.lista_productos.__len__() != 0:
             for product in Producto.lista_productos:
                 if product.nombre == nombre and product.codigo == id:
-                    print("Nombre coincide con el id")
                     return True
             return False
-
 
 
     @classmethod
@@ -376,8 +374,6 @@ class Producto:
                     print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ", product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
                     return Producto.lista_productos
             print("producto no encontrado")
-
-
 
     @classmethod
     def detalles(self):
@@ -399,23 +395,10 @@ class Producto:
             print("producto no encontrado")
 
     @classmethod
-    def buscarProductoNombre(self, nombre):
-        for product in Producto.lista_productos:
-            if product.nombre == nombre:
-                return product
-
-    @classmethod
     def buscar_Producto_Nombre_Proveedor(self, nombre,proveedor,marca):
         for product in Producto.lista_productos:
             if product.nombre == nombre and product.proveedor == proveedor and product.marca == marca:
                 return product
-
-    @classmethod
-    def buscarProductoMarca(self, marca):
-        for product in Producto.lista_productos:
-            if product.marca == marca:
-                return product
-
 
     @classmethod
     def actualizar(self, id, nombre, proveedor, tamanio, precio, fecha_caducidad):
@@ -482,7 +465,6 @@ class Producto:
         except Exception as e:
             print("Intentelo nuevamente, no ha sido eliminado")
 
-
     @classmethod
     def validar_codigo(cls, codigo):
         if Producto.lista_productos.__len__() != 0:
@@ -502,6 +484,7 @@ class Producto:
             return False
         else:
             return False
+
     @classmethod
     def validar_nombre(cls, nombre):
         if Producto.lista_productos.__len__() != 0:

@@ -1,20 +1,33 @@
 import tkinter as tk
-from tkinter import messagebox
 from Main.PedidosProveedor import *
 from Main.VentasMain import *
+
 
 class ComprasProveedorApp(tk.Tk):
     def __init__(self, main_app):
         super().__init__()
         self.title("Gestión de Compras a Proveedores")
-        self.geometry("600x400")
+        self.center_window(600,400)
         self.resizable(False, False)
+        self.overrideredirect(True)
         self.main_app = main_app
         self.create_widgets()
 
+    def center_window(self, width, height):
+        # Obtener el tamaño de la pantalla
+        screen_width = self.winfo_screenwidth()
+        screen_height = self.winfo_screenheight()
+
+        # Calcular las coordenadas x e y para centrar la ventana
+        x = (screen_width // 2) - (width // 2)
+        y = (screen_height // 2) - (height // 2)
+
+        # Establecer la geometría de la ventana
+        self.geometry(f'{width}x{height}+{x}+{y}')
+
     def create_widgets(self):
         self.clear_frame()
-        self.geometry("400x400")
+        self.center_window(400,400)
         tk.Label(self, text="--- Menú de Compras a Proveedores ---", font=("Arial", 16)).pack(pady=10)
 
         tk.Button(self, text="Realizar pedido de compra", width=30, command=self.pedido_proveedor).pack(pady=5)
@@ -172,7 +185,7 @@ class ComprasProveedorApp(tk.Tk):
 
     def mostrar_historial_compras(self):
         self.clear_frame()
-        self.geometry("660x550")
+        self.center_window(660,550)
         tk.Label(self, text="Historial de Compras", font=("Arial", 16)).pack(pady=10)
         self.resultado_text = tk.Text(self, height=20, width=80)
         self.resultado_text.pack(pady=10)
@@ -198,7 +211,7 @@ class ComprasProveedorApp(tk.Tk):
 
     def historial_compras_proveedor(self):
         self.clear_frame()
-        self.geometry("660x550")
+        self.center_window(660,550)
         tk.Label(self, text="Historial de Compras por Proveedor", font=("Arial", 16)).pack(pady=10)
 
         tk.Label(self, text="Nombre del proveedor").pack()

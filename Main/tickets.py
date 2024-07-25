@@ -8,7 +8,6 @@ from datetime import datetime
 class Ticket:
     lista_ticket=[]
     def __init__(self, nombre, cantidad):
-
         self.nombre = nombre
         self.cantidad = cantidad
         self.total = 0
@@ -143,9 +142,6 @@ class Ticket:
                             Ticket.lista_ticket.remove(ticket)
                             return True
             return False
-
-
-
 
     @classmethod
     def limpiar_ticket(cls):
