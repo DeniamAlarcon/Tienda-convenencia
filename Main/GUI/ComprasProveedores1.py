@@ -108,6 +108,7 @@ class ComprasProveedorApp(tk.Tk):
 
     def validacion_entregas(self):
         self.clear_frame()
+        self.geometry("700x490")
         tk.Label(self, text="Validación de Entregas", font=("Arial", 16)).pack(pady=10)
 
         tk.Label(self, text="ID del pedido").pack()
@@ -119,6 +120,46 @@ class ComprasProveedorApp(tk.Tk):
         self.cantidad_entregas_entry.pack()
 
         tk.Button(self, text="Validar entrega", command=self.procesar_validacion_entrega,width=30).pack(pady=10)
+        # Frame for Treeview and Scrollbars
+        tree_frame = tk.Frame(self)
+        tree_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Create the Treeview
+        self.tree = ttk.Treeview(tree_frame, columns=(
+            'ID', 'Proveedor', 'Nombre', 'Marca', 'Cantidad', 'Precio', 'Estatus'), show='headings')
+
+        self.tree.grid(row=0, column=0, sticky='nsew')
+
+        # Scrollbars for the Treeview
+        scrollbar_y = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.tree.yview)
+        scrollbar_y.grid(row=0, column=1, sticky='ns')
+
+        scrollbar_x = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
+        scrollbar_x.grid(row=1, column=0, sticky='ew')
+
+        self.tree.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
+        # Configure column headings
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100, anchor='center')
+
+        try:
+            resultados = PedidosProveedor.mostrar_pedidos()
+
+            for row in self.tree.get_children():
+                self.tree.delete(row)
+
+            if resultados:
+                for pedido in resultados:
+                    if pedido.estatus == "Pendiente":
+                        self.tree.insert('', tk.END, values=(
+                            pedido.id, pedido.proveedor, pedido.nombre, pedido.marca, pedido.cantidad, pedido.precio,
+                            pedido.estatus))
+            else:
+                messagebox.showinfo("Mensaje", "No hay pedidos guardados.")
+        except Exception:
+            messagebox.showerror("Error", "Ocurrio un error al generar el historial de compras")
         tk.Button(self, text="Volver", command=self.create_widgets,width=30).pack(pady=10)
 
     def procesar_validacion_entrega(self):
