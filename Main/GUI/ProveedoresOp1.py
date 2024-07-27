@@ -34,6 +34,7 @@ class ProveedorApp(tk.Tk):
         tk.Button(self, text="Actualizar Proveedor", width=30, command=self.actualizar_proveedores).pack(pady=5)
         tk.Button(self, text="Mostrar Proveedor", width=30, command=self.mostrar_proveedor).pack(pady=5)
         tk.Button(self, text="Eliminar Proveedor", width=30, command=self.eliminar_proveedor).pack(pady=5)
+        tk.Button(self, text="Crear Archivos", width=30, command=self.menu_archivos).pack(pady=5)
         tk.Button(self, text="Salir", width=30, command=self.volver_menu_principal).pack(pady=20)
 
     def volver_menu_principal(self):
@@ -124,11 +125,10 @@ class ProveedorApp(tk.Tk):
                     self.n_nombre_entry.insert(tk.END, i.nombre)
                     self.n_correo_entry.insert(tk.END, i.correo)
                     self.n_telefono_entry.insert(tk.END, i.telefono)
-
+            self.id_entry.config(state=tk.DISABLED)
+            self.boton_buscar.config(state="disabled")
         else:
             messagebox.showerror("Error", "No se encontro al proveedor")
-        self.id_entry.config(state=tk.DISABLED)
-        self.boton_buscar.config(state="disabled")
 
     def procesar_actualizacion(self):
         try:
@@ -142,8 +142,12 @@ class ProveedorApp(tk.Tk):
                     messagebox.showerror("Error", "Correo no válido")
                     return
 
+                if not n_telefono.isnumeric():
+                    messagebox.showerror("Error","Ingrese un numero valido")
+                    return
+
                 if n_telefono and not self.validar_telefono(n_telefono):
-                    messagebox.showerror("Error", "El numero debe ser mayor a 10 y menoar a 15")
+                    messagebox.showerror("Error", "El numero debe ser mayor a 10 y menor a 15")
                     return
 
                 if n_nombre != "" and n_correo != "" and n_telefono != "":
@@ -175,9 +179,7 @@ class ProveedorApp(tk.Tk):
         self.nombre_busqueda_entry.pack()
         tk.Button(self, text="Buscar", command=self.procesar_busqueda_nombre).pack(pady=10)
         tk.Button(self, text="Volver", command=self.mostrar_proveedor).pack(pady=10)
-        # Crear un Label para el mensaje de error
-        self.error_label = tk.Label(self, text="", fg="red", font=("Arial", 12))
-        self.error_label.pack(pady=10)
+
         # Frame para el Treeview y Scrollbars
         self.tree_frame = tk.Frame(self)
         self.tree_frame.pack(fill=tk.BOTH, expand=True)
@@ -217,22 +219,17 @@ class ProveedorApp(tk.Tk):
 
         if resultados:
             self.tree_frame.pack(fill=tk.BOTH, expand=True)  # Mostrar la tabla
-            self.error_label.pack_forget()  # Ocultar el mensaje de error
             for proveedor in resultados:
                 if proveedor.nombre == nombre:
                     self.tree.insert('', tk.END, values=(
                         proveedor.id, proveedor.nombre, proveedor.correo, proveedor.telefono))
         else:
-            self.error_label.config(text="No se encontraron proveedores con ese nombre")
-            self.error_label.pack(pady=10)  # Mostrar el mensaje de error
+            messagebox.showerror("Error","No se encontraron proveedores con ese nombre")
             self.tree_frame.forget()  # Ocultar la tabla
 
     def gestion_proveedores(self):
         self.clear_frame()
         tk.Label(self, text="Gestion de Proveedores", font=("Arial", 16)).pack(pady=10)
-        # Crear un Label para el mensaje de error
-        self.error_label = tk.Label(self, text="", fg="red", font=("Arial", 12))
-        self.error_label.pack(pady=10)
         # Frame para el Treeview y Scrollbars
         self.tree_frame = tk.Frame(self)
         self.tree_frame.pack(fill=tk.BOTH, expand=True)
@@ -268,13 +265,11 @@ class ProveedorApp(tk.Tk):
         proveedores = Proveedores.mostrar()
         if proveedores:
             self.tree_frame.pack(fill=tk.BOTH, expand=True)
-            self.error_label.pack_forget()
             for proveedor in proveedores:
                 self.tree.insert('', tk.END, values=(
                     proveedor.id, proveedor.nombre, proveedor.correo, proveedor.telefono))
         else:
-            self.error_label.config(text="No hay proveedores registrados")
-            self.error_label.pack(pady=10)  # Mostrar el mensaje de error
+            messagebox.showerror("Error","No hay proveedores registrados")
             self.tree_frame.forget()  # Ocultar la tabla
 
 
@@ -290,6 +285,47 @@ class ProveedorApp(tk.Tk):
         tk.Button(self, text="Eliminar", command=self.procesar_eliminacion).pack(pady=10)
 
         tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
+        # Frame para el Treeview y Scrollbars
+        self.tree_frame = tk.Frame(self)
+        self.tree_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Crear el Treeview
+        self.tree = ttk.Treeview(self.tree_frame, columns=(
+            'ID', 'Nombre', 'Correo', 'Teléfono'), show='headings')
+
+        self.tree.grid(row=0, column=0, sticky='nsew')
+
+        # Scrollbars para el Treeview
+        scrollbar_y = ttk.Scrollbar(self.tree_frame, orient=tk.VERTICAL, command=self.tree.yview)
+        scrollbar_y.grid(row=0, column=1, sticky='ns')
+
+        scrollbar_x = ttk.Scrollbar(self.tree_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
+        scrollbar_x.grid(row=1, column=0, sticky='ew')
+
+        self.tree.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
+        # Asegurarse de que el Treeview se expanda para llenar el frame
+        self.tree_frame.grid_rowconfigure(0, weight=1)
+        self.tree_frame.grid_columnconfigure(0, weight=1)
+
+        # Configurar los encabezados de las columnas
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100, anchor='center')
+
+        # Limpiar las filas existentes
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+
+        proveedores = Proveedores.mostrar()
+        if proveedores:
+            self.tree_frame.pack(fill=tk.BOTH, expand=True)
+            for proveedor in proveedores:
+                self.tree.insert('', tk.END, values=(
+                    proveedor.id, proveedor.nombre, proveedor.correo, proveedor.telefono))
+        else:
+            messagebox.showerror("Error", "No hay proveedores registrados")
+            self.tree_frame.forget()  # Ocultar la tabla
 
     def procesar_eliminacion(self):
         try:
@@ -309,6 +345,16 @@ class ProveedorApp(tk.Tk):
 
     def validar_telefono(self, telefono):
         return len(telefono) > 9 and len(telefono) < 16 and telefono.isdigit()
+
+    def menu_archivos(self):
+        self.clear_frame()
+        tk.Label(self, text="--- Menu de Archivos ---", font=("Arial", 16)).pack(pady=10)
+
+        tk.Button(self, text="Crear Archivo CSV", width=30, command=Proveedores.escribir_archivo_csv).pack(pady=5)
+        tk.Button(self, text="Crear Archivo JSON", width=30, command=Proveedores.escribir_archivo_json).pack(pady=5)
+        tk.Button(self, text="Crear Archivo PDF", width=30, command=Proveedores.escribir_archivo_pdf).pack(pady=5)
+        tk.Button(self, text="Crear Archivo XLSX", width=30, command=Proveedores.escribir_archivo_xlsx).pack(pady=5)
+        tk.Button(self, text="Volver", width=30, command=self.create_widgets).pack(pady=20)
 
     def salir(self):
         self.destroy()

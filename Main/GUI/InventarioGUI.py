@@ -91,9 +91,7 @@ class InventarioApp(tk.Tk):
             archivo_frame = tk.Frame(self)
             archivo_frame.pack(pady=5)
 
-            tk.Button(archivo_frame, text="Generar archivo CSV", command=Inventario.escribir_archivo_csv).pack(
-                side=tk.LEFT,
-                padx=5)
+            tk.Button(archivo_frame, text="Generar archivo CSV", command=Inventario.escribir_archivo_csv).pack(side=tk.LEFT,padx=5)
             tk.Button(archivo_frame, text="Generar archivo JSON", command=Inventario.escribir_archivo_json).pack(
                 side=tk.LEFT, padx=5)
             tk.Button(archivo_frame, text="Generar archivo PDF", command=Inventario.escribir_archivo_pdf).pack(
@@ -104,9 +102,9 @@ class InventarioApp(tk.Tk):
 
             # Botones adicionales
             tk.Button(self, text="Limpiar entradas, salidas y ajuste", command=self.procesar_limpieza).pack(pady=5)
-            tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=5)
+            tk.Button(self, text="Volver", command=self.volver_menu_principal).pack(pady=5)
         else:
-            self.tree.insert('', tk.END, values=("No hay productos registrados",))
+            messagebox.showerror("Error","No hay productos registrados")
 
 
         #self.inventario.obtenerInventario()
@@ -154,8 +152,12 @@ class InventarioApp(tk.Tk):
             for producto in productos:
                 self.tree.insert('', tk.END, values=(
                     producto.codigo, producto.nombre, producto.marca, producto.precio, producto.stock))
+            mensajes_stock = Inventario.messajes_stock_sin_busqueda()
+            if mensajes_stock:
+                messagebox.showinfo("Información de Stock", mensajes_stock)
         else:
             self.tree.insert('', tk.END, values=("No hay productos registrados",))
+
 
         # Frame para los botones de generación de archivos en la misma línea
         archivo_frame = tk.Frame(self)
@@ -210,12 +212,12 @@ class InventarioApp(tk.Tk):
             return
 
         if not cantidad.isdigit() or int(cantidad) < 0 or int(cantidad) > Producto.validar_stock(nombre):
-            messagebox.showerror("Error", "Cantidad no válida")
+            messagebox.showerror("Error", "Cantidad no válida o exede el stock")
             return
 
         try:
             precio = float(precio)
-            if precio < 0:
+            if precio <= 0:
                 raise ValueError
         except ValueError:
             messagebox.showerror("Error", "Precio no válido")
@@ -223,8 +225,10 @@ class InventarioApp(tk.Tk):
 
         total = self.inventario.calculoAjuste(int(cantidad), nombre, precio)
         Inventario.actualizarSalidas(nombre, int(cantidad))
-        mensaje_stock=Inventario.mensajes_stock(nombre)
-        messagebox.showinfo("Éxito", f"Ajuste realizado exitosamente\ntotal a reponer {total}\n{mensaje_stock}")
+        mensajes_stock = Inventario.messajes_stock_sin_busqueda()
+        if mensajes_stock:
+            messagebox.showinfo("Información de Stock", mensajes_stock)
+        messagebox.showinfo("Éxito", f"Ajuste realizado exitosamente\ntotal a reponer {total}\n")
         Producto.escribir_archivo_csv_productos_principal()
         self.create_widgets()
 
@@ -295,10 +299,6 @@ class Inventarios:
     def informeStock(self):
         if self.producto:
             if self.proveedor:
-                Inventario.escribir_archivo_stock_csv()
-                Inventario.escribir_archivo_stock_json()
-                Inventario.escribir_archivo_stock_pdf()
-                Inventario.escribir_archivo_stock_xlsx()
                 print("INFORME DE STOCK DISPONIBLE")
                 print(f"{'Código':<10} {'Nombre':<20} {'Marca':<15} {'Precio':<10} {'Stock':<10}")
                 print("=" * 105)

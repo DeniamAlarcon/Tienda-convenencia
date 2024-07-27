@@ -203,6 +203,7 @@ class Ventas:
             doc.build(elementos)
 
             print(f'Reporte de ventas PDF generado correctamente: {archivo_pdf}')
+            os.startfile(archivo_pdf)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_pdf}')
         except PermissionError:

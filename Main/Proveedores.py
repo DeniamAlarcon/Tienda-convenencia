@@ -8,11 +8,14 @@ from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
 from reportlab.lib.units import inch
 from openpyxl import Workbook
 from datetime import datetime
+
+from Main.Productos import Producto
+
+
 class Proveedores:
     idAuto=0
     proveedores = []
     def __init__(self,nombre,correo,telefono):
-        Proveedores.idAuto+=1
         self.id = Proveedores.idAuto
         self.nombre=nombre
         self.correo=correo
@@ -246,6 +249,7 @@ class Proveedores:
             elementos.append(Spacer(1, 12))
 
             doc.build(elementos)
+            os.startfile(archivo_pdf)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_pdf}')
         except PermissionError:
@@ -297,6 +301,7 @@ class Proveedores:
             print(f'Ocurrió un error inesperado: {e}')
 
     def guardar(self):
+        Proveedores.idAuto += 1
         Proveedores.proveedores.append(self)
         return True
 
@@ -346,13 +351,22 @@ class Proveedores:
                         proveedor.telefono = telefono
                     elif correo == proveedor.correo:
                         proveedor.correo = proveedor.correo
+                        for producto in Producto.lista_productos:
+                            if producto.proveedor==proveedor.nombre:
+                                producto.proveedor=nom
                         proveedor.nombre = nom
                         proveedor.telefono = telefono
                     elif telefono == proveedor.telefono:
                         proveedor.telefono = proveedor.telefono
+                        for producto in Producto.lista_productos:
+                            if producto.proveedor==proveedor.nombre:
+                                producto.proveedor=nom
                         proveedor.nombre = nom
                         proveedor.correo = correo
                     else:
+                        for producto in Producto.lista_productos:
+                            if producto.proveedor==proveedor.nombre:
+                                producto.proveedor=nom
                         proveedor.nombre = nom
                         proveedor.correo = correo
                         proveedor.telefono = telefono

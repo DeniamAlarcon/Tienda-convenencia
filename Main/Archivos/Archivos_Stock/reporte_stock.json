@@ -18,13 +18,13 @@
         "nombre": "manga",
         "marca": "panini",
         "precio": "159",
-        "stock": "60"
+        "stock": "36"
     },
     {
         "codigo": "4",
         "nombre": "figuras",
         "marca": "sega",
         "precio": "1500",
-        "stock": "19"
+        "stock": "18"
     }
 ]

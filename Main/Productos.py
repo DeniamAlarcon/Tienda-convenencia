@@ -280,6 +280,7 @@ class Producto:
 
             doc.build(elementos)
             print("Archivo creado correctamente")
+            os.startfile(archivo_pdf)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_pdf}')
         except PermissionError:

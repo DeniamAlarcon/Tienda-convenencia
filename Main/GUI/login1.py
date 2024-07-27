@@ -20,6 +20,7 @@ class App(tk.Tk):
         self.center_window(600, 400)
         self.overrideredirect(True)
         self.create_login_screen()
+        self.corte_realizado = False
 
     def center_window(self, width, height):
         # Obtener el tamaño de la pantalla
@@ -75,9 +76,17 @@ class App(tk.Tk):
         tk.Button(self, text="Compras", width=30,command=self.menu_compras).pack(pady=5)
         tk.Button(self, text="Inventarios", width=30,command=self.menuInventarios).pack(pady=5)
         tk.Button(self, text="Ventas",width=30, command=self.menuVentas).pack(pady=5)
-        tk.Button(self, text="Salir",width=30, command=self.quit).pack(pady=5)
+        tk.Button(self, text="Salir",width=30, command=self.validar_corte_caja).pack(pady=5)
 
-
+    def validar_corte_caja(self):
+        if self.corte_realizado:
+            Proveedores.escribir_archivo_csv_principal()
+            Producto.escribir_archivo_csv_productos_principal()
+            PedidosProveedor.escribir_archivo_csv_principal_compras()
+            Ventas.escribir_ventas_historial_csv()
+            self.destroy()
+        else:
+            messagebox.showerror("Error","Realizar corte de caja")
 
     def menuProveedores(self):
         self.withdraw()  # Hide the main window

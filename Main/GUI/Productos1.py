@@ -181,10 +181,6 @@ class ProductosApp(tk.Tk):
         tk.Button(self, text="Buscar", command=self.procesar_busqueda_nombre).pack(pady=10)
         tk.Button(self, text="Volver", command=self.detalles_producto).pack(pady=10)
 
-        # Crear un Label para el mensaje de error
-        self.error_label = tk.Label(self, text="", fg="red", font=("Arial", 12))
-        self.error_label.pack(pady=10)
-
         # Frame for Treeview and Scrollbars
         self.tree_frame = tk.Frame(self)
         self.tree_frame.pack(fill=tk.BOTH, expand=True)
@@ -214,7 +210,6 @@ class ProductosApp(tk.Tk):
         if nombre != "":
             if resultados:
                 self.tree_frame.pack(fill=tk.BOTH, expand=True)
-                self.error_label.pack_forget()
                 # Configurar los encabezados de las columnas
                 for col in self.tree['columns']:
                     self.tree.heading(col, text=col)
@@ -226,12 +221,10 @@ class ProductosApp(tk.Tk):
                             producto.cantidad, producto.tamanio, producto.precio, producto.fecha_caducidad
                         ))
             else:
-                self.error_label.config(text="No se encontraron productos con ese nombre")
-                self.error_label.pack(pady=10)  # Mostrar el mensaje de error
+                messagebox.showerror("Error","No se encontraron productos con ese nombre")
                 self.tree_frame.forget()  # Ocultar la tabla
         else:
             self.tree_frame.pack(fill=tk.BOTH, expand=True)
-            self.error_label.pack_forget()
             for producto in resultados:
                 self.tree.insert('', tk.END, values=(
                     producto.codigo, producto.nombre, producto.marca, producto.proveedor,
@@ -277,7 +270,7 @@ class ProductosApp(tk.Tk):
                     producto.cantidad, producto.tamanio, producto.precio, producto.fecha_caducidad
                 ))
         else:
-            self.tree.insert('', tk.END, values=("No hay productos registrados",))
+            messagebox.showerror("Error","No hay productos registrados")
 
         # Button to return
         tk.Button(self, text="Volver", command=self.detalles_producto).pack(pady=10)
@@ -393,8 +386,49 @@ class ProductosApp(tk.Tk):
         self.id_eliminar_entry = tk.Entry(self)
         self.id_eliminar_entry.pack()
         tk.Button(self, text="Eliminar", command=self.procesar_eliminacion).pack(pady=10)
-
         tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
+        # Frame for Treeview and Scrollbars
+        tree_frame = tk.Frame(self)
+        tree_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Create the Treeview
+        self.tree = ttk.Treeview(tree_frame, columns=(
+            'Codigo', 'Nombre', 'Marca', 'Proveedor', 'Cantidad', 'Tamaño', 'Precio', 'Vencimiento'), show='headings')
+
+        self.tree.grid(row=0, column=0, sticky='nsew')
+
+        # Scrollbars for the Treeview
+        scrollbar_y = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.tree.yview)
+        scrollbar_y.grid(row=0, column=1, sticky='ns')
+
+        scrollbar_x = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
+        scrollbar_x.grid(row=1, column=0, sticky='ew')
+
+        self.tree.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
+        # Configure column headings
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100, anchor='center')
+
+        # Load product data
+        productos = Producto.detalles()
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+
+        if productos:
+            for producto in productos:
+                self.tree.insert('', tk.END, values=(
+                    producto.codigo, producto.nombre, producto.marca, producto.proveedor,
+                    producto.cantidad, producto.tamanio, producto.precio, producto.fecha_caducidad
+                ))
+        else:
+            messagebox.showerror("Error", "No hay productos registrados")
+        # Configure the tree frame to expand with the window
+        tree_frame.grid_rowconfigure(0, weight=1)
+        tree_frame.grid_columnconfigure(0, weight=1)
+
+
 
     def procesar_eliminacion(self):
         try:

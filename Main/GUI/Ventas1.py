@@ -1,8 +1,12 @@
 import re
 import tkinter as tk
+from tkinter import ttk
+
+from Main.GUI.login1 import App
 from Main.VentaP import Ventas
 from Main.VentasMain import *
 from Main.tickets import *
+from login1 import *
 
 
 def validar_tamanio(tamanio):
@@ -66,13 +70,8 @@ class VentasApp(tk.Tk):
         # Establecer la geometría de la ventana
         self.geometry(f'{width}x{height}+{x}+{y}')
 
-    def on_closing(self):
-        # Opcionalmente, puedes mostrar un mensaje o simplemente hacer nada.
-        messagebox.showinfo("Información", "No puedes cerrar esta ventana ocupe el boton salir.")
-
     def create_widgets(self):
         self.clear_frame()
-        self.protocol("WM_DELETE_WINDOW", self.on_closing)
         tk.Label(self, text="--- Menu de Ventas ---", font=("Arial", 16)).pack(pady=10)
 
         tk.Button(self, text="Agregar Venta", width=30, command=self.agregar_venta).pack(pady=5)
@@ -87,7 +86,6 @@ class VentasApp(tk.Tk):
 
     def agregar_venta(self):
         self.clear_frame()
-        self.protocol("WM_DELETE_WINDOW", self.on_closing)
         tk.Label(self, text="Agregar Venta", font=("Arial", 16)).pack(pady=10)
 
         tk.Label(self, text="Nombre del Producto").pack()
@@ -131,6 +129,7 @@ class VentasApp(tk.Tk):
                     for producto in productos:
                         self.resultado_text.insert(tk.END,
                                                    f"{producto.nombre:<10} {producto.cantidad:<20} {producto.total:<15}\n")
+                messagebox.showinfo("Borrado","Producto eliminado de la venta")
                 self.producto_entry.delete(0, tk.END)
                 self.cantidad_entry.delete(0, tk.END)
         else:
@@ -170,7 +169,6 @@ class VentasApp(tk.Tk):
                 self.resultado_text.insert(tk.END,
                                            f"{producto.nombre:<10} {producto.cantidad:<20} {producto.total:<15}\n")
             total_pagar = Ticket.mostar_ticket()
-            Ticket.crear_archivo_pdf_ticket()
             self.resultado_text.insert(tk.END,f"Total a pagar: ${total_pagar}")
 
             #mostrar en la misma linea
@@ -195,9 +193,14 @@ class VentasApp(tk.Tk):
                     for venta in Ticket.lista_ticket:
                         venta = Ventas(venta.nombre,venta.cantidad,venta.total)
                         venta.guardar_venta()
+                    mensajes_stock = Inventario.messajes_stock_sin_busqueda()
+                    if mensajes_stock:
+                        messagebox.showinfo("Información de Stock", mensajes_stock)
                     self.create_widgets()
+                    Ticket.crear_archivo_pdf_ticket()
                     Producto.escribir_archivo_csv_productos_principal()
                     Ticket.limpiar_ticket()
+                    self.main_app.corte_realizado = False
             else:
                 messagebox.showwarning("Advertencia", "Cantidad invalida")
         except ValueError:
@@ -248,17 +251,48 @@ class VentasApp(tk.Tk):
 
     def mostrar_historial_ventas(self):
         self.clear_frame()
-        self.geometry("600x600")
+        self.center_window(600,600)
         tk.Label(self, text="Historial de Ventas", font=("Arial", 16)).pack(pady=10)
-        self.resultado_text = tk.Text(self, height=20, width=80)
-        self.resultado_text.pack(pady=10)
+
+        # Frame for Treeview and Scrollbars
+        tree_frame = tk.Frame(self)
+        tree_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Create the Treeview
+        self.tree = ttk.Treeview(tree_frame, columns=(
+            'Nombre', 'Cantidad', 'Total'), show='headings')
+
+        self.tree.grid(row=0, column=0, sticky='nsew')
+
+        # Scrollbars for the Treeview
+        scrollbar_y = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.tree.yview)
+        scrollbar_y.grid(row=0, column=1, sticky='ns')
+
+        scrollbar_x = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
+        scrollbar_x.grid(row=1, column=0, sticky='ew')
+
+        self.tree.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
+        # Configure column headings
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100, anchor='center')
+
+
         ventas = Ventas.ventas_list
+
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+
         if ventas:
             for venta in ventas:
-                self.resultado_text.insert(tk.END, f"Nombre: {venta.producto}, Cantidad: {venta.cantidad}, Total: {venta.total}\n")
+                self.tree.insert('', tk.END, values=(venta.producto,venta.cantidad,venta.total))
+            tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=5)
+            tree_frame.grid_rowconfigure(0, weight=1)
+            tree_frame.grid_columnconfigure(0, weight=1)
         else:
-            self.resultado_text.insert(tk.END, "No hay ventas registradas")
-        tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
+            messagebox.showerror("Error", "No hay ventas registradas")
+            self.create_widgets()
 
     def corte_caja(self):
         self.clear_frame()
@@ -286,8 +320,10 @@ class VentasApp(tk.Tk):
                 cantidad = monto_pagar
                 fecha_actual = datetime.now().strftime("%d/%m/%Y")
                 Ventas.ventas_historial.append({"fecha": fecha_actual, "cantidad": cantidad})
-                Ventas.guardar_historial_grafico()
+                #Ventas.guardar_historial_grafico()
+                Ventas.escribir_ventas_historial_csv()
                 Ventas.ventas_list.clear()
+                self.main_app.corte_realizado = True
                 messagebox.showinfo("Éxito", "Corte de caja exitoso, buen día")
                 self.create_widgets()
         except ValueError:

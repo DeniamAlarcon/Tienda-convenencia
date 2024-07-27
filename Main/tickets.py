@@ -104,6 +104,7 @@ class Ticket:
             doc.build(elementos)
 
             print(f'Ticket PDF generado correctamente: {archivo_pdf}')
+            os.startfile(archivo_pdf)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_pdf}')
         except PermissionError:

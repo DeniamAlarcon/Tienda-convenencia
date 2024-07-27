@@ -150,7 +150,9 @@ class Inventario:
             elementos.append(Spacer(1, 12))
 
             doc.build(elementos)
+
             print("archivo PDF creado correctamente ")
+            os.startfile(archivo_pdf)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_pdf}')
         except PermissionError:
@@ -211,15 +213,28 @@ class Inventario:
 
     @classmethod
     def mensajes_stock(self,nombre):
+        Mensajes_stock=""
         for product in Producto.lista_productos:
             if product.nombre == nombre:
                 if int(product.stock) < 5 and int(product.stock) >0:
                     print("Stock bajo de ",product.nombre)
-                    return "Stock bajo de ",product.nombre
+                    Mensajes_stock += ("Stock bajo de "+product.nombre+"\n")
                 elif int(product.stock) == 0:
                     print("No hay stock de ",product.nombre)
-                    return "No hay stock de ", product.nombre
-        return None
+                    Mensajes_stock += ("No hay stock "+ product.nombre + "\n")
+        return Mensajes_stock
+
+    @classmethod
+    def messajes_stock_sin_busqueda(self):
+        Mensajes_stock = ""
+        for product in Producto.lista_productos:
+            if int(product.stock) < 5 and int(product.stock) > 0:
+                print("Stock bajo de ", product.nombre)
+                Mensajes_stock += ("Stock bajo de "+product.nombre + "\n")
+            elif int(product.stock) == 0:
+                print("No hay stock de ", product.nombre)
+                Mensajes_stock += ("No hay stock "+ product.nombre + "\n")
+        return Mensajes_stock
 
     def actualizarEntradas(self,nombre, cantidad):
         for product in self.producto:
@@ -261,6 +276,7 @@ class Inventario:
                         "precio": producto.precio,
                         "stock": producto.stock
                     })
+                print("Archivo creado")
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_csv}')
         except PermissionError:
@@ -321,6 +337,9 @@ class Inventario:
             tabla.setStyle(estilo)
             elementos.append(tabla)
             doc.build(elementos)
+            print("Archivo creado")
+            os.startfile(archivo_pdf)
+
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_pdf}')
         except PermissionError:
@@ -349,10 +368,10 @@ class Inventario:
             }
             for producto in Producto.lista_productos
         ]
-
         try:
             with open(ruta_json, "w", encoding='utf8') as archivo_json:
                 json.dump(lista_productos_json, archivo_json, indent=4, ensure_ascii=False)
+                print("Archivo creado")
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_json}')
         except PermissionError:
@@ -391,6 +410,7 @@ class Inventario:
 
         try:
             workbook.save(ruta_xlsx)
+            print("Archivo creado")
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_xlsx}')
         except PermissionError:

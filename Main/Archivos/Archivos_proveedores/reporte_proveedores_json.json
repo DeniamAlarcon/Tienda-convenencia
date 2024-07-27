@@ -1,8 +1,38 @@
 [
     {
         "id": 1,
-        "nombre": "coca-cola",
+        "nombre": "coca",
         "correo": "coca@coca.com",
         "telefono": "1234567890"
+    },
+    {
+        "id": 4,
+        "nombre": "pepsi",
+        "correo": "pepsi@pepsi.com",
+        "telefono": "1234567891"
+    },
+    {
+        "id": 8,
+        "nombre": "panini",
+        "correo": "panini@panini.com",
+        "telefono": "1234567895"
+    },
+    {
+        "id": 13,
+        "nombre": "sega",
+        "correo": "sega@sega.com",
+        "telefono": "1234567894"
+    },
+    {
+        "id": 19,
+        "nombre": "amd",
+        "correo": "amd@amd.com",
+        "telefono": "1234567896"
+    },
+    {
+        "id": 20,
+        "nombre": "vans",
+        "correo": "vans@vans.com",
+        "telefono": "1234567892"
     }
 ]

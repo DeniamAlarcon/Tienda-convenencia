@@ -1,4 +1,6 @@
 import tkinter as tk
+from tkinter import ttk
+
 from Main.PedidosProveedor import *
 from Main.VentasMain import *
 
@@ -34,6 +36,7 @@ class ComprasProveedorApp(tk.Tk):
         tk.Button(self, text="Validación de entregas", width=30, command=self.validacion_entregas).pack(pady=5)
         tk.Button(self, text="Registrar devoluciones", width=30, command=self.registrar_devoluciones).pack(pady=5)
         tk.Button(self, text="Generar Historiales de compra", width=30, command=self.generar_historiales_compra).pack(pady=5)
+        tk.Button(self, text="Generar archivo PDF de compras", width=30, command=lambda: PedidosProveedor.escribir_archivo_pdf_compras()).pack(pady=5)
         tk.Button(self, text="Salir", width=30, command=self.volver_menu_principal).pack(pady=20)
 
     def volver_menu_principal(self):
@@ -162,7 +165,7 @@ class ComprasProveedorApp(tk.Tk):
             return
 
         if not cantidad.isdigit() or int(cantidad) <= 0:
-            messagebox.showerror("Error", "Ingrese cantidad numerica")
+            messagebox.showerror("Error", "Ingrese cantidad numerica o mayor a 0")
             return
 
         inventario = Inventario()
@@ -178,7 +181,6 @@ class ComprasProveedorApp(tk.Tk):
         self.clear_frame()
 
         tk.Label(self, text="Historiales de Compra", font=("Arial", 16)).pack(pady=10)
-
         tk.Button(self, text="Historial de compras", command=self.mostrar_historial_compras,width=30).pack(pady=10)
         tk.Button(self, text="Historial de compras por proveedor", command=self.historial_compras_proveedor,width=30).pack(pady=10)
         tk.Button(self, text="Volver", command=self.create_widgets,width=30).pack(pady=10)
@@ -187,27 +189,47 @@ class ComprasProveedorApp(tk.Tk):
         self.clear_frame()
         self.center_window(660,550)
         tk.Label(self, text="Historial de Compras", font=("Arial", 16)).pack(pady=10)
-        self.resultado_text = tk.Text(self, height=20, width=80)
-        self.resultado_text.pack(pady=10)
-        self.resultado_text.config(state=tk.NORMAL)  # Habilitar edición temporalmente
-        self.resultado_text.delete(1.0, tk.END)  # Limpiar el cuadro de texto
+
+        # Frame for Treeview and Scrollbars
+        tree_frame = tk.Frame(self)
+        tree_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Create the Treeview
+        self.tree = ttk.Treeview(tree_frame, columns=(
+            'ID', 'Proveedor', 'Nombre', 'Marca', 'Cantidad', 'Precio', 'Estatus'), show='headings')
+
+        self.tree.grid(row=0, column=0, sticky='nsew')
+
+        # Scrollbars for the Treeview
+        scrollbar_y = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.tree.yview)
+        scrollbar_y.grid(row=0, column=1, sticky='ns')
+
+        scrollbar_x = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
+        scrollbar_x.grid(row=1, column=0, sticky='ew')
+
+        self.tree.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
+        # Configure column headings
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100, anchor='center')
+
         try:
             resultados = PedidosProveedor.mostrar_pedidos()
-            if resultados:
-                self.resultado_text.insert(tk.END,
-                                           f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
-                for pedido in resultados:
-                    self.resultado_text.insert(tk.END,
-                                               f"{pedido.id:<5}{pedido.proveedor:<12}{pedido.nombre:<12}{pedido.marca:<12}{pedido.cantidad:<12}{pedido.precio:<12}{pedido.estatus:<12}\n")
-            else:
-                self.resultado_text.insert(tk.END,
-                                           f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
 
+            for row in self.tree.get_children():
+                self.tree.delete(row)
+
+            if resultados:
+                for pedido in resultados:
+                    self.tree.insert('', tk.END, values=(pedido.id,pedido.proveedor,pedido.nombre,pedido.marca,pedido.cantidad,pedido.precio,pedido.estatus))
+            else:
                 messagebox.showerror("Error", "No hay pedidos guardados.")
         except Exception:
             messagebox.showerror("Error", "Ocurrio un error al generar el historial de compras")
-        self.resultado_text.config(state=tk.DISABLED)  # Deshabilitar edición nuevamente
         tk.Button(self, text="Volver", command=self.generar_historiales_compra).pack(pady=10)
+        tree_frame.grid_rowconfigure(0, weight=1)
+        tree_frame.grid_columnconfigure(0, weight=1)
 
     def historial_compras_proveedor(self):
         self.clear_frame()
@@ -235,23 +257,44 @@ class ComprasProveedorApp(tk.Tk):
 
         self.clear_frame()
         tk.Label(self, text=f"Historial de Compras de {nombre_proveedor}", font=("Arial", 16)).pack(pady=10)
-        self.resultado_text = tk.Text(self, height=20, width=80)
-        self.resultado_text.pack(pady=10)
-        self.resultado_text.config(state=tk.NORMAL)  # Habilitar edición temporalmente
-        self.resultado_text.delete(1.0, tk.END)  # Limpiar el cuadro de texto
+        # Frame for Treeview and Scrollbars
+        tree_frame = tk.Frame(self)
+        tree_frame.pack(fill=tk.BOTH, expand=True)
+
+        # Create the Treeview
+        self.tree = ttk.Treeview(tree_frame, columns=(
+            'ID', 'Proveedor', 'Nombre', 'Marca', 'Cantidad', 'Precio', 'Estatus'), show='headings')
+
+        self.tree.grid(row=0, column=0, sticky='nsew')
+
+        # Scrollbars for the Treeview
+        scrollbar_y = ttk.Scrollbar(tree_frame, orient=tk.VERTICAL, command=self.tree.yview)
+        scrollbar_y.grid(row=0, column=1, sticky='ns')
+
+        scrollbar_x = ttk.Scrollbar(tree_frame, orient=tk.HORIZONTAL, command=self.tree.xview)
+        scrollbar_x.grid(row=1, column=0, sticky='ew')
+
+        self.tree.configure(yscrollcommand=scrollbar_y.set, xscrollcommand=scrollbar_x.set)
+
+        # Configure column headings
+        for col in self.tree['columns']:
+            self.tree.heading(col, text=col)
+            self.tree.column(col, width=100, anchor='center')
+
         res=PedidosProveedor.pedidos_proveedor(nombre_proveedor)
+
+        for row in self.tree.get_children():
+            self.tree.delete(row)
+
         if res:
-            self.resultado_text.insert(tk.END,
-                                       f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
             for pedido in res:
                 if pedido.proveedor == nombre_proveedor:
-                    self.resultado_text.insert(tk.END,
-                                               f"{pedido.id:<5}{pedido.proveedor:<12}{pedido.nombre:<12}{pedido.marca:<12}{pedido.cantidad:<12}{pedido.precio:<12}{pedido.estatus:<12}\n")
+                    self.tree.insert('', tk.END, values=(pedido.id,pedido.proveedor,pedido.nombre,pedido.marca,pedido.cantidad,pedido.precio,pedido.estatus))
         else:
-            self.resultado_text.insert(tk.END,f"{"ID ":<5}{"Proveedor":<12}{"Nombre":<12}{"Marca":<12}{"Cantidad":<12}{"Precio":<12}{"Estatus":<12}\n")
             messagebox.showerror("Error", "No hay pedidos guardados con este proveedor")
-        self.resultado_text.config(state=tk.DISABLED)  # Deshabilitar edición nuevamente
         tk.Button(self, text="Volver", command=self.generar_historiales_compra,width=30).pack(pady=10)
+        tree_frame.grid_rowconfigure(0, weight=1)
+        tree_frame.grid_columnconfigure(0, weight=1)
 
 
     def clear_frame(self):
