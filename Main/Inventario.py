@@ -40,6 +40,7 @@ class Inventario:
                         "ajuste": producto.ajuste
                     })
                 print("archivo CSV creado correctamente ")
+                os.startfile(ruta_csv)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_csv}')
         except PermissionError:
@@ -79,6 +80,7 @@ class Inventario:
             with open(ruta_json, "w", encoding='utf8') as json_file:
                 json_file.write(json_object)
             print("archivo JSON creado correctamente ")
+            os.startfile(ruta_json)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_json}')
         except PermissionError:
@@ -198,6 +200,7 @@ class Inventario:
 
             workbook.save(archivo_xlsx)
             print("archivo xlsx creado correctamente ")
+            os.startfile(archivo_xlsx)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_xlsx}')
         except PermissionError:
@@ -277,6 +280,7 @@ class Inventario:
                         "stock": producto.stock
                     })
                 print("Archivo creado")
+                os.startfile(ruta_csv)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_csv}')
         except PermissionError:
@@ -372,6 +376,7 @@ class Inventario:
             with open(ruta_json, "w", encoding='utf8') as archivo_json:
                 json.dump(lista_productos_json, archivo_json, indent=4, ensure_ascii=False)
                 print("Archivo creado")
+            os.startfile(ruta_json)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_json}')
         except PermissionError:
@@ -411,6 +416,7 @@ class Inventario:
         try:
             workbook.save(ruta_xlsx)
             print("Archivo creado")
+            os.startfile(ruta_xlsx)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_xlsx}')
         except PermissionError:

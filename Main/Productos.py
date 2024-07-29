@@ -208,6 +208,7 @@ class Producto:
                         "fecha_caducidad": producto.fecha_caducidad
                     })
             print("Archivo creado correctamente")
+            os.startfile(ruta_csv)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_csv}')
         except PermissionError:
@@ -246,6 +247,7 @@ class Producto:
             with open(ruta_json, "w", encoding='utf8') as json_file:
                 json_file.write(json_object)
             print("Archivo creado correctamente")
+            os.startfile(ruta_json)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_json}')
         except PermissionError:
@@ -358,6 +360,7 @@ class Producto:
 
             workbook.save(archivo_xlsx)
             print("Archivo creado correctamente")
+            os.startfile(archivo_xlsx)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_xlsx}')
         except PermissionError:

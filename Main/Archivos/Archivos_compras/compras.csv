@@ -1,3 +1,4 @@
 id,proveedor,nombre,marca,cantidad,precio,estatus
 1,coca2,pepsi,pepsi,10,900,Entregado
 2,coca2,pepsi,pepsi,80,7200,Pendiente
+6,Zzaa,0,0,999999999999999999999999999999,1999999999999999999999999999998,Pendiente

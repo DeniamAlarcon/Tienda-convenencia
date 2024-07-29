@@ -1,16 +1,28 @@
 from tkinter import ttk, messagebox
 
+from PIL._tkinter_finder import tk
+
 from login1 import *
 from login1 import *
 
 
 def validar_tamanio(tamanio):
+    # Unidades válidas
     unidades_validas = ["kg", "g", "L", "ml", "pcs", "m", "cm", "in"]
+
+    # Patrón para verificar que el tamaño sea un número seguido de una unidad válida
     pattern = re.compile(r'^(\d+(\.\d+)?)(kg|g|L|ml|pcs|m|cm|in)$')
     match = pattern.match(tamanio)
+
     if match:
+        # Extraer el valor numérico y la unidad
+        valor = float(match.group(1))
         unidad = match.group(3)
-        return unidad in unidades_validas
+
+        # Verificar que la unidad sea válida y que el valor sea mayor a 0
+        if unidad in unidades_validas and valor > 0:
+            return True
+
     return False
 
 def validar_fecha(fecha):
@@ -29,10 +41,19 @@ def validar_caducidad(fecha):
         return fecha_dada < fecha_actual
 
 def validar_cantidad(cantidad):
-    return cantidad.isdigit() and int(cantidad) > 0
+    return cantidad.isdigit() and int(cantidad) > 0 and not (cantidad.startswith('0') and len(cantidad) > 1)
 
 def validar_precio(precio):
-    return precio.isdigit() and int(precio) > 0
+    return precio.isdigit() and int(precio) > 0 and not(precio.startswith('0') and len(precio) > 1)
+
+def validar_codigo_formato(codigo):
+    # Patrón que asegura que el código inicie con "P" seguido de 12 dígitos
+    pattern = re.compile(r'^P\d{12}$')
+    return bool(pattern.match(codigo))
+
+def validar_longitud(cantidad):
+    return cantidad.isdigit() and 1 <= int(cantidad) <= 99999
+
 
 class ProductosApp(tk.Tk):
     def __init__(self,main_app):
@@ -124,6 +145,10 @@ class ProductosApp(tk.Tk):
             messagebox.showerror("Error", "Favor de llenar todos los campos requeridos")
             return
 
+        if not validar_codigo_formato(codigo):
+            messagebox.showerror("Error","Ingrese el codigo con el formato adecuado(P00000000000)")
+            return
+
         if Producto.validar_codigo(codigo):
             messagebox.showerror("Error", "Código de producto ya registrado")
             return
@@ -134,6 +159,10 @@ class ProductosApp(tk.Tk):
 
         if  not Proveedores.validar_provedor(proveedor):
             messagebox.showerror("Error", "Proveedor no encontrado")
+            return
+
+        if not validar_longitud(cantidad):
+            messagebox.showerror("Error","Cantidad a ingresar es muy grande")
             return
 
         if not validar_cantidad(cantidad):

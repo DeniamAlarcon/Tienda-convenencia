@@ -185,6 +185,7 @@ class Proveedores:
                         "correo": proveedor.correo,
                         "telefono": proveedor.telefono
                     })
+                os.startfile(ruta_csv)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_csv}')
         except PermissionError:
@@ -217,6 +218,7 @@ class Proveedores:
 
             with open(ruta_json, "w", encoding='utf8') as json_file:
                 json_file.write(json_object)
+            os.startfile(ruta_json)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_json}')
         except PermissionError:
@@ -319,6 +321,7 @@ class Proveedores:
                 ])
 
             workbook.save(archivo_xlsx)
+            os.startfile(archivo_xlsx)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_xlsx}')
         except PermissionError:
@@ -426,7 +429,7 @@ class Proveedores:
             nom = proveedor.nombre
             if proveedor:
                 validacion = Producto.validar_proveedor_prod(nom)
-                if validacion:
+                if not validacion:
                     Proveedores.crear_archivos_eliminaciones(datetime.now(), proveedor.id)
                     cls.proveedores.remove(proveedor)
                     print("Proveedor eliminado con exito.")
