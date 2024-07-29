@@ -29,7 +29,7 @@ class InventarioApp(tk.Tk):
     def create_widgets(self):
         self.clear_frame()
         self.center_window(600,400)
-        tk.Label(self, text="--- Menú Principal ---", font=("Arial", 16)).pack(pady=10)
+        tk.Label(self, text="--- Menú Inventario ---", font=("Arial", 16)).pack(pady=10)
         tk.Button(self, text="Generar informe de inventario", width=30, command=self.generar_informe_inventario).pack(pady=5)
         tk.Button(self, text="Generar informe de stock", width=30, command=self.generar_informe_stock).pack(pady=5)
         tk.Button(self, text="Ajuste de inventario", width=30, command=self.ajuste_inventario).pack(pady=5)
@@ -191,19 +191,15 @@ class InventarioApp(tk.Tk):
         self.cantidad_ajuste_entry = tk.Entry(self)
         self.cantidad_ajuste_entry.pack()
 
-        tk.Label(self, text="Precio del Producto").pack()
-        self.precio_ajuste_entry = tk.Entry(self)
-        self.precio_ajuste_entry.pack()
-
         tk.Button(self, text="Realizar Ajuste", command=self.procesar_ajuste).pack(pady=10)
         tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=10)
 
     def procesar_ajuste(self):
         nombre = self.nombre_ajuste_entry.get()
         cantidad = self.cantidad_ajuste_entry.get()
-        precio = self.precio_ajuste_entry.get()
+        precio = 0
 
-        if not nombre or not cantidad or not precio:
+        if not nombre or not cantidad:
             messagebox.showerror("Error","Ingrese todos los campos requeridos")
             return
 
@@ -215,13 +211,9 @@ class InventarioApp(tk.Tk):
             messagebox.showerror("Error", "Cantidad no válida o exede el stock")
             return
 
-        try:
-            precio = float(precio)
-            if precio <= 0:
-                raise ValueError
-        except ValueError:
-            messagebox.showerror("Error", "Precio no válido")
-            return
+        for i in Producto.lista_productos:
+            if i.nombre == nombre:
+                precio = int(i.precio)
 
         total = self.inventario.calculoAjuste(int(cantidad), nombre, precio)
         Inventario.actualizarSalidas(nombre, int(cantidad))

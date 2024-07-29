@@ -326,6 +326,8 @@ class Proveedores:
                         f"ID: {proveedor.id}, Nombre: {proveedor.nombre}, Correo: {proveedor.correo}, Teléfono: {proveedor.telefono}")
                     return Proveedores.proveedores
 
+
+
     @classmethod
     def buscar_proveedor(cls, id2):
         for proveedor in cls.proveedores:

@@ -18,7 +18,6 @@ class App(tk.Tk):
         self.resizable(False, False)
         self.overrideredirect(True)
         self.center_window(600, 400)
-        self.overrideredirect(True)
         self.create_login_screen()
         self.corte_realizado = False
 
