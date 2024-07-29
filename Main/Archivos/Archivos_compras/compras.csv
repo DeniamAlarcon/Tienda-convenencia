@@ -1,3 +1,5 @@
 id,proveedor,nombre,marca,cantidad,precio,estatus
 1,coca2,pepsi,pepsi,10,900,Entregado
 2,coca2,pepsi,pepsi,80,7200,Pendiente
+6,coca8,papa,barcel,8888888888,719999999928,Pendiente
+11,coca8,papa,barcel,999,80919,Pendiente

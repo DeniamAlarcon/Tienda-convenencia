@@ -426,7 +426,7 @@ class Proveedores:
             nom = proveedor.nombre
             if proveedor:
                 validacion = Producto.validar_proveedor_prod(nom)
-                if validacion:
+                if not validacion:
                     Proveedores.crear_archivos_eliminaciones(datetime.now(), proveedor.id)
                     cls.proveedores.remove(proveedor)
                     print("Proveedor eliminado con exito.")

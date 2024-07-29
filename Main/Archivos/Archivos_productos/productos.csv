@@ -1,3 +1,2 @@
 codigo,nombre,marca,precio,proveedor,cantidad,tamanio,fecha_caducidad,entradas,salidas,stock,existencias_anteriores,ajuste
-1,papas,sabritras,18,pepsi,50,61g,01/02/2025,50,56,43,43,2
-1,papas,sabritras,18,pepsi,50,61g,01/02/2025,50,56,43,43,2
+P001,papa,barcel,80.0,coca8,80,30g,29/09/2025,80,0,80,80,0
