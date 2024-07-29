@@ -423,13 +423,18 @@ class Proveedores:
     def eliminarProveedor(cls, id):
         try:
             proveedor = cls.buscar_proveedor(id)
+            nom = proveedor.nombre
             if proveedor:
-                Proveedores.crear_archivos_eliminaciones(datetime.now(),proveedor.id)
-                cls.proveedores.remove(proveedor)
-                print("Proveedor eliminado con exito.")
-                return True
+                validacion = Producto.validar_proveedor_prod(nom)
+                if validacion:
+                    Proveedores.crear_archivos_eliminaciones(datetime.now(), proveedor.id)
+                    cls.proveedores.remove(proveedor)
+                    print("Proveedor eliminado con exito.")
+                    return True
+                else:
+                    messagebox.showerror("Error", "Existen productos relacionados con este proveedor")
             else:
-                print("Proveedor no encontrado.")
+                messagebox.showerror("Error", "Proveedor no encontrado")
         except Exception as e:
             print("Intentelo nuevamente, no ha sido eliminado")
 

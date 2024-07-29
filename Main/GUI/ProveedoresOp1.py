@@ -337,7 +337,6 @@ class ProveedorApp(tk.Tk):
                 self.create_widgets()
                 #self.id_eliminar_entry.delete(0, tk.END)
             else:
-                messagebox.showerror("Error", "Proveedor no encontrado")
                 self.id_eliminar_entry.delete(0, tk.END)
         except ValueError:
             messagebox.showerror("Error", "Ingrese un ID de proveedor válido")
