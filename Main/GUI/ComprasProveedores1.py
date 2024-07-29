@@ -93,6 +93,11 @@ class ComprasProveedorApp(tk.Tk):
         if not cantidad_producto.isdigit() or int(cantidad_producto) <= 0:
             messagebox.showerror("Error", "Cantidad de productos inválida")
             return
+
+        if cantidad_producto.__len__()>4:
+            messagebox.showerror("Error","Cantidad muy grande, si desea mas prodcuto realice otro pedido")
+            return
+
         validarPrP=Producto.buscar_Producto_Nombre_Proveedor(nombre_producto,nombre_proveedor,marca_producto)
 
         if not validarPrP:

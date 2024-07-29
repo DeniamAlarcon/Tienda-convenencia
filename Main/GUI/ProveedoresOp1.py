@@ -69,7 +69,7 @@ class ProveedorApp(tk.Tk):
             messagebox.showerror("Error", "Favor de llenar todos los campos requeridos")
             return
 
-        pattern = re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?")
+        pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$')
         if not re.match(pattern, correo):
             messagebox.showerror("Error", "Correo no válido")
             return
@@ -141,7 +141,7 @@ class ProveedorApp(tk.Tk):
                 if not n_nombre and not n_correo and not n_telefono:
                     messagebox.showerror("Error", "Favor de ingresar todos los campos requeridos")
 
-                if n_correo and not re.match(re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?"), n_correo):
+                if n_correo and not re.match(re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$'), n_correo):
                     messagebox.showerror("Error", "Correo no válido")
                     return
 
