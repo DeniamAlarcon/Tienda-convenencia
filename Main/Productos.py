@@ -1,6 +1,8 @@
 import csv
 import json
 import os
+import re
+
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
 from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
@@ -28,39 +30,72 @@ class Producto:
 
     @classmethod
     def leer_archivo(cls):
-        #archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_productos\\productos.csv'
         base_dir = os.path.dirname(os.path.abspath(__file__))
         archivo_proveedores = os.path.join(base_dir, 'Archivos', 'Archivos_productos', 'productos.csv')
+
+        codigos_procesados = set()
+        nombres_procesados = set()
+
         try:
             with open(archivo_proveedores, encoding='utf8') as archivo_productos:
                 reader = csv.DictReader(archivo_productos)
                 filas = list(reader)
                 if not filas or all(not any(row.values()) for row in filas):
-                    print('No hay datos que leer 1')
+                    print('No hay datos que leer')
                     return
                 for row in filas:
-                    producto = Producto(
-                        row["codigo"],
-                        row["nombre"],
-                        row["marca"],
-                        row["proveedor"],
-                        row["cantidad"],
-                        row["tamanio"],
-                        row["precio"],
-                        row["fecha_caducidad"]
-                    )
-                    Producto.lista_productos.append(producto)
-                    producto.entradas = row["entradas"]
-                    producto.salidas = row["salidas"]
-                    producto.stock = row["stock"]
-                    producto.existenciasAnteriores = row["existencias_anteriores"]
-                    producto.ajuste = row["ajuste"]
+                    codigo = row["codigo"]
+                    nombre = row["nombre"]
+
+                    if codigo in codigos_procesados or nombre in nombres_procesados:
+                        print(f'Fila ignorada por código o nombre duplicado: {row}')
+                        continue
+
+                    try:
+                        cantidad = int(row["cantidad"])
+                        precio = float(row["precio"])
+                        entradas = int(row["entradas"])
+                        salidas = int(row["salidas"])
+                        stock = int(row["stock"])
+
+                        if not (cantidad > 0 and precio > 0 and entradas >= 0 and salidas >= 0 and stock >= 0):
+                            print(f'Datos inválidos en la fila: {row}')
+                            continue
+
+                        if not re.match(r'^\d+(kg|g|L|ml|pcs|m|cm|in)$', row["tamanio"]):
+                            print(f'Formato de tamaño inválido en la fila: {row}')
+                            continue
+
+                        producto = Producto(
+                            codigo,
+                            nombre,
+                            row["marca"],
+                            row["proveedor"],
+                            cantidad,
+                            row["tamanio"],
+                            precio,
+                            row["fecha_caducidad"]
+                        )
+                        producto.entradas = entradas
+                        producto.salidas = salidas
+                        producto.stock = stock
+                        producto.existenciasAnteriores = int(row["existencias_anteriores"])
+                        producto.ajuste = int(row["ajuste"])
+
+                        Producto.lista_productos.append(producto)
+                        codigos_procesados.add(codigo)
+                        nombres_procesados.add(nombre)
+                    except ValueError as e:
+                        print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+                        continue
+
             print("Datos cargados correctamente")
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_proveedores}. Creando archivo nuevo...')
             os.makedirs(os.path.dirname(archivo_proveedores), exist_ok=True)
             with open(archivo_proveedores, mode='w', newline='', encoding='utf8') as archivo:
-                fieldnames = ["codigo", "nombre","marca","proveedor","cantidad","tamanio","precio","fecha_caducidad","entradas","salidas","stock","existencias_anteriores","ajuste"]
+                fieldnames = ["codigo", "nombre", "marca", "proveedor", "cantidad", "tamanio", "precio",
+                              "fecha_caducidad", "entradas", "salidas", "stock", "existencias_anteriores", "ajuste"]
                 writer = csv.DictWriter(archivo, fieldnames=fieldnames)
                 writer.writeheader()
             print(f'Archivo creado: {archivo_proveedores}')

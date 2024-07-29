@@ -90,9 +90,13 @@ class Ventas:
             # Agrupar datos por mes y sumar cantidades
             ventas_agrupadas = defaultdict(int)
             for venta in cls.ventas_historial:
+                cantidad = int(venta["cantidad"])
+                if cantidad < 0:
+                    print(f"Cantidad negativa ignorada para la fecha {venta['fecha']}")
+                    continue
                 fecha = datetime.strptime(venta["fecha"], '%d/%m/%Y')  # Convertir la fecha a datetime
                 mes_anio = fecha.strftime('%Y-%m')  # Obtener año y mes
-                ventas_agrupadas[mes_anio] += int(venta["cantidad"])
+                ventas_agrupadas[mes_anio] += cantidad
 
             # Ordenar las fechas
             fechas = sorted(datetime.strptime(fecha, '%Y-%m') for fecha in ventas_agrupadas.keys())

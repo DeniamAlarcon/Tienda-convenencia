@@ -1,2 +1,3 @@
 codigo,nombre,marca,precio,proveedor,cantidad,tamanio,fecha_caducidad,entradas,salidas,stock,existencias_anteriores,ajuste
-1,papas,sabritras,18,pepsi,50,61g,01/02/2025,50,56,43,48,2
+1,papas,sabritras,18,pepsi,50,61g,01/02/2025,50,56,43,43,2
+1,papas,sabritras,18,pepsi,50,61g,01/02/2025,50,56,43,43,2

@@ -1,6 +1,7 @@
 import csv
 import json
 import os
+import re
 from tkinter import messagebox
 from reportlab.lib.pagesizes import letter
 from reportlab.lib import colors
@@ -24,11 +25,15 @@ class Proveedores:
 
     @classmethod
     def leer_archivo(cls):
-        #archivo_proveedores = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_proveedores\\proveedores.csv'
         base_dir = os.path.dirname(os.path.abspath(__file__))
         archivo_proveedores = os.path.join(base_dir, 'Archivos', 'Archivos_proveedores', 'proveedores.csv')
-        try:
 
+        ids_procesados = set()
+        nombres_procesados = set()
+        correos_procesados = set()
+        telefonos_procesados = set()
+
+        try:
             with open(archivo_proveedores, encoding='utf8') as archivo:
                 reader = csv.DictReader(archivo)
                 filas = list(reader)
@@ -49,16 +54,43 @@ class Proveedores:
             # Leer datos y crear objetos Proveedores
             for row in filas:
                 if all(row.values()):
-                    proveedor = cls(row["nombre"], row["correo"], row["telefono"])
-                    proveedor.id = int(row["id"])  # Asignar el ID del archivo
+                    id = row["id"]
+                    nombre = row["nombre"]
+                    correo = row["correo"]
+                    telefono = row["telefono"]
+
+                    # Validar que los campos sean únicos
+                    if id in ids_procesados or nombre in nombres_procesados or correo in correos_procesados or telefono in telefonos_procesados:
+                        print(f'Fila ignorada por duplicado: {row}')
+                        continue
+
+                    # Validar el número de teléfono
+                    if not telefono.isdigit() or not (10 <= len(telefono) <= 15):
+                        print(f'Número de teléfono inválido: {telefono} en la fila {row}')
+                        continue
+
+                    # Validar el formato del correo
+                    if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', correo):
+                        print(f'Correo inválido: {correo} en la fila {row}')
+                        continue
+
+                    proveedor = cls(nombre, correo, telefono)
+                    proveedor.id = int(id)  # Asignar el ID del archivo
                     cls.proveedores.append(proveedor)
+
+                    # Añadir a los conjuntos de procesados
+                    ids_procesados.add(id)
+                    nombres_procesados.add(nombre)
+                    correos_procesados.add(correo)
+                    telefonos_procesados.add(telefono)
+
             print('Datos cargados exitosamente.')
 
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_proveedores}. Creando archivo nuevo...')
             os.makedirs(os.path.dirname(archivo_proveedores), exist_ok=True)
             with open(archivo_proveedores, mode='w', newline='', encoding='utf8') as archivo:
-                fieldnames = ["id","nombre","correo","telefono"]
+                fieldnames = ["id", "nombre", "correo", "telefono"]
                 writer = csv.DictWriter(archivo, fieldnames=fieldnames)
                 writer.writeheader()
             print(f'Archivo creado: {archivo_proveedores}')
