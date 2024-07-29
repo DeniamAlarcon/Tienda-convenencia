@@ -231,6 +231,7 @@ class ProveedorApp(tk.Tk):
     def gestion_proveedores(self):
         self.clear_frame()
         tk.Label(self, text="Gestion de Proveedores", font=("Arial", 16)).pack(pady=10)
+
         # Frame para el Treeview y Scrollbars
         self.tree_frame = tk.Frame(self)
         self.tree_frame.pack(fill=tk.BOTH, expand=True)
