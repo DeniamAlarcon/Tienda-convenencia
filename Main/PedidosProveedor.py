@@ -221,8 +221,11 @@ class PedidosProveedor:
 
     @classmethod
     def pedidos_proveedorID(self, idp,cantidad):
+        mensaje=""
+        mensaje1=""
         if not self.pedidos:
-            messagebox.showerror("Error","No hay pedidos guardados con este proveedor.")
+            mensaje=("No hay pedidos guardados con este proveedor.")
+            mensaje1="Error"
         else:
             for pedido in self.pedidos:
                 if pedido.id == int(idp):
@@ -230,21 +233,26 @@ class PedidosProveedor:
                         print(
                             f"ID: {pedido.id}, Proveedor: {pedido.proveedor}, Nombre: {pedido.nombre}, Marca: {pedido.marca}, Cantidad: {pedido.cantidad},Precio de Compra: {pedido.precio},  Estatus: {pedido.estatus}")
                         if int(pedido.cantidad) < int(cantidad):
-                             messagebox.showerror("Eroro","Se exedio la cantidad de producto")
+                             mensaje=("Se exedio la cantidad de producto")
+                             mensaje1=("Error")
                         elif int(pedido.cantidad) > int(cantidad):
-                            messagebox.showerror("Error","Entrega Incompleta")
+                            mensaje=("Entrega Incompleta")
+                            mensaje1 = ("Error")
                         else:
                             inventario = Inventario()
                             inventario.actualizarEntradas(pedido.nombre, cantidad)
                             PedidosProveedor.actualizar_estatus_a_entregado(int(idp))
                             Producto.escribir_archivo_csv_productos_principal()
                             PedidosProveedor.escribir_archivo_csv_principal_compras()
-                            messagebox.showinfo("Éxito","Entrega completa")
-                        return True
+                            mensaje=("Entrega completa")
+                            mensaje1 = ("Exito")
                     else:
-                        messagebox.showerror("Error","No existen pedidos pendientes para validar")
+                        mensaje=("No existen pedidos pendientes para validar")
+                        mensaje1=("Error")
                 else:
-                    messagebox.showerror("Error","Pedido no encontrado con este ID")
+                    mensaje=("Pedido no encontrado con este ID")
+                    mensaje1 = ("Error")
+        messagebox.showinfo(mensaje1,mensaje)
 
     @classmethod
     def buscarID(self,idp):

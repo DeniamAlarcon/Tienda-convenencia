@@ -75,7 +75,7 @@ class ProveedorApp(tk.Tk):
             return
 
         if not self.validar_telefono(telefono):
-            messagebox.showerror("Error", "El numero debe ser mayor a 10 y menoar a 15")
+            messagebox.showerror("Error", "El  telefono debe ser numerico con una longitud mayor a 10 y menor a 15")
             return
 
         registro = Proveedores(nombre, correo, telefono)
@@ -138,6 +138,9 @@ class ProveedorApp(tk.Tk):
                 n_correo = self.n_correo_entry.get()
                 n_telefono = self.n_telefono_entry.get()
 
+                if not n_nombre and not n_correo and not n_telefono:
+                    messagebox.showerror("Error", "Favor de ingresar todos los campos requeridos")
+
                 if n_correo and not re.match(re.compile(r"\"?([-a-zA-Z0-9.`?{}]+@\w+\.\w+)\"?"), n_correo):
                     messagebox.showerror("Error", "Correo no válido")
                     return
@@ -147,15 +150,13 @@ class ProveedorApp(tk.Tk):
                     return
 
                 if n_telefono and not self.validar_telefono(n_telefono):
-                    messagebox.showerror("Error", "El numero debe ser mayor a 10 y menor a 15")
+                    messagebox.showerror("Error", "El  telefono debe ser numerico con una longitud mayor a 10 y menor a 15")
                     return
+                Proveedores.actualizarGUI(id, n_nombre, n_correo, n_telefono)
+                Proveedores.escribir_archivo_csv_principal()
+                self.create_widgets()
 
-                if n_nombre != "" and n_correo != "" and n_telefono != "":
-                    Proveedores.actualizarGUI(id, n_nombre, n_correo, n_telefono)
-                    Proveedores.escribir_archivo_csv_principal()
-                    self.create_widgets()
-                else:
-                    messagebox.showerror("Error", "Favor de ingresar todos los campos requeridos")
+
             else:
                 messagebox.showerror("Error","Proveedor no encontrado")
         except ValueError:
