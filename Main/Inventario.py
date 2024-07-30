@@ -435,12 +435,20 @@ class Inventario:
     def crear_archivos_ajustes(cls, fecha_eliminacion, codigo, cantidad, total):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_inventarios', 'productos_ajustes.csv')
-        try:
-            with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
-                fieldnames = ["codigo", "nombre", "marca", "precio", "fecha_eliminacion", "cantidad", "total"]
-                writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
-                writer.writeheader()
 
+        try:
+            # Abrir archivo en modo apéndice para no borrar la información existente
+            with open(ruta_csv, mode="a", encoding='utf8', newline='') as archivo_csv:
+                fieldnames = ["codigo", "nombre", "marca", "precio", "fecha_eliminacion", "cantidad", "total"]
+
+                # Crear un escritor CSV solo si el archivo está vacío para escribir el encabezado
+                writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
+
+                # Escribir encabezado solo si el archivo está vacío
+                if archivo_csv.tell() == 0:
+                    writer.writeheader()
+
+                # Escribir nueva fila con datos del producto
                 for producto in Producto.lista_productos:
                     if producto.codigo == codigo:
                         writer.writerow({
@@ -452,7 +460,7 @@ class Inventario:
                             "cantidad": cantidad,
                             "total": total
                         })
-            print("Archivo creado correctamente")
+            print("Archivo actualizado correctamente")
         except FileNotFoundError:
             print(f'Archivo no encontrado: {ruta_csv}')
         except PermissionError:

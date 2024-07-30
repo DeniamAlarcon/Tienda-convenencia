@@ -34,7 +34,7 @@ class Producto:
 
         codigos_procesados = set()
         nombres_procesados = set()
-        codigo_pattern = re.compile(r'^P\d{12}$')
+        codigo_pattern = re.compile(r'^P\d{2}$')
         fecha_pattern = re.compile(r'^\d{2}/\d{2}/\d{4}$')
 
         try:

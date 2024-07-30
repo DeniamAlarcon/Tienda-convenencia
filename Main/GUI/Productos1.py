@@ -69,7 +69,7 @@ def validar_precio(precio):
 
 def validar_codigo_formato(codigo):
     # Patrón que asegura que el código inicie con "P" seguido de 12 dígitos
-    pattern = re.compile(r'^P\d{12}$')
+    pattern = re.compile(r'^P\d{2}$')
     return bool(pattern.match(codigo))
 
 
@@ -185,7 +185,7 @@ class ProductosApp(tk.Tk):
             return
 
         if not validar_codigo_formato(codigo):
-            messagebox.showerror("Error","Ingrese el codigo con el formato adecuado(P00000000000)")
+            messagebox.showerror("Error","Ingrese el codigo con el formato adecuado(P00)")
             return
 
         if Producto.validar_codigo(codigo):
