@@ -58,7 +58,7 @@ class Producto:
                         salidas = int(row["salidas"])
                         stock = int(row["stock"])
 
-                        if not (cantidad > 0 and precio > 0 and entradas >= 0 and salidas >= 0 and stock >= 0):
+                        if not (cantidad >= 0 and precio > 0 and entradas >= 0 and salidas >= 0 and stock >= 0):
                             print(f'Datos inválidos en la fila: {row}')
                             continue
 

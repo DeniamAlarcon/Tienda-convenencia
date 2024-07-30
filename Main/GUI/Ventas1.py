@@ -37,15 +37,21 @@ def seleccionar_cantidad_producto(producto, cantidad):
                 Inventario.actualizarSalidas(producto, cantidad)
                 return True
 
-def validar_pago(total_dado,total_pagar):
+def validar_pago(total_dado, total_pagar):
     total_dado = int(total_dado)
-    if total_dado < int(total_pagar):
+    total_pagar = int(total_pagar)
+
+    if total_dado < total_pagar:
         messagebox.showerror("Error", "Efectivo incompleto")
         return False
-    else:
-        cambio = total_dado - total_pagar
-        messagebox.showinfo("Pago realizado", f"Cambio: {cambio}")
-        return True
+    elif total_dado > total_pagar * 10:  # Aquí defines la condición para un pago significativamente mayor
+        respuesta = messagebox.askokcancel("Pago muy grande", f"El pago es mucho mayor que el total a pagar.\n\nTotal dado: {total_dado}\nTotal a pagar: {total_pagar}\n\n¿Desea continuar?")
+        if not respuesta:
+            return False
+
+    cambio = total_dado - total_pagar
+    messagebox.showinfo("Pago realizado", f"Cambio: {cambio}")
+    return True
 
 
 class VentasApp(tk.Tk):
@@ -118,22 +124,27 @@ class VentasApp(tk.Tk):
     def procesar_quitar(self):
         cantidad = self.cantidad_entry.get()
         producto = self.producto_entry.get()
-        if cantidad != "" and producto != "":
-            if Ticket.quitar_producto(producto, cantidad):
-                productos = Ticket.lista_ticket
-                self.resultado_text.config(state=tk.NORMAL)
-                self.resultado_text.delete('1.0', tk.END)
-                if productos:
-                    self.resultado_text.insert(tk.END,
-                                               f"{'Nombre':<10} {'Cantidad':<20} {'Total':<15}\n")
-                    for producto in productos:
+        if Ticket.lista_ticket.__len__() !=0:
+            if cantidad != "" and producto != "":
+                if Ticket.quitar_producto(producto, cantidad):
+                    productos = Ticket.lista_ticket
+                    self.resultado_text.config(state=tk.NORMAL)
+                    self.resultado_text.delete('1.0', tk.END)
+                    if productos:
                         self.resultado_text.insert(tk.END,
-                                                   f"{producto.nombre:<10} {producto.cantidad:<20} {producto.total:<15}\n")
-                messagebox.showinfo("Borrado","Producto eliminado de la venta")
-                self.producto_entry.delete(0, tk.END)
-                self.cantidad_entry.delete(0, tk.END)
+                                                   f"{'Nombre':<10} {'Cantidad':<20} {'Total':<15}\n")
+                        for producto in productos:
+                            self.resultado_text.insert(tk.END,
+                                                       f"{producto.nombre:<10} {producto.cantidad:<20} {producto.total:<15}\n")
+                    messagebox.showinfo("Borrado","Producto eliminado de la venta")
+                    self.producto_entry.delete(0, tk.END)
+                    self.cantidad_entry.delete(0, tk.END)
+                else:
+                    messagebox.showerror("Error","El producto no pudo ser eliminado verifique los datos")
+            else:
+                messagebox.showerror("Error","Ingrese todos los campos")
         else:
-            messagebox.showerror("Error","Ingrese todos los campos")
+            messagebox.showerror("Error","No hay productos por eliminar")
 
     def borrar_ticket(self):
         for i in Ticket.lista_ticket:

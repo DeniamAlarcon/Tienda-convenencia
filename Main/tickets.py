@@ -14,15 +14,22 @@ class Ticket:
 
 
     def guardar_producto(self):
-        Ticket.calcular_total(self)
+        for product in self.lista_ticket:
+            if product.nombre == self.nombre:
+                product.cantidad = int(product.cantidad) + int(self.cantidad)
+                Ticket.calcular_total()
+                return True
         self.lista_ticket.append(self)
+        Ticket.calcular_total()
         return True
 
 
+    @classmethod
     def calcular_total(self):
         for product in Producto.lista_productos:
-            if product.nombre == self.nombre:
-                self.total += int(product.precio) * int(self.cantidad)
+            for ticket in Ticket.lista_ticket:
+                if product.nombre == ticket.nombre:
+                    ticket.total = int(product.precio) * int(ticket.cantidad)
 
     @classmethod
     def crear_archivo_pdf_ticket(cls):
@@ -135,12 +142,15 @@ class Ticket:
     def quitar_producto(cls,nombre, cantidad):
         if Ticket.lista_ticket:
             for ticket in Ticket.lista_ticket:
-                if ticket.nombre == nombre and ticket.cantidad == cantidad:
+                if ticket.nombre == nombre and int(ticket.cantidad) >= int(cantidad):
                     for producto in Producto.lista_productos:
                         if ticket.nombre == producto.nombre:
                             producto.salidas = int(producto.salidas) - int(cantidad)
                             producto.stock = int(producto.stock) + int(cantidad)
-                            Ticket.lista_ticket.remove(ticket)
+                            ticket.cantidad = int(ticket.cantidad) - int(cantidad)
+                            if int(ticket.cantidad) == 0:
+                                Ticket.lista_ticket.remove(ticket)
+                            Ticket.calcular_total()
                             return True
             return False
 

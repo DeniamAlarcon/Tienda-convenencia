@@ -70,7 +70,7 @@ class Proveedores:
                         continue
 
                     # Validar el formato del correo
-                    if not re.match(r'^[\w\.-]+@[\w\.-]+\.\w+$', correo):
+                    if not re.match(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$', correo):
                         print(f'Correo inválido: {correo} en la fila {row}')
                         continue
 
