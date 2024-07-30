@@ -105,8 +105,8 @@ class VentasApp(tk.Tk):
 
         archivo_frame = tk.Frame(self)
         archivo_frame.pack(pady=5)
-        tk.Button(archivo_frame, text="Agregar", command=self.procesar_agregar_venta).pack(side=tk.LEFT,pady=10)
-        tk.Button(archivo_frame, text="Quitar producto", command=self.procesar_quitar).pack(side=tk.LEFT,pady=5)
+        tk.Button(archivo_frame, text="Agregar", command=self.procesar_agregar_venta).pack(side=tk.LEFT, pady=10)
+        tk.Button(archivo_frame, text="Quitar producto", command=self.procesar_quitar).pack(side=tk.LEFT, pady=5)
 
         text_frame = tk.Frame(self)
         text_frame.pack(pady=10)
@@ -117,7 +117,6 @@ class VentasApp(tk.Tk):
         scrollbar = tk.Scrollbar(text_frame, command=self.resultado_text.yview)
         scrollbar.pack(side=tk.RIGHT, fill=tk.Y)
         self.resultado_text.config(yscrollcommand=scrollbar.set)
-
 
         tk.Button(self, text="Finalizar venta", command=self.mostrar_ticket_ventas).pack(pady=10)
         tk.Button(self, text="Volver", command=self.borrar_ticket).pack(pady=10)
@@ -190,12 +189,17 @@ class VentasApp(tk.Tk):
             self.cantidad_entry = tk.Entry(cantidad_frame)
             self.cantidad_entry.pack(side=tk.LEFT, padx=5)
             tk.Button(self,text="Aceptar",command=lambda:self.procesar_pago(total_pagar)).pack(pady=5)
+            tk.Button(self,text="Volver",command=self.procesar_regreso).pack(pady=5) #aqui regreso a la pantalla
 
 
         else:
             self.resultado_text.insert(tk.END, "No hay productos registrados para venta")
             tk.Button(self, text="Volver", command=self.create_widgets).pack(pady=5)
         self.resultado_text.config(state=tk.DISABLED)
+
+    def procesar_regreso(self):
+        self.agregar_venta()
+        self.mostrar_productos()
 
     def procesar_pago(self,total_pagar):
         try:
@@ -250,6 +254,11 @@ class VentasApp(tk.Tk):
         ticket.guardar_producto()
 
         messagebox.showinfo("Éxito", "Producto agregado correctamente")
+        self.mostrar_productos()
+
+
+        #self.create_widgets()
+    def mostrar_productos(self):
         productos = Ticket.lista_ticket
         self.resultado_text.config(state=tk.NORMAL)
         self.resultado_text.delete('1.0', tk.END)
@@ -261,8 +270,6 @@ class VentasApp(tk.Tk):
                                            f"{producto.nombre:<10} {producto.cantidad:<20} {producto.total:<15}\n")
         self.producto_entry.delete(0, tk.END)
         self.cantidad_entry.delete(0, tk.END)
-
-        #self.create_widgets()
 
     def mostrar_historial_ventas(self):
         self.clear_frame()

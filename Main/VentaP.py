@@ -89,14 +89,24 @@ class Ventas:
         try:
             # Agrupar datos por mes y sumar cantidades
             ventas_agrupadas = defaultdict(int)
+            fechas_invalidas = []
+
             for venta in cls.ventas_historial:
-                cantidad = int(venta["cantidad"])
-                if cantidad < 0:
-                    print(f"Cantidad negativa ignorada para la fecha {venta['fecha']}")
-                    continue
-                fecha = datetime.strptime(venta["fecha"], '%d/%m/%Y')  # Convertir la fecha a datetime
-                mes_anio = fecha.strftime('%Y-%m')  # Obtener año y mes
-                ventas_agrupadas[mes_anio] += cantidad
+                try:
+                    cantidad = int(venta["cantidad"])
+                    if cantidad < 0:
+                        print(f"Cantidad negativa ignorada para la fecha {venta['fecha']}")
+                        continue
+                    fecha = datetime.strptime(venta["fecha"], '%d/%m/%Y')  # Convertir la fecha a datetime
+                    mes_anio = fecha.strftime('%Y-%m')  # Obtener año y mes
+                    ventas_agrupadas[mes_anio] += cantidad
+                except ValueError:
+                    print(f"Fecha inválida ignorada: {venta['fecha']}")
+                    fechas_invalidas.append(venta)
+
+            if not ventas_agrupadas:
+                print("No hay datos válidos para generar el gráfico.")
+                return None
 
             # Ordenar las fechas
             fechas = sorted(datetime.strptime(fecha, '%Y-%m') for fecha in ventas_agrupadas.keys())
@@ -142,6 +152,10 @@ class Ventas:
             grafico_path = os.path.join(base_dir, 'Archivos', 'Archivos_ventas', 'grafico_ventas.png')
             plt.savefig(grafico_path)
             plt.close()
+
+            if fechas_invalidas:
+                print("Se encontraron fechas inválidas y se omitieron en el gráfico.")
+
             return grafico_path
         except FileNotFoundError:
             print('Archivo no encontrado:')

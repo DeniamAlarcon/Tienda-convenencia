@@ -14,20 +14,19 @@ def validar_tamanio(tamanio):
     # Unidades válidas
     unidades_validas = ["kg", "g", "L", "ml", "pcs", "m", "cm", "in"]
 
-    # Patrón para verificar que el tamaño sea un número seguido de una unidad válida
-    pattern = re.compile(r'^(\d+(\.\d+)?)(kg|g|L|ml|pcs|m|cm|in)$')
+    # Patrón para verificar que el tamaño sea un número entero seguido de una unidad válida
+    pattern = re.compile(r'^(0|[1-9]\d*)(kg|g|L|ml|pcs|m|cm|in)$')
     match = pattern.match(tamanio)
 
     if match:
         # Extraer el valor numérico y la unidad
         valor = match.group(1)
-        unidad = match.group(3)
+        unidad = match.group(2)
 
         # Verificar que la unidad sea válida y que el valor sea mayor a 0
         if unidad in unidades_validas and int(valor) > 0:
-            # Verificar que el valor no comience con ceros innecesarios
-            if valor == str(int(valor)):  # Esto convierte el valor a flotante y lo compara como cadena
-                return True
+            return True
+
     return False
 
 def validar_fecha(fecha):

@@ -14,7 +14,7 @@ from Main.Productos import Producto
 
 
 class Proveedores:
-    idAuto=0
+    idAuto=1
     proveedores = []
     def __init__(self,nombre,correo,telefono):
         self.id = Proveedores.idAuto

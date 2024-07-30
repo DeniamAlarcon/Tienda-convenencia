@@ -1,3 +1,4 @@
+import datetime
 import tkinter as tk
 from tkinter import ttk
 from Main.Inventario import *
@@ -198,6 +199,7 @@ class InventarioApp(tk.Tk):
         nombre = self.nombre_ajuste_entry.get()
         cantidad = self.cantidad_ajuste_entry.get()
         precio = 0
+        codigo=""
 
         if not nombre or not cantidad:
             messagebox.showerror("Error","Ingrese todos los campos requeridos")
@@ -214,14 +216,16 @@ class InventarioApp(tk.Tk):
         for i in Producto.lista_productos:
             if i.nombre == nombre:
                 precio = int(i.precio)
+                codigo=i.codigo
 
         total = self.inventario.calculoAjuste(int(cantidad), nombre, precio)
         Inventario.actualizarSalidas(nombre, int(cantidad))
         mensajes_stock = Inventario.messajes_stock_sin_busqueda()
+        messagebox.showinfo("Éxito", f"Ajuste realizado exitosamente\ntotal a reponer {total}\n")
         if mensajes_stock:
             messagebox.showinfo("Información de Stock", mensajes_stock)
-        messagebox.showinfo("Éxito", f"Ajuste realizado exitosamente\ntotal a reponer {total}\n")
         Producto.escribir_archivo_csv_productos_principal()
+        Inventario.crear_archivos_ajustes(datetime.now(),codigo,cantidad,total)
         self.create_widgets()
 
     def revision_fechas_caducidad(self):

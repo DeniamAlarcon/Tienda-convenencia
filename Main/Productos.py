@@ -35,6 +35,7 @@ class Producto:
         codigos_procesados = set()
         nombres_procesados = set()
         codigo_pattern = re.compile(r'^P\d{12}$')
+        fecha_pattern = re.compile(r'^\d{2}/\d{2}/\d{4}$')
 
         try:
             with open(archivo_proveedores, encoding='utf8') as archivo_productos:
@@ -80,6 +81,16 @@ class Producto:
                             print(f'Formato de tamaño inválido en la fila: {row}')
                             continue
 
+                        fecha_caducidad = row["fecha_caducidad"]
+                        if not fecha_pattern.match(fecha_caducidad):
+                            print(f'Formato de fecha inválido en la fila: {row}')
+                            continue
+                        try:
+                            datetime.strptime(fecha_caducidad, "%d/%m/%Y")
+                        except ValueError:
+                            print(f'Fecha inválida en la fila: {row}')
+                            continue
+
                         producto = Producto(
                             codigo,
                             nombre,
@@ -88,7 +99,7 @@ class Producto:
                             stock,
                             row["tamanio"],
                             precio,
-                            row["fecha_caducidad"]
+                            fecha_caducidad
                         )
                         producto.entradas = entradas
                         producto.salidas = salidas

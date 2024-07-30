@@ -432,6 +432,41 @@ class Inventario:
             print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
+    def crear_archivos_ajustes(cls, fecha_eliminacion, codigo, cantidad, total):
+        base_dir = os.path.dirname(os.path.abspath(__file__))
+        ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_inventarios', 'productos_ajustes.csv')
+        try:
+            with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
+                fieldnames = ["codigo", "nombre", "marca", "precio", "fecha_eliminacion", "cantidad", "total"]
+                writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
+                writer.writeheader()
+
+                for producto in Producto.lista_productos:
+                    if producto.codigo == codigo:
+                        writer.writerow({
+                            "codigo": producto.codigo,
+                            "nombre": producto.nombre,
+                            "marca": producto.marca,
+                            "precio": producto.precio,
+                            "fecha_eliminacion": fecha_eliminacion,
+                            "cantidad": cantidad,
+                            "total": total
+                        })
+            print("Archivo creado correctamente")
+        except FileNotFoundError:
+            print(f'Archivo no encontrado: {ruta_csv}')
+        except PermissionError:
+            print(f'Permiso denegado al intentar escribir en el archivo: {ruta_csv}')
+        except IOError:
+            print(f'Error de entrada/salida al intentar abrir el archivo: {ruta_csv}')
+        except KeyError as e:
+            print(f'Llave no encontrada en los datos del archivo: {e}')
+        except ValueError as e:
+            print(f'Valor incorrecto encontrado en los datos del archivo: {e}')
+        except Exception as e:
+            print(f'Ocurrió un error inesperado: {e}')
+
+    @classmethod
     def informeStockC(cls):
         if Producto.lista_productos:
             if Proveedores.proveedores:
