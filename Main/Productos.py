@@ -34,6 +34,7 @@ class Producto:
 
         codigos_procesados = set()
         nombres_procesados = set()
+        codigo_pattern = re.compile(r'^P\d{12}$')
 
         try:
             with open(archivo_proveedores, encoding='utf8') as archivo_productos:
@@ -45,6 +46,10 @@ class Producto:
                 for row in filas:
                     codigo = row["codigo"]
                     nombre = row["nombre"]
+
+                    if not codigo_pattern.match(codigo):
+                        print(f'Código inválido en la fila: {row}')
+                        continue
 
                     if codigo in codigos_procesados or nombre in nombres_procesados:
                         print(f'Fila ignorada por código o nombre duplicado: {row}')
