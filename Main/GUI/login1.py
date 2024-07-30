@@ -3,6 +3,7 @@ from InventarioGUI import *
 from Productos1 import *
 from ProveedoresOp1 import *
 from Ventas1 import *
+from Main.VentaP import *
 
 usuarios = [
     "admin",
@@ -128,10 +129,13 @@ class App(tk.Tk):
 
     def menu_compras(self):
         if Proveedores.mostrar():
-            self.withdraw()  # Hide the main window
-            menuC = ComprasProveedorApp(self)
-            menuC.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
-            menuC.mainloop()
+            if Producto.lista_productos:
+                self.withdraw()  # Hide the main window
+                menuC = ComprasProveedorApp(self)
+                menuC.protocol("WM_DELETE_WINDOW", self.deiconify)  # Show main window on close
+                menuC.mainloop()
+            else:
+                messagebox.showwarning("Advertencia", "Registre un producto.")
         else:
             messagebox.showwarning("Advertencia", "Registre un proveedor.")
 

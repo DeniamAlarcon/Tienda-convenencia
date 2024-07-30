@@ -18,7 +18,6 @@ class Producto:
         self.nombre = nombre
         self.marca = marca
         self.proveedor = proveedor
-        self.cantidad = cantidad
         self.tamanio = tamanio
         self.precio = precio
         self.fecha_caducidad = fecha_caducidad
@@ -52,13 +51,23 @@ class Producto:
                         continue
 
                     try:
-                        cantidad = int(row["cantidad"])
+                        stock = int(row["stock"])
                         precio = float(row["precio"])
+
+                        # Validar entradas, salidas, stock, existencias_anteriores, ajuste
+                        if not re.match(r'^(0|[1-9]\d*)$', row["entradas"]) or \
+                                not re.match(r'^(0|[1-9]\d*)$', row["salidas"]) or \
+                                not re.match(r'^(0|[1-9]\d*)$', row["stock"]) or \
+                                not re.match(r'^(0|[1-9]\d*)$', row["existencias_anteriores"]) or \
+                                not re.match(r'^(0|[1-9]\d*)$', row["ajuste"]):
+                            print(f'Datos inválidos en la fila: {row}')
+                            continue
+
                         entradas = int(row["entradas"])
                         salidas = int(row["salidas"])
                         stock = int(row["stock"])
 
-                        if not (cantidad >= 0 and precio > 0 and entradas >= 0 and salidas >= 0 and stock >= 0):
+                        if not (stock >= 0 and precio > 0 and entradas >= 0 and salidas >= 0 and stock >= 0):
                             print(f'Datos inválidos en la fila: {row}')
                             continue
 
@@ -71,7 +80,7 @@ class Producto:
                             nombre,
                             row["marca"],
                             row["proveedor"],
-                            cantidad,
+                            stock,
                             row["tamanio"],
                             precio,
                             row["fecha_caducidad"]
@@ -94,7 +103,7 @@ class Producto:
             print(f'Archivo no encontrado: {archivo_proveedores}. Creando archivo nuevo...')
             os.makedirs(os.path.dirname(archivo_proveedores), exist_ok=True)
             with open(archivo_proveedores, mode='w', newline='', encoding='utf8') as archivo:
-                fieldnames = ["codigo", "nombre", "marca", "proveedor", "cantidad", "tamanio", "precio",
+                fieldnames = ["codigo", "nombre", "marca", "proveedor", "tamanio", "precio",
                               "fecha_caducidad", "entradas", "salidas", "stock", "existencias_anteriores", "ajuste"]
                 writer = csv.DictWriter(archivo, fieldnames=fieldnames)
                 writer.writeheader()
@@ -149,7 +158,7 @@ class Producto:
         ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_productos', 'productos.csv')
         try:
             with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
-                fieldnames = ["codigo", "nombre", "marca", "precio", "proveedor", "cantidad", "tamanio",
+                fieldnames = ["codigo", "nombre", "marca", "precio", "proveedor", "tamanio",
                               "fecha_caducidad","entradas","salidas","stock","existencias_anteriores","ajuste"]
                 writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
                 writer.writeheader()
@@ -159,9 +168,8 @@ class Producto:
                         "codigo": producto.codigo,
                         "nombre": producto.nombre,
                         "marca": producto.marca,
-                        "precio": producto.precio,
+                        "precio": int(producto.precio),
                         "proveedor": producto.proveedor,
-                        "cantidad": producto.cantidad,
                         "tamanio": producto.tamanio,
                         "fecha_caducidad": producto.fecha_caducidad,
                         "entradas": producto.entradas,
@@ -203,7 +211,7 @@ class Producto:
                         "marca": producto.marca,
                         "precio": producto.precio,
                         "proveedor": producto.proveedor,
-                        "cantidad": producto.cantidad,
+                        "cantidad": producto.stock,
                         "tamanio": producto.tamanio,
                         "fecha_caducidad": producto.fecha_caducidad
                     })
@@ -236,7 +244,7 @@ class Producto:
                     "marca": producto.marca,
                     "precio": producto.precio,
                     "proveedor": producto.proveedor,
-                    "cantidad": producto.cantidad,
+                    "cantidad": producto.stock,
                     "tamanio": producto.tamanio,
                     "fecha_caducidad": producto.fecha_caducidad
                 }
@@ -288,7 +296,7 @@ class Producto:
                     product.marca,
                     product.precio,
                     product.proveedor,
-                    product.cantidad,
+                    product.stock,
                     product.tamanio,
                     product.fecha_caducidad
                 ])
@@ -353,7 +361,7 @@ class Producto:
                     producto.marca,
                     producto.precio,
                     producto.proveedor,
-                    producto.cantidad,
+                    producto.stock,
                     producto.tamanio,
                     producto.fecha_caducidad
                 ])
@@ -418,7 +426,7 @@ class Producto:
     def detalles(self):
         if Producto.lista_productos.__len__() != 0:
             for product in Producto.lista_productos:
-                print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ",product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
+                print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ",product.proveedor, "Cantidad: ",product.stock, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
             return Producto.lista_productos
         else:
             print("No hay registro de productos")

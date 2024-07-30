@@ -1,20 +1,17 @@
-import csv
-import os
+from tkinter import messagebox
 
 from reportlab.lib.styles import getSampleStyleSheet
 from reportlab.platypus import Paragraph
 
 from Main.Inventario import *
-from datetime import datetime
-from tkinter import messagebox
+
 
 class PedidosProveedor:
-    idAuto=0
+    idAuto=1
     estatus=""
     pedidos = []
 
     def __init__(self, proveedor, nombre, marca, cantidad, precio):
-        PedidosProveedor.idAuto += 1
         self.id = PedidosProveedor.idAuto
         self.proveedor = proveedor
         self.nombre = nombre
@@ -25,9 +22,9 @@ class PedidosProveedor:
 
     @classmethod
     def leer_archivo(cls):
-        #archivo_compras = 'C:\\Users\\Deniam\\OneDrive\\Documentos\\GitHub\\Tienda-convenencia\\Archivos\\Archivos_compras\\compras.csv'
         base_dir = os.path.dirname(os.path.abspath(__file__))
         archivo_compras = os.path.join(base_dir, 'Archivos', 'Archivos_compras', 'compras.csv')
+
         try:
             with open(archivo_compras, encoding='utf8') as archivo:
                 reader = csv.DictReader(archivo)
@@ -37,22 +34,27 @@ class PedidosProveedor:
                     print('No hay datos que leer.')
                     return
 
-            # Encontrar el ID máximo en el archivo
-            max_id = 0
-            for row in filas:
-                if row["id"].isdigit():
-                    max_id = max(max_id, int(row["id"]))
+                # Encontrar el ID máximo en el archivo
+                max_id = 0
+                for row in filas:
+                    if row["id"].isdigit():
+                        max_id = max(max_id, int(row["id"]))
 
-            # Configurar idAuto para continuar desde el ID máximo encontrado
-            PedidosProveedor.idAuto = max_id + 1
+                # Configurar idAuto para continuar desde el ID máximo encontrado
+                PedidosProveedor.idAuto = max_id + 1
 
-            # Leer datos y crear objetos Proveedores
-            for row in filas:
-                compras = cls(row["proveedor"], row["nombre"], row["marca"], row["cantidad"], row["precio"])
-                compras.id = int(row["id"])  # Asignar el ID del archivo
-                compras.estatus = row["estatus"]
-                cls.pedidos.append(compras)
-            print('Datos cargados exitosamente.')
+                # Leer datos y crear objetos Proveedores
+                for row in filas:
+                    if re.match(r'^[1-9]\d*$',
+                                row["cantidad"]):  # Validar que la cantidad no tenga ceros a la izquierda
+                        compras = cls(row["proveedor"], row["nombre"], row["marca"], row["cantidad"], row["precio"])
+                        compras.id = int(row["id"])  # Asignar el ID del archivo
+                        compras.estatus = row["estatus"]
+                        cls.pedidos.append(compras)
+                    else:
+                        print(f'Cantidad inválida en la fila: {row}')
+
+                print('Datos cargados exitosamente.')
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_compras}. Creando archivo nuevo...')
             os.makedirs(os.path.dirname(archivo_compras), exist_ok=True)
@@ -186,6 +188,7 @@ class PedidosProveedor:
 
     def guardar(self):
         PedidosProveedor.pedidos.append(self)
+        PedidosProveedor.idAuto += 1
         return True
 
     @classmethod

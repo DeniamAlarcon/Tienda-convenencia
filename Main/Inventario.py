@@ -1,12 +1,8 @@
-import json
-from reportlab.lib.pagesizes import letter
-from reportlab.lib import colors
-from reportlab.platypus import SimpleDocTemplate, Table, TableStyle, Spacer
-from reportlab.lib.units import inch
-from openpyxl import Workbook
-from Main.Productos import *
+from reportlab.lib.pagesizes import landscape
+from reportlab.pdfbase import pdfmetrics
+
 from Main.Proveedores import *
-from datetime import datetime
+
 
 class Inventario:
     #listaStock=[]
@@ -95,14 +91,14 @@ class Inventario:
             print(f'Ocurrió un error inesperado: {e}')
 
     @classmethod
-    def escribir_archivo_pdf(self):
-        #archivo_pdf = 'D:\\Tienda-convenencia\\Archivos\\Archivos_inventarios\\reporte_inventario.pdf'
+    def escribir_archivo_pdf(cls):
         base_dir = os.path.dirname(os.path.abspath(__file__))
         archivo_pdf = os.path.join(base_dir, 'Archivos', 'Archivos_inventarios', 'reporte_inventario.pdf')
         try:
+            # Cambiar a orientación horizontal
             doc = SimpleDocTemplate(
                 archivo_pdf,
-                pagesize=letter,
+                pagesize=landscape(letter),
                 rightMargin=inch,
                 leftMargin=inch,
                 topMargin=inch,
@@ -117,19 +113,24 @@ class Inventario:
 
             for product in Producto.lista_productos:
                 data.append([
-                    product.codigo,
-                    product.nombre,
-                    product.marca,
-                    product.precio,
-                    product.proveedor,
-                    product.entradas,
-                    product.salidas,
-                    product.stock,
-                    product.existenciasAnteriores,
-                    product.ajuste
+                    str(product.codigo),  # Convertir a cadena
+                    str(product.nombre),  # Convertir a cadena
+                    str(product.marca),  # Convertir a cadena
+                    str(product.precio),  # Convertir a cadena
+                    str(product.proveedor),  # Convertir a cadena
+                    str(product.entradas),  # Convertir a cadena
+                    str(product.salidas),  # Convertir a cadena
+                    str(product.stock),  # Convertir a cadena
+                    str(product.existenciasAnteriores),  # Convertir a cadena
+                    str(product.ajuste)  # Convertir a cadena
                 ])
 
-            tabla = Table(data)
+            # Calcular el ancho máximo necesario para cada columna
+            max_widths = [max([pdfmetrics.stringWidth(str(cell), 'Helvetica', 10) for cell in col]) for col in
+                          zip(*data)]
+            col_widths = [max(1.0 * inch, width) for width in max_widths]  # Asignar un ancho mínimo de 1 pulgada
+
+            tabla = Table(data, colWidths=col_widths)  # Usar el ancho de columnas calculado
 
             # Estilos para la tabla
             estilo = TableStyle([
@@ -137,12 +138,12 @@ class Inventario:
                 ('TEXTCOLOR', (0, 0), (-1, 0), colors.whitesmoke),
                 ('ALIGN', (0, 0), (-1, -1), 'CENTER'),
                 ('FONTNAME', (0, 0), (-1, 0), 'Helvetica-Bold'),
-                ('FONTSIZE', (0, 0), (-1, 0), 12),
-                ('BOTTOMPADDING', (0, 0), (-1, 0), 12),
+                ('FONTSIZE', (0, 0), (-1, 0), 10),  # Reducir el tamaño de la fuente
+                ('BOTTOMPADDING', (0, 0), (-1, 0), 10),
                 ('BACKGROUND', (0, 1), (-1, -1), colors.beige),
                 ('GRID', (0, 0), (-1, -1), 1, colors.black),
-                ('LEFTPADDING', (0, 0), (-1, -1), 12),  # Añadir relleno izquierdo
-                ('RIGHTPADDING', (0, 0), (-1, -1), 12)  # Añadir relleno derecho
+                ('LEFTPADDING', (0, 0), (-1, -1), 8),
+                ('RIGHTPADDING', (0, 0), (-1, -1), 8)
             ])
             tabla.setStyle(estilo)
 
@@ -153,7 +154,7 @@ class Inventario:
 
             doc.build(elementos)
 
-            print("archivo PDF creado correctamente ")
+            print("Archivo PDF creado correctamente")
             os.startfile(archivo_pdf)
         except FileNotFoundError:
             print(f'Archivo no encontrado: {archivo_pdf}')

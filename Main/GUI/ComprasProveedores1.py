@@ -90,7 +90,7 @@ class ComprasProveedorApp(tk.Tk):
             messagebox.showerror("Error", "Marca de producto no registrada")
             return
 
-        if not cantidad_producto.isdigit() or int(cantidad_producto) <= 0:
+        if not cantidad_producto.isdigit() or int(cantidad_producto) <= 0 or not re.match(r'^[1-9]\d*|0$', cantidad_producto) :
             messagebox.showerror("Error", "Cantidad de productos inválida")
             return
 
@@ -175,7 +175,7 @@ class ComprasProveedorApp(tk.Tk):
             messagebox.showerror("Error", "Favor de llenar todos los campos")
             return
 
-        if not cantidad.isdigit() or int(cantidad) <= 0:
+        if not cantidad.isdigit() or int(cantidad) <= 0 or not re.match(r'^[1-9]\d*|0$', cantidad):
             messagebox.showerror("Error", "Cantidad inválida")
             return
 
@@ -210,8 +210,8 @@ class ComprasProveedorApp(tk.Tk):
             messagebox.showerror("Error", "Favor de llenar todos los campos")
             return
 
-        if not cantidad.isdigit() or int(cantidad) <= 0:
-            messagebox.showerror("Error", "Ingrese cantidad numerica o mayor a 0")
+        if not cantidad.isdigit() or int(cantidad) <= 0 or not re.match(r'^[1-9]\d*|0$', cantidad):
+            messagebox.showerror("Error", "Cantidad inválida")
             return
 
         inventario = Inventario()

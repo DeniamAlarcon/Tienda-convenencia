@@ -207,8 +207,8 @@ class InventarioApp(tk.Tk):
             messagebox.showerror("Error", "El nombre del producto no existe")
             return
 
-        if not cantidad.isdigit() or int(cantidad) < 0 or int(cantidad) > Producto.validar_stock(nombre):
-            messagebox.showerror("Error", "Cantidad no válida o exede el stock")
+        if not re.match(r'^[1-9]\d*|0$', cantidad) or int(cantidad) > Producto.validar_stock(nombre):
+            messagebox.showerror("Error", "Cantidad no válida o excede el stock")
             return
 
         for i in Producto.lista_productos:

@@ -1,10 +1,8 @@
-import re
-import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, messagebox
 
-from Main.GUI.login1 import App
+from PIL._tkinter_finder import tk
+
 from Main.VentaP import Ventas
-from Main.VentasMain import *
 from Main.tickets import *
 from login1 import *
 
@@ -52,6 +50,9 @@ def validar_pago(total_dado, total_pagar):
     cambio = total_dado - total_pagar
     messagebox.showinfo("Pago realizado", f"Cambio: {cambio}")
     return True
+
+def validar_cantidad_venta(cantidad):
+    return cantidad.isdigit() and int(cantidad) >= 0 and not (cantidad.startswith('0') and len(cantidad) > 1)
 
 
 class VentasApp(tk.Tk):
@@ -200,18 +201,21 @@ class VentasApp(tk.Tk):
         try:
             valor = self.cantidad_entry.get()
             if valor.isdigit():
-                if validar_pago(int(valor),total_pagar):
-                    for venta in Ticket.lista_ticket:
-                        venta = Ventas(venta.nombre,venta.cantidad,venta.total)
-                        venta.guardar_venta()
-                    mensajes_stock = Inventario.messajes_stock_sin_busqueda()
-                    if mensajes_stock:
-                        messagebox.showinfo("Información de Stock", mensajes_stock)
-                    self.create_widgets()
-                    Ticket.crear_archivo_pdf_ticket()
-                    Producto.escribir_archivo_csv_productos_principal()
-                    Ticket.limpiar_ticket()
-                    self.main_app.corte_realizado = False
+                if validar_cantidad_venta(valor):
+                    if validar_pago(int(valor),total_pagar):
+                        for venta in Ticket.lista_ticket:
+                            venta = Ventas(venta.nombre,venta.cantidad,venta.total)
+                            venta.guardar_venta()
+                        mensajes_stock = Inventario.messajes_stock_sin_busqueda()
+                        if mensajes_stock:
+                            messagebox.showinfo("Información de Stock", mensajes_stock)
+                        self.create_widgets()
+                        Ticket.crear_archivo_pdf_ticket()
+                        Producto.escribir_archivo_csv_productos_principal()
+                        Ticket.limpiar_ticket()
+                        self.main_app.corte_realizado = False
+                else:
+                    messagebox.showerror("Error","Cantidad invalida")
             else:
                 messagebox.showwarning("Advertencia", "Cantidad invalida")
         except ValueError:
@@ -234,7 +238,7 @@ class VentasApp(tk.Tk):
             messagebox.showerror("Error", f"No hay stock de {producto}")
             return
 
-        if not cantidad.isdigit() or int(cantidad) <= 0:
+        if not cantidad.isdigit() or int(cantidad) <= 0 or not re.match(r'^[1-9]\d*|0$', cantidad):
             messagebox.showerror("Error", "Cantidad no válida")
             return
 
@@ -322,21 +326,24 @@ class VentasApp(tk.Tk):
 
     def procesar_corte_caja(self,monto_pagar):
         try:
-            monto = int(self.monto_entry.get())
-            if monto > monto_pagar:
-                messagebox.showerror("Error", "Tiene sobrante, verifique la cantidad")
-            elif monto < monto_pagar:
-                messagebox.showerror("Error", "Tiene faltante, verifique la cantidad")
+            monto = self.monto_entry.get()
+            if validar_cantidad_venta(monto):
+                if int(monto) > int(monto_pagar):
+                    messagebox.showerror("Error", "Tiene sobrante, verifique la cantidad")
+                elif int(monto) < int(monto_pagar):
+                    messagebox.showerror("Error", "Tiene faltante, verifique la cantidad")
+                else:
+                    cantidad = monto_pagar
+                    fecha_actual = datetime.now().strftime("%d/%m/%Y")
+                    Ventas.ventas_historial.append({"fecha": fecha_actual, "cantidad": cantidad})
+                    #Ventas.guardar_historial_grafico()
+                    Ventas.escribir_ventas_historial_csv()
+                    Ventas.ventas_list.clear()
+                    self.main_app.corte_realizado = True
+                    messagebox.showinfo("Éxito", "Corte de caja exitoso, buen día")
+                    self.create_widgets()
             else:
-                cantidad = monto_pagar
-                fecha_actual = datetime.now().strftime("%d/%m/%Y")
-                Ventas.ventas_historial.append({"fecha": fecha_actual, "cantidad": cantidad})
-                #Ventas.guardar_historial_grafico()
-                Ventas.escribir_ventas_historial_csv()
-                Ventas.ventas_list.clear()
-                self.main_app.corte_realizado = True
-                messagebox.showinfo("Éxito", "Corte de caja exitoso, buen día")
-                self.create_widgets()
+                messagebox.showerror("Error", "Cantidad invalida")
         except ValueError:
             messagebox.showerror("Error","Inngrese una cantidad valida")
 

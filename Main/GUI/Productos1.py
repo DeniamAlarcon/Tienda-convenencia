@@ -1,9 +1,13 @@
-from tkinter import ttk, messagebox
+import re
+from datetime import datetime
+from tkinter import messagebox, ttk
 
 from PIL._tkinter_finder import tk
 
+from Main.Productos import *
+from Main.Proveedores import *
 from login1 import *
-from login1 import *
+
 
 
 def validar_tamanio(tamanio):
@@ -16,13 +20,14 @@ def validar_tamanio(tamanio):
 
     if match:
         # Extraer el valor numérico y la unidad
-        valor = float(match.group(1))
+        valor = match.group(1)
         unidad = match.group(3)
 
         # Verificar que la unidad sea válida y que el valor sea mayor a 0
-        if unidad in unidades_validas and valor > 0:
-            return True
-
+        if unidad in unidades_validas and int(valor) > 0:
+            # Verificar que el valor no comience con ceros innecesarios
+            if valor == str(int(valor)):  # Esto convierte el valor a flotante y lo compara como cadena
+                return True
     return False
 
 def validar_fecha(fecha):
@@ -44,15 +49,50 @@ def validar_cantidad(cantidad):
     return cantidad.isdigit() and int(cantidad) > 0 and not (cantidad.startswith('0') and len(cantidad) > 1)
 
 def validar_precio(precio):
-    return precio.isdigit() and int(precio) > 0 and not(precio.startswith('0') and len(precio) > 1)
+    if precio.isdigit() and int(precio) > 0 and not(precio.startswith('0') and len(precio) > 1):
+        if int(precio) >= 1000:
+            root = tk.Tk()
+            root.withdraw()
+            respuesta = messagebox.askyesno("Confirmar Precio",
+                                            f"El precio ingresado es: {precio}\n¿Desea continuar?")
+            if respuesta:
+                # El usuario hizo clic en "Aceptar"
+                print("Usuario aceptó la cantidad.")
+                return True
+            else:
+                # El usuario hizo clic en "Cancelar"
+                print("Usuario canceló la operación.")
+                return False
+        else:
+            return True
+    else:
+        return False
 
 def validar_codigo_formato(codigo):
     # Patrón que asegura que el código inicie con "P" seguido de 12 dígitos
     pattern = re.compile(r'^P\d{12}$')
     return bool(pattern.match(codigo))
 
+
 def validar_longitud(cantidad):
-    return cantidad.isdigit() and 1 <= int(cantidad) <= 99999
+    # Verificar la longitud de la cantidad
+    if cantidad.isdigit() and 0 <= int(cantidad) < 1000:
+        return True
+    else:
+        # Crear una ventana raíz oculta
+        root = tk.Tk()
+        root.withdraw()
+        # Mostrar la ventana emergente con los botones Aceptar y Cancelar
+        respuesta = messagebox.askyesno("Confirmar Cantidad",
+                                        f"La cantidad ingresada es: {cantidad}\n¿Desea continuar?")
+        if respuesta:
+            # El usuario hizo clic en "Aceptar"
+            print("Usuario aceptó la cantidad.")
+            return True
+        else:
+            # El usuario hizo clic en "Cancelar"
+            print("Usuario canceló la operación.")
+            return False
 
 
 class ProductosApp(tk.Tk):
@@ -296,7 +336,7 @@ class ProductosApp(tk.Tk):
             for producto in productos:
                 self.tree.insert('', tk.END, values=(
                     producto.codigo, producto.nombre, producto.marca, producto.proveedor,
-                    producto.cantidad, producto.tamanio, producto.precio, producto.fecha_caducidad
+                    producto.stock, producto.tamanio, producto.precio, producto.fecha_caducidad
                 ))
         else:
             messagebox.showerror("Error","No hay productos registrados")
@@ -345,10 +385,11 @@ class ProductosApp(tk.Tk):
     def mostar_datos_productos(self):
         resultados = Producto.buscarProducto(self.codigo_actualizar_entry.get())
         if resultados:
+            precio=int(resultados.precio)
             self.nombre_actualizar_entry.insert(tk.END, resultados.nombre)
             self.proveedor_actualizar_entry.insert(tk.END, resultados.proveedor)
             self.tamanio_actualizar_entry.insert(tk.END, resultados.tamanio)
-            self.precio_actualizar_entry.insert(tk.END, resultados.precio)
+            self.precio_actualizar_entry.insert(tk.END, precio)
             self.fecha_actualizar_entry.insert(tk.END, resultados.fecha_caducidad)
             self.codigo_actualizar_entry.config(state=tk.DISABLED)
             self.boton_buscar.config(state="disabled")
@@ -374,6 +415,10 @@ class ProductosApp(tk.Tk):
 
         if not nombre or not proveedor or not tamanio or not precio or not fecha_caducidad:
             messagebox.showerror("Error", "Ingrese todos los campos")
+            return
+
+        if not validar_codigo_formato(codigo):
+            messagebox.showerror("Error","Ingrese el codigo con el formato adecuado(P00000000000)")
             return
 
         if nombre and not Producto.buscar_nombre_GUI(nombre,codigo):
