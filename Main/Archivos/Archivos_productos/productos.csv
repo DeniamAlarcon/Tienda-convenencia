@@ -1,6 +1,6 @@
 codigo,nombre,marca,precio,proveedor,cantidad,tamanio,fecha_caducidad,entradas,salidas,stock,existencias_anteriores,ajuste
 -1,0,0,1.0,Zzaa,1,0g,01/02/2025,1,0,1,1,0
-1,papas,sabritas,1.0,pepsi,10,10g,10/02/2025,10,10,0,10,9
+1,papas,sabritas,11,pepsi,10,11g,10/02/2025,10,10,0,10,9
 2,refresco,coca,1.0,pepsi,1,0ml,01/02/2025,1,0,1,1,0
 6,gansito,marinela,2.0,pepsi,10,1kg,02/02/2025,10,0,10,10,0
 P000000000001,lol,lol,10.0,pepsi,1,1g,01/02/2025,1,0,1,1,0
