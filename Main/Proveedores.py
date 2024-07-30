@@ -46,7 +46,8 @@ class Proveedores:
             max_id = 0
             for row in filas:
                 if row["id"].isdigit():
-                    max_id = max(max_id, int(row["id"]))
+                    id_sin_ceros = str(int(row["id"]))  # Convertir el ID para eliminar ceros a la izquierda
+                    max_id = max(max_id, int(id_sin_ceros))
 
             # Configurar idAuto para continuar desde el ID máximo encontrado
             Proveedores.idAuto = max_id + 1
@@ -54,13 +55,19 @@ class Proveedores:
             # Leer datos y crear objetos Proveedores
             for row in filas:
                 if all(row.values()):
-                    id = row["id"]
+                    id_original = row["id"]
+                    id_sin_ceros = str(int(id_original))  # Convertir el ID para eliminar ceros a la izquierda
                     nombre = row["nombre"]
                     correo = row["correo"]
                     telefono = row["telefono"]
 
+                    # Validar que el ID no tenga ceros a la izquierda
+                    if id_original != id_sin_ceros:
+                        print(f'ID con ceros a la izquierda ignorado: {id_original} en la fila {row}')
+                        continue
+
                     # Validar que los campos sean únicos
-                    if id in ids_procesados or nombre in nombres_procesados or correo in correos_procesados or telefono in telefonos_procesados:
+                    if id_sin_ceros in ids_procesados or nombre in nombres_procesados or correo in correos_procesados or telefono in telefonos_procesados:
                         print(f'Fila ignorada por duplicado: {row}')
                         continue
 
@@ -75,11 +82,11 @@ class Proveedores:
                         continue
 
                     proveedor = cls(nombre, correo, telefono)
-                    proveedor.id = int(id)  # Asignar el ID del archivo
+                    proveedor.id = int(id_sin_ceros)  # Asignar el ID del archivo sin ceros a la izquierda
                     cls.proveedores.append(proveedor)
 
                     # Añadir a los conjuntos de procesados
-                    ids_procesados.add(id)
+                    ids_procesados.add(id_sin_ceros)
                     nombres_procesados.add(nombre)
                     correos_procesados.add(correo)
                     telefonos_procesados.add(telefono)
