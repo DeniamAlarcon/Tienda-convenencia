@@ -411,16 +411,100 @@ class Proveedores:
         else:
             messagebox.showerror("Error","Proveedor ya registrado con esos datos.")
 
-
+    @classmethod
+    def actualizar(cls, id, nombre, correo, telefono):
+        proveedor = cls.buscar_nombre_valida(id)
+        if proveedor:
+                if nombre == "" and correo == "" and telefono == "":
+                    proveedor.nombre = proveedor.nombre
+                    proveedor.correo = proveedor.correo
+                    proveedor.telefono = proveedor.telefono
+                elif nombre == "":
+                    proveedor.nombre = proveedor.nombre
+                    proveedor.correo = correo
+                    proveedor.telefono = telefono
+                elif correo == "":
+                    proveedor.correo = proveedor.correo
+                    proveedor.nombre = nombre
+                    proveedor.telefono = telefono
+                elif telefono == "":
+                    proveedor.telefono = proveedor.telefono
+                    proveedor.nombre = nombre
+                    proveedor.correo = correo
+                else:
+                    proveedor.nombre = nombre
+                    proveedor.correo = correo
+                    proveedor.telefono = telefono
+                messagebox.showinfo("Exito","Proveedor actualizado correctamente")
+        else:
+            print("Proveedor no encontrado.")
     #No agregado al diagrama de clases
     @classmethod
-    def actualizarGUI_Validar(cls, id, nom, correo, telefono):
+    def actualizarGUI_ValidarN(cls, nom, nomb):
+        if Proveedores.proveedores.__len__()!=0:
+            for prov in Proveedores.proveedores:
+                if prov.nombre == nom and prov.nombre==nomb:
+                    return True
+            return False
+
+    @classmethod
+    def actualizarGUI_ValidarC(cls, nom, correo):
+        if Proveedores.proveedores.__len__() != 0:
+            for prov in Proveedores.proveedores:
+                if prov.nombre == nom and prov.correo==correo:
+                    return True
+            return False
+
+    @classmethod
+    def actualizarGUI_ValidarT(cls, nom, telefono):
+        if Proveedores.proveedores.__len__() != 0:
+            for prov in Proveedores.proveedores:
+                if prov.nombre == nom and prov.telefono == telefono:
+                    return True
+            return False
+
+    @classmethod
+    def buscar_nombre(self, nombre):
+        if Producto.lista_productos.__len__() != 0:
+            for product in Proveedores.proveedores:
+                if product.nombre == nombre:
+                    print("Nombre de producto ya registrado")
+                    return True
+            return False
+
+    @classmethod
+    def buscar_correo(self, correo):
+        if Producto.lista_productos.__len__() != 0:
+            for product in Proveedores.proveedores:
+                if product.correo == correo:
+                    print("Nombre de producto ya registrado")
+                    return True
+            return False
+
+    @classmethod
+    def buscar_telefono(self, telefono):
+        if Producto.lista_productos.__len__() != 0:
+            for product in Proveedores.proveedores:
+                if product.telefono == telefono:
+                    print("Nombre de producto ya registrado")
+                    return True
+            return False
+
+    @classmethod
+    def buscar_nombre_valida(self, nombre):
+        if Producto.lista_productos.__len__() != 0:
+            for product in Proveedores.proveedores:
+                if product.nombre == nombre:
+                    return product
+            return False
+
+    @classmethod
+    def actualizarGUI_verificar(cls, nom, correo, telefono):
         for prov in cls.proveedores:
             if (prov.nombre) != (nom) and prov.telefono != telefono and prov.correo != correo:
                 return True
             else:
                 return False
-
 
     @classmethod
     def eliminarProveedor(cls, id):
@@ -446,6 +530,7 @@ class Proveedores:
         for proveedor in Proveedores.proveedores:
             if proveedor.nombre==nombre or proveedor.correo==correo or  proveedor.telefono==telefono:
                 return True
+        return False
 
     @classmethod
     def validar_provedor(cls,nombre):

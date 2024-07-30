@@ -1,9 +1,8 @@
-codigo,nombre,marca,precio,proveedor,tamanio,fecha_caducidad,entradas,salidas,stock,existencias_anteriores,ajuste
-P000000000001,papas,sabritas,20,pepsi,1g,01/02/2025,109,22,87,89,2
-P012345678963,refresco,pepsi,10,pepsi,10g,02/04/2028,10,0,10,10,0
-P023145678954,coca,coca,20000000000,coca,10g,02/01/2025,50,0,50,50,0
-P789456123547,lol,lol,501,coca,10g,01/02/2025,102,0,102,102,0
-P789456123548,ff,ff,10,coca,10g,01/02/2025,100,0,100,100,0
-P789456123254,papa,papa,22222222222222,coca,01g,01/02/2025,50,0,50,50,0
-P789456123584,loll,loll,10,coca,2g,01/02/2025,10,0,10,10,0
-P789456123581,ññ,ññ,2,coca,1g,01/02/2025,10,0,10,10,0
+codigo,nombre,marca,precio,proveedor,cantidad,tamanio,fecha_caducidad,entradas,salidas,stock,existencias_anteriores,ajuste
+-1,0,0,1.0,Zzaa,1,0g,01/02/2025,1,0,1,1,0
+1,papas,sabritas,11,pepsi,10,11g,10/02/2025,10,10,0,10,9
+2,refresco,coca,1.0,pepsi,1,0ml,01/02/2025,1,0,1,1,0
+6,gansito,marinela,2.0,pepsi,10,1kg,02/02/2025,10,0,10,10,0
+P000000000001,lol,lol,10.0,pepsi,1,1g,01/02/2025,1,0,1,1,0
+P123456789123,kkk,kkk,10.0,pepsi,1111111111111111111,10g,01/02/2025,1111111111111111111,0,1111111111111111111,1111111111111111111,0
+P123456789547,ppp,ppp,10.0,pepsi,99999,10g,01/02/2025,99999,0,99999,99999,0

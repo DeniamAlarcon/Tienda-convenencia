@@ -144,6 +144,18 @@ class ProveedorApp(tk.Tk):
                 if n_correo and not re.match(re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$'), n_correo):
                     messagebox.showerror("Error", "Correo no válido")
                     return
+                if n_nombre and not Proveedores.actualizarGUI_ValidarN(id,n_nombre):
+                    if n_nombre and Proveedores.buscar_nombre(n_nombre):
+                        messagebox.showerror("Error", "Proveedor ya registrado con esos datos. nombre")
+                        return
+                if n_correo and not Proveedores.actualizarGUI_ValidarC(id,n_correo):
+                    if n_correo and Proveedores.buscar_correo(n_correo):
+                        messagebox.showerror("Error", "Proveedor ya registrado con esos datos. correo")
+                        return
+                if n_telefono and not Proveedores.actualizarGUI_ValidarT(id,n_telefono):
+                    if n_telefono and Proveedores.buscar_telefono(n_telefono):
+                        messagebox.showerror("Error", "Proveedor ya registrado con esos datos. telefono")
+                        return
 
                 if not n_telefono.isnumeric():
                     messagebox.showerror("Error","Ingrese un numero valido")
@@ -152,7 +164,7 @@ class ProveedorApp(tk.Tk):
                 if n_telefono and not self.validar_telefono(n_telefono):
                     messagebox.showerror("Error", "El  telefono debe ser numerico con una longitud mayor a 10 y menor a 15")
                     return
-                Proveedores.actualizarGUI(id, n_nombre, n_correo, n_telefono)
+                Proveedores.actualizar(id, n_nombre, n_correo, n_telefono)
                 Proveedores.escribir_archivo_csv_principal()
                 self.create_widgets()
 
