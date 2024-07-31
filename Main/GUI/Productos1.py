@@ -493,7 +493,7 @@ class ProductosApp(tk.Tk):
             for producto in productos:
                 self.tree.insert('', tk.END, values=(
                     producto.codigo, producto.nombre, producto.marca, producto.proveedor,
-                    producto.cantidad, producto.tamanio, producto.precio, producto.fecha_caducidad
+                    producto.stock, producto.tamanio, producto.precio, producto.fecha_caducidad
                 ))
         else:
             messagebox.showerror("Error", "No hay productos registrados")

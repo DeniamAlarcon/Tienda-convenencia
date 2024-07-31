@@ -434,7 +434,7 @@ class Producto:
         else:
             for product in Producto.lista_productos:
                 if product.nombre == nombre:
-                    print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ", product.proveedor, "Cantidad: ",product.cantidad, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
+                    print("Codigo: ",product.codigo, "Nombre: ",product.nombre, "Marca: ",product.marca, "Proveedor: ", product.proveedor, "Cantidad: ",product.stock, "Unidad de medida: ",product.tamanio, "Precio: ",product.precio, "Fecha de caducidad:",product.fecha_caducidad)
                     return Producto.lista_productos
             print("producto no encontrado")
 
