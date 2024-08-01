@@ -17,7 +17,6 @@ class App(tk.Tk):
         super().__init__()
         self.title("Tiendita")
         self.resizable(False, False)
-        self.overrideredirect(True)
         self.center_window(600, 400)
         self.create_login_screen()
         self.corte_realizado = False
@@ -37,7 +36,7 @@ class App(tk.Tk):
 
     def create_login_screen(self):
         self.clear_screen()
-
+        self.overrideredirect(False)
         tk.Label(self, text="---Inicio de sesión---").pack(pady=15)
 
         tk.Label(self, text="Usuario:").pack()
@@ -65,6 +64,7 @@ class App(tk.Tk):
         self.clear_screen()
         self.center_window(600, 400)
         self.resizable(False, False)
+        self.overrideredirect(True)
         Proveedores.leer_archivo()
         Producto.leer_archivo()
         PedidosProveedor.leer_archivo()
