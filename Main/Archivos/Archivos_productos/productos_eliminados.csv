@@ -1,2 +1,6 @@
 codigo,nombre,marca,precio,proveedor,fecha_eliminacion
 P05,hh,mm,10.0,pepsi,2024-08-02 01:48:17.784450
+codigo,nombre,marca,precio,proveedor,fecha_eliminacion
+P10,papasi,ff,100.0,pepsi,2024-08-05 03:37:59.235449
+codigo,nombre,marca,precio,proveedor,fecha_eliminacion
+P03,lol,lol,1.0,coca,2024-08-05 03:48:08.883132

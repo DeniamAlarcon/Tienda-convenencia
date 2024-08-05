@@ -183,7 +183,6 @@ class ComprasProveedorApp(tk.Tk):
             PedidosProveedor.pedidos_proveedorID(int(id_pedido), int(cantidad))
         except ValueError:
             messagebox.showerror("Error", "Ingrese datos correctos")
-
         self.create_widgets()
 
     def registrar_devoluciones(self):

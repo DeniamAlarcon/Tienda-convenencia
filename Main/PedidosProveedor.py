@@ -236,10 +236,10 @@ class PedidosProveedor:
                             f"ID: {pedido.id}, Proveedor: {pedido.proveedor}, Nombre: {pedido.nombre}, Marca: {pedido.marca}, Cantidad: {pedido.cantidad},Precio de Compra: {pedido.precio},  Estatus: {pedido.estatus}")
                         if int(pedido.cantidad) < int(cantidad):
                              messagebox.showinfo("Error", "Se exedio la cantidad de producto")
-                             break
+                             return
                         elif int(pedido.cantidad) > int(cantidad):
                             messagebox.showerror("Error", "Entrega Incompleta")
-                            break
+                            return
                         else:
                             inventario = Inventario()
                             inventario.actualizarEntradas(pedido.nombre, cantidad)
@@ -247,11 +247,11 @@ class PedidosProveedor:
                             Producto.escribir_archivo_csv_productos_principal()
                             PedidosProveedor.escribir_archivo_csv_principal_compras()
                             messagebox.showinfo("Exito", "Entrega completa")
-                            break
+                            return
                     else:
                         messagebox.showerror("Error", "No existen pedidos pendientes para validar")
-                        break
-
+                        return
+            messagebox.showerror("Error","No se encontro el id de pedido")
 
     @classmethod
     def buscarID(self,idp):
