@@ -17,7 +17,6 @@ def validar_tamanio(tamanio):
     # Patrón para verificar que el tamaño sea un número entero seguido de una unidad válida
     pattern = re.compile(r'^(0|[1-9]\d*)(kg|g|L|ml|pcs|m|cm|in)$')
     match = pattern.match(tamanio)
-
     if match:
         # Extraer el valor numérico y la unidad
         valor = match.group(1)
@@ -26,7 +25,6 @@ def validar_tamanio(tamanio):
         # Verificar que la unidad sea válida y que el valor sea mayor a 0
         if unidad in unidades_validas and int(valor) > 0:
             return True
-
     return False
 
 def validar_fecha(fecha):
@@ -77,7 +75,7 @@ def validar_longitud(cantidad):
     # Verificar la longitud de la cantidad
     if cantidad.isdigit() and 0 <= int(cantidad) < 1000:
         return True
-    else:
+    elif cantidad.isdigit():
         # Crear una ventana raíz oculta
         root = tk.Tk()
         root.withdraw()
@@ -200,12 +198,12 @@ class ProductosApp(tk.Tk):
             messagebox.showerror("Error", "Proveedor no encontrado")
             return
 
-        if not validar_longitud(cantidad):
-            messagebox.showerror("Error","Cantidad a ingresar es muy grande")
-            return
-
         if not validar_cantidad(cantidad):
             messagebox.showerror("Error", "Cantidad no válida")
+            return
+
+        if not validar_longitud(cantidad):
+            messagebox.showerror("Error","Cantidad a ingresar es muy grande")
             return
 
         if not validar_tamanio(tamanio):
@@ -286,7 +284,7 @@ class ProductosApp(tk.Tk):
 
                         self.tree.insert('', tk.END, values=(
                             producto.codigo, producto.nombre, producto.marca, producto.proveedor,
-                            producto.cantidad, producto.tamanio, producto.precio, producto.fecha_caducidad
+                            producto.stock, producto.tamanio, producto.precio, producto.fecha_caducidad
                         ))
             else:
                 messagebox.showerror("Error","No se encontraron productos con ese nombre")
@@ -296,7 +294,7 @@ class ProductosApp(tk.Tk):
             for producto in resultados:
                 self.tree.insert('', tk.END, values=(
                     producto.codigo, producto.nombre, producto.marca, producto.proveedor,
-                    producto.cantidad, producto.tamanio, producto.precio, producto.fecha_caducidad))
+                    producto.stock, producto.tamanio, producto.precio, producto.fecha_caducidad))
 
     def gestion_productos(self):
         self.clear_frame()
@@ -388,7 +386,7 @@ class ProductosApp(tk.Tk):
             self.nombre_actualizar_entry.insert(tk.END, resultados.nombre)
             self.proveedor_actualizar_entry.insert(tk.END, resultados.proveedor)
             self.tamanio_actualizar_entry.insert(tk.END, resultados.tamanio)
-            self.precio_actualizar_entry.insert(tk.END, precio)
+            self.precio_actualizar_entry.insert(tk.END, str(precio))
             self.fecha_actualizar_entry.insert(tk.END, resultados.fecha_caducidad)
             self.codigo_actualizar_entry.config(state=tk.DISABLED)
             self.boton_buscar.config(state="disabled")

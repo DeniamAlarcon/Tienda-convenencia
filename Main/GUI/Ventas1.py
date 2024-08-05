@@ -126,21 +126,24 @@ class VentasApp(tk.Tk):
         producto = self.producto_entry.get()
         if Ticket.lista_ticket.__len__() !=0:
             if cantidad != "" and producto != "":
-                if Ticket.quitar_producto(producto, cantidad):
-                    productos = Ticket.lista_ticket
-                    self.resultado_text.config(state=tk.NORMAL)
-                    self.resultado_text.delete('1.0', tk.END)
-                    if productos:
-                        self.resultado_text.insert(tk.END,
-                                                   f"{'Nombre':<10} {'Cantidad':<20} {'Total':<15}\n")
-                        for producto in productos:
+                if re.match(r'^[1-9]\d*|0$', cantidad):
+                    if Ticket.quitar_producto(producto, cantidad):
+                        productos = Ticket.lista_ticket
+                        self.resultado_text.config(state=tk.NORMAL)
+                        self.resultado_text.delete('1.0', tk.END)
+                        if productos:
                             self.resultado_text.insert(tk.END,
-                                                       f"{producto.nombre:<10} {producto.cantidad:<20} {producto.total:<15}\n")
-                    messagebox.showinfo("Borrado","Producto eliminado de la venta")
-                    self.producto_entry.delete(0, tk.END)
-                    self.cantidad_entry.delete(0, tk.END)
+                                                       f"{'Nombre':<10} {'Cantidad':<20} {'Total':<15}\n")
+                            for producto in productos:
+                                self.resultado_text.insert(tk.END,
+                                                           f"{producto.nombre:<10} {producto.cantidad:<20} {producto.total:<15}\n")
+                        messagebox.showinfo("Borrado","Producto eliminado de la venta")
+                        self.producto_entry.delete(0, tk.END)
+                        self.cantidad_entry.delete(0, tk.END)
+                    else:
+                        messagebox.showerror("Error","El producto no pudo ser eliminado verifique los datos")
                 else:
-                    messagebox.showerror("Error","El producto no pudo ser eliminado verifique los datos")
+                    messagebox.showerror("Error", "Cantidad no válida")
             else:
                 messagebox.showerror("Error","Ingrese todos los campos")
         else:

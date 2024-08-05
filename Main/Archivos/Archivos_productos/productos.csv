@@ -1,2 +1,4 @@
 codigo,nombre,marca,precio,proveedor,tamanio,fecha_caducidad,entradas,salidas,stock,existencias_anteriores,ajuste
-P01,papas,sabritas,20,pepsi,10g,01/02/2025,10,0,10,10,0
+P01,papas,sabritas,20,pepsi,10g,01/02/2025,1020,13,1007,10,0
+P02,pepsi,sabritas,10,pepsi,10kg,01/02/2025,10099,0,10099,100,0
+P03,lol,lol,1,coca,1g,01/02/2025,1,1,0,1,0

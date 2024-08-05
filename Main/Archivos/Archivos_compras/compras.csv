@@ -1,2 +1,4 @@
 id,proveedor,nombre,marca,cantidad,precio,estatus
-1,pepsi,papas,sabritas,10,210,Pendiente
+1,pepsi,papas,sabritas,10,210,Entregado
+2,pepsi,papas,sabritas,1000,21000,Entregado
+3,pepsi,pepsi,sabritas,9999,109989,Entregado

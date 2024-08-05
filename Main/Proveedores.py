@@ -115,7 +115,7 @@ class Proveedores:
         base_dir = os.path.dirname(os.path.abspath(__file__))
         ruta_csv = os.path.join(base_dir, 'Archivos', 'Archivos_proveedores', 'proveedores_eliminados.csv')
         try:
-            with open(ruta_csv, mode="w", encoding='utf8', newline='') as archivo_csv:
+            with open(ruta_csv, mode="a", encoding='utf8', newline='') as archivo_csv:
                 fieldnames = ["id", "nombre", "correo", "telefono","fecha_eliminacion"]
                 writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)
                 writer.writeheader()

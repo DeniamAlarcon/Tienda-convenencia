@@ -233,14 +233,17 @@ class PedidosProveedor:
             for pedido in self.pedidos:
                 if pedido.id == int(idp):
                     if pedido.estatus=="Pendiente":
+                        print("Entro despues de verificar el estatus")
                         print(
                             f"ID: {pedido.id}, Proveedor: {pedido.proveedor}, Nombre: {pedido.nombre}, Marca: {pedido.marca}, Cantidad: {pedido.cantidad},Precio de Compra: {pedido.precio},  Estatus: {pedido.estatus}")
                         if int(pedido.cantidad) < int(cantidad):
                              mensaje=("Se exedio la cantidad de producto")
                              mensaje1=("Error")
+                             break
                         elif int(pedido.cantidad) > int(cantidad):
                             mensaje=("Entrega Incompleta")
                             mensaje1 = ("Error")
+                            break
                         else:
                             inventario = Inventario()
                             inventario.actualizarEntradas(pedido.nombre, cantidad)
@@ -249,9 +252,7 @@ class PedidosProveedor:
                             PedidosProveedor.escribir_archivo_csv_principal_compras()
                             mensaje=("Entrega completa")
                             mensaje1 = ("Exito")
-                    else:
-                        mensaje=("No existen pedidos pendientes para validar")
-                        mensaje1=("Error")
+                            break
                 else:
                     mensaje=("Pedido no encontrado con este ID")
                     mensaje1 = ("Error")

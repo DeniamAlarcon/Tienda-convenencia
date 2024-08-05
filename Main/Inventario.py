@@ -225,7 +225,7 @@ class Inventario:
                     Mensajes_stock += ("Stock bajo de "+product.nombre+"\n")
                 elif int(product.stock) == 0:
                     print("No hay stock de ",product.nombre)
-                    Mensajes_stock += ("No hay stock "+ product.nombre + "\n")
+                    Mensajes_stock += ("No hay stock de"+ product.nombre + "\n")
         return Mensajes_stock
 
     @classmethod
@@ -439,7 +439,7 @@ class Inventario:
         try:
             # Abrir archivo en modo apéndice para no borrar la información existente
             with open(ruta_csv, mode="a", encoding='utf8', newline='') as archivo_csv:
-                fieldnames = ["codigo", "nombre", "marca", "precio", "fecha_eliminacion", "cantidad", "total"]
+                fieldnames = ["codigo", "nombre", "marca", "precio", "fecha_ajuste", "cantidad", "total"]
 
                 # Crear un escritor CSV solo si el archivo está vacío para escribir el encabezado
                 writer = csv.DictWriter(archivo_csv, fieldnames=fieldnames)

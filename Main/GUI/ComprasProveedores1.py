@@ -180,7 +180,7 @@ class ComprasProveedorApp(tk.Tk):
             return
 
         try:
-            PedidosProveedor.pedidos_proveedorID(id_pedido, int(cantidad))
+            PedidosProveedor.pedidos_proveedorID(int(id_pedido), int(cantidad))
         except ValueError:
             messagebox.showerror("Error", "Ingrese datos correctos")
 
@@ -218,10 +218,10 @@ class ComprasProveedorApp(tk.Tk):
         if inventario.actualizarSalidas(producto, int(cantidad)):
             Producto.escribir_archivo_csv_productos_principal()
             messagebox.showinfo("Éxito", "Devolución registrada")
+            self.create_widgets()
         else:
             messagebox.showerror("Error", "Producto no registrado")
 
-        self.create_widgets()
 
     def generar_historiales_compra(self):
         self.clear_frame()
