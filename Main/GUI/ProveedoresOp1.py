@@ -68,6 +68,11 @@ class ProveedorApp(tk.Tk):
         if not nombre or not correo or not telefono:
             messagebox.showerror("Error", "Favor de llenar todos los campos requeridos")
             return
+        patron_nombre = re.compile(r'^[A-Za-z]+[\W]*[A-Za-z0-9]+$')
+        if not re.match(patron_nombre, nombre):
+            messagebox.showerror("Error",
+                                 "Nombre no válido.")
+            return
 
         pattern = re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$')
         if not re.match(pattern, correo):
@@ -144,6 +149,13 @@ class ProveedorApp(tk.Tk):
                 if n_correo and not re.match(re.compile(r'^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}(?:\.[a-zA-Z]{2,})?$'), n_correo):
                     messagebox.showerror("Error", "Correo no válido")
                     return
+
+                patron_nombre = re.compile(r'^[A-Za-z]+[\W]*[A-Za-z0-9]+$')
+                if not re.match(patron_nombre, n_nombre):
+                    messagebox.showerror("Error",
+                                         "Nombre no válido.")
+                    return
+
                 if n_nombre and not Proveedores.actualizarGUI_ValidarN(id,n_nombre):
                     if n_nombre and Proveedores.buscar_nombre(n_nombre):
                         messagebox.showerror("Error", "Proveedor ya registrado con esos datos. nombre")
