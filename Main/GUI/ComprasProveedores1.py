@@ -215,11 +215,16 @@ class ComprasProveedorApp(tk.Tk):
             return
 
         inventario = Inventario()
+        if not Producto.buscar_nombre(producto):
+            messagebox.showerror("Error", "Producto no registrado")
+            return
+        
         if inventario.actualizarSalidas(producto, int(cantidad)):
             Producto.escribir_archivo_csv_productos_principal()
             messagebox.showinfo("Éxito", "Devolución registrada")
         else:
-            messagebox.showerror("Error", "Producto no registrado")
+            messagebox.showerror("Error", "No hay suficiente producto en el stock")
+            return
 
         self.create_widgets()
 
